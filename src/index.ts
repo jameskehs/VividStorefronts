@@ -1,7 +1,7 @@
 alert('TEST');
 
-async function fetchScriptSrcFromRepo(gitUsername, repoName, fileName) {
-  const apiUrl = `https://api.github.com/repos/${username}/${repoName}/commits/main`;
+async function fetchScriptSrcFromRepo(gitUsername: string, repoName: string, fileName: string) {
+  const apiUrl = `https://api.github.com/repos/${gitUsername}/${repoName}/commits/main`;
   try {
     const response = await fetch(apiUrl);
     if (!response.ok) {

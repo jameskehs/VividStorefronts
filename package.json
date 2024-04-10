@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "update": "tsc git push origin main"
+    "update": "tsc && git push origin main"
   },
   "author": "",
   "license": "ISC",
