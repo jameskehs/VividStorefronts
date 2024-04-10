@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 alert('TEST');
 function fetchScriptSrcFromRepo(gitUsername, repoName, fileName) {
     return __awaiter(this, void 0, void 0, function* () {
-        const apiUrl = `https://api.github.com/repos/${username}/${repoName}/commits/main`;
+        const apiUrl = `https://api.github.com/repos/${gitUsername}/${repoName}/commits/main`;
         try {
             const response = yield fetch(apiUrl);
             if (!response.ok) {
