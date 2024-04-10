@@ -9,6 +9,7 @@ yarn-error.log*
 node_modules/
 
 # Build files
+build/
 dist/
 out/
 
