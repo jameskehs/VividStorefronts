@@ -2,6 +2,7 @@
   "name": "vivid-storefronts",
   "version": "1.0.0",
   "main": "index.js",
+  "module": "es6",
   "scripts": {
     "build": "tsc"
   },
