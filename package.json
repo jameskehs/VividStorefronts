@@ -9,6 +9,7 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "@types/jquery": "^3.5.29",
     "typescript": "^5.4.5"
   }
 }
