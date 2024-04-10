@@ -1,7 +1,5 @@
 import { StorefrontPages } from './enums/paths';
 
-$('.tableSiteBanner, #navWrapper').wrapAll(`<div class="BannerWrapper"></div>`);
-
 if (window.location.pathname === StorefrontPages.ADDTOCART) {
   alert('Add to Cart');
 }
