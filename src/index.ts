@@ -4,7 +4,7 @@ import { GlobalState } from './types/GlobalState';
 
 // Declare global state object, this can be used across all modules
 export const globalState: GlobalState = {
-  currentPage: undefined,
+  currentPage: null,
 };
 
 async function loadStorefrontScript(groupID: number) {

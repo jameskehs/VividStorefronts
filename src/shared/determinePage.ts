@@ -1,6 +1,6 @@
 import { StorefrontPage } from '../enums/StorefrontPage.enum';
 
-export function determineCurrentPage(): StorefrontPage | undefined {
+export function determineCurrentPage(): StorefrontPage | null {
   const pathname = window.location.pathname;
   switch (pathname) {
     case '/account/index.php':
@@ -28,6 +28,6 @@ export function determineCurrentPage(): StorefrontPage | undefined {
     case '/checkout/9-confirm.php':
       return StorefrontPage.CHECKOUTCONFIRMATION;
     default:
-      return undefined;
+      return null;
   }
 }
