@@ -1,4 +1,4 @@
-import { Utils } from './shared/determinePage';
+import { Utils } from './shared/Utils';
 import { GlobalState } from './types/GlobalState';
 
 // Declare global state object, this can be used across all modules
