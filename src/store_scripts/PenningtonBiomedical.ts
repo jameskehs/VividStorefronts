@@ -10,12 +10,8 @@ export function main() {
   $('.tableSiteBanner, #navWrapper').wrapAll(`<div class="BannerWrapper"></div>`);
 
   if (globalState.currentPage === StorefrontPage.CHECKOUTADDRESS) {
-    $('.tableMain').prepend('<h2>Personal orders should not be shipped to Pennington Biomedical.</h2>').css({
-      'font-size': '16px',
-      border: '2px solid #3e1c84',
-      padding: '12px',
-      'text-align': 'center',
-      'font-weight': 'bold',
-    });
+    $('.tableMain').prepend(
+      '<h2 style="font-size:16px;border:2px solid #3e1c84;padding:12px;text-align:center;font-weight:bold">Personal orders should not be shipped to Pennington Biomedical.</h2>'
+    );
   }
 }
