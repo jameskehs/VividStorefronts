@@ -5,6 +5,7 @@ import { GlobalState } from './types/GlobalState';
 // Declare global state object, this can be used across all modules
 export const globalState: GlobalState = {
   currentPage: null,
+  baseURL: 'https://vividstorefronts.netlify.app',
 };
 
 async function loadStorefrontScript(groupID: number) {
