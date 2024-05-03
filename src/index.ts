@@ -15,7 +15,7 @@ async function loadStorefrontScript(groupID: number) {
   let module;
   switch (groupID) {
     case 66:
-      module = await import(/* webpackChunkName: "JKTest" */ './JKTest');
+      module = await import(/* webpackChunkName: "JKTest" */ './store_scripts/JKTest');
       break;
     default:
       console.error('Group ID not recognized');
