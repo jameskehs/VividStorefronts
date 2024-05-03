@@ -38,7 +38,7 @@ export function main(): void {
   function continueKitWorkflow() {
     // Redirect the user if they try to redirect while in the middle of a kit
     if (
-      globalState.currentPage !== null &&
+      globalState.currentPage === null ||
       ![StorefrontPage.CUSTOMIZETEMPLATE, StorefrontPage.ADDTOCART, StorefrontPage.CART].includes(globalState.currentPage)
     ) {
       window.location.href = `/catalog/2-customize.php?&designID=${activeKit.items[0].designID}&contentID=${activeKit.items[0].contentID}`;
@@ -63,7 +63,7 @@ export function main(): void {
                   : index === activeKit.index
                   ? `<object type="image/svg+xml" data="${globalState.baseURL}/src/assets/Clock.svg" width="24" height="24"></object>`
                   : `<object type="image/svg+xml" data="${globalState.baseURL}/src/assets/Check.svg" width="24" height="24"></object>`
-              } 
+              }
               ${item.name}</p>`;
             })
             .join('') +
