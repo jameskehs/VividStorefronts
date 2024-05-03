@@ -1,5 +1,3 @@
-import { StorefrontPage } from './enums/StorefrontPage.enum';
-import { Loader } from './shared/Loader';
 import { determineCurrentPage } from './shared/determinePage';
 import { GlobalState } from './types/GlobalState';
 
@@ -12,9 +10,7 @@ export const globalState: GlobalState = {
 async function loadStorefrontScript(groupID: number) {
   // Set global state
   globalState.currentPage = determineCurrentPage();
-  const loader = new Loader();
-  loader.init();
-  loader.activate();
+
   // Import the required module based on the groupID
   let module;
   switch (groupID) {
@@ -37,8 +33,6 @@ async function loadStorefrontScript(groupID: number) {
   } else {
     console.error('The loaded module does not have a main function.');
   }
-
-  loader.deactivate();
 }
 
 // Expose loadStoreScript to the global scope
