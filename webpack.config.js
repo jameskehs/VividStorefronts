@@ -1,5 +1,3 @@
-const path = require('path');
-
 module.exports = {
   entry: './src/index.ts',
   module: {
@@ -15,7 +13,12 @@ module.exports = {
     extensions: ['.tsx', '.ts', '.js'],
   },
   output: {
-    filename: 'bundle.js',
-    path: path.resolve(__dirname, 'dist'),
+    chunkFilename: '[name].bundle.js',
+  },
+
+  optimization: {
+    splitChunks: {
+      chunks: 'all',
+    },
   },
 };
