@@ -1,4 +1,4 @@
-import { determineCurrentPage } from './shared/determinePage';
+import { Utils } from './shared/determinePage';
 import { GlobalState } from './types/GlobalState';
 
 // Declare global state object, this can be used across all modules
@@ -9,7 +9,7 @@ export const globalState: GlobalState = {
 
 async function loadStorefrontScript(groupID: number) {
   // Set global state
-  globalState.currentPage = determineCurrentPage();
+  globalState.currentPage = Utils.determineCurrentPage();
 
   // Import the required module based on the groupID
   let module;

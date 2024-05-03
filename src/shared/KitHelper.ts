@@ -89,3 +89,10 @@ export function runKitWorkflow(kits: Kit[]) {
     }
   }
 }
+
+export class KitHelper {
+  kits: Kit[];
+  constructor(kits: Kit[]) {
+    this.kits = kits;
+  }
+}
