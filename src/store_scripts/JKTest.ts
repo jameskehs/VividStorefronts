@@ -39,7 +39,7 @@ export function main(): void {
     // Redirect the user if they try to redirect while in the middle of a kit
     if (
       globalState.currentPage !== null &&
-      [StorefrontPage.CUSTOMIZETEMPLATE, StorefrontPage.ADDTOCART, StorefrontPage.CART].includes(globalState.currentPage)
+      ![StorefrontPage.CUSTOMIZETEMPLATE, StorefrontPage.ADDTOCART, StorefrontPage.CART].includes(globalState.currentPage)
     ) {
       window.location.href = `/catalog/2-customize.php?&designID=${activeKit.items[0].designID}&contentID=${activeKit.items[0].contentID}`;
     }
