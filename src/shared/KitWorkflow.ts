@@ -3,25 +3,21 @@ import { globalState } from '../index';
 import { Kit } from '../types/Kit';
 
 export function runKitWorkflow(kits: Kit[]) {
-  // If there is no active kit in local storage, return. Otherwise, continue the kit workflow.
-  const kitFromLocalStorage = localStorage.getItem('activeKit');
-  if (kitFromLocalStorage === null) return;
-  const activeKit: Kit & { index: number } = JSON.parse(kitFromLocalStorage);
-  continueKitWorkflow();
-
-  // Kit descriptions will have a span with the class jk_kit. We extract the text in this span and use it to set a click event on the parent product cell. Text inside span should match the name of a kit in the kits array.
-  $('.jk_kit').each((index, span) => {
-    const jquerySpan = $(span);
-    const kitName = jquerySpan.text();
-    const sanitizedKitName = kitName.replace(/\s+/g, '');
-    const productCell = $(jquerySpan.parents('.prodCell')[0]);
-    productCell.append(
-      `<div id=${sanitizedKitName} style="height:100%;width:100%;background-color:transparent;position: absolute;z-index: 999"></div>`
-    );
-    $(`#${sanitizedKitName}`).on('click', () => {
-      startKitWorkflow(kitName);
+  // On catalog page, kit descriptions will have a span with the class jk_kit. We extract the text in this span and use it to set a click event on the parent product cell. Text inside span should match the name of a kit in the kits array.
+  if (globalState.currentPage === StorefrontPage.CATALOG) {
+    $('.jk_kit').each((index, span) => {
+      const jquerySpan = $(span);
+      const kitName = jquerySpan.text();
+      const sanitizedKitName = kitName.replace(/\s+/g, '');
+      const productCell = $(jquerySpan.parents('.prodCell')[0]);
+      productCell.append(
+        `<div id=${sanitizedKitName} style="height:100%;width:100%;background-color:transparent;position: absolute;z-index: 999"></div>`
+      );
+      $(`#${sanitizedKitName}`).on('click', () => {
+        startKitWorkflow(kitName);
+      });
     });
-  });
+  }
 
   // Search for the kit that was selected, put it in localstorage with an index of 0. Navigate to the first item in the kit.
   function startKitWorkflow(kitName: string) {
@@ -30,6 +26,11 @@ export function runKitWorkflow(kits: Kit[]) {
     localStorage.setItem('activeKit', JSON.stringify({ ...kit, index: 0 }));
     window.location.href = `/catalog/2-customize.php?&designID=${kit.items[0].designID}&contentID=${kit.items[0].contentID}`;
   }
+  // If there is no active kit in local storage, return. Otherwise, continue the kit workflow.
+  const kitFromLocalStorage = localStorage.getItem('activeKit');
+  if (kitFromLocalStorage === null) return;
+  const activeKit: Kit & { index: number } = JSON.parse(kitFromLocalStorage);
+  continueKitWorkflow();
 
   function continueKitWorkflow() {
     // Redirect the user if they try to redirect while in the middle of a kit
