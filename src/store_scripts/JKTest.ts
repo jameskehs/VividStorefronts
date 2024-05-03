@@ -22,12 +22,14 @@ export function main(): void {
   $('.jk_kit').each((index, span) => {
     const jquerySpan = $(span);
     const kitName = jquerySpan.text();
+    const sanitizedKitName = kitName.replace(/\s+/g, '');
     const productCell = $(jquerySpan.parents('.prodCell')[0]);
     productCell.append(
-      `<div onclick="${() => {
-        startKitWorkflow(kitName);
-      }}" style="height:100%;width:100%;background-color:transparent;position: absolute;z-index: 999"></div>`
+      `<div id=${sanitizedKitName} style="height:100%;width:100%;background-color:transparent;position: absolute;z-index: 999"></div>`
     );
+    $(`#${sanitizedKitName}`).on('click', () => {
+      startKitWorkflow(kitName);
+    });
   });
 
   function startKitWorkflow(kitName: string) {
