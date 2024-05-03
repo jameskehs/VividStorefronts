@@ -24,7 +24,7 @@ export function main(): void {
     const kitName = jquerySpan.text();
     const productCell = $(jquerySpan.parents('.prodCell')[0]);
     productCell.append(
-      `<div onclick="startKitWorkflow('${kitName}')" style="height:100%;width:100%;background-color:transparent;position: absolute;z-index: 999"></div>`
+      `<div onclick="${startKitWorkflow(kitName)}" style="height:100%;width:100%;background-color:transparent;position: absolute;z-index: 999"></div>`
     );
   });
 
