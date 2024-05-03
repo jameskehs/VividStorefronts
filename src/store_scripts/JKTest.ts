@@ -59,10 +59,10 @@ export function main(): void {
               return `<p>
               ${
                 index > activeKit.index
-                  ? `<object type="image/svg+xml" data="../assets/X.svg" width="24" height="24"></object>`
+                  ? `<object type="image/svg+xml" data="src/assets/X.svg" width="24" height="24"></object>`
                   : index === activeKit.index
-                  ? `<object type="image/svg+xml" data="../assets/Clock.svg" width="24" height="24"></object>`
-                  : `<object type="image/svg+xml" data="../assets/Check.svg" width="24" height="24"></object>`
+                  ? `<object type="image/svg+xml" data="src/assets/Clock.svg" width="24" height="24"></object>`
+                  : `<object type="image/svg+xml" data="src/assets/Check.svg" width="24" height="24"></object>`
               } 
               ${item.name}</p>`;
             })
