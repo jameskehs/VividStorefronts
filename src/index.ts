@@ -18,6 +18,8 @@ async function loadStorefrontScript(groupID: number) {
     case 66:
       module = await import(/* webpackChunkName: "JKTest" */ './store_scripts/JKTest');
       break;
+    case 123:
+      module = await import(/* webpackChunkName: "PenningtonBiomedical" */ './store_scripts/PenningtonBiomedical');
     case 124:
       module = await import(/* webpackChunkName: "EpicPiping" */ './store_scripts/EpicPiping');
       break;
