@@ -273,7 +273,7 @@ export class KitWorkflow {
           if (item) item.qtyInCart = item.PODPackSize ? cartItem.quantity / item.PODPackSize : cartItem.quantity;
         });
 
-        if (currentQtyInCart <= this.activeKit.dynamicOptions!.totalAllowedItems) {
+        if (currentQtyInCart >= this.activeKit.dynamicOptions!.totalAllowedItems) {
           $('.tableMain').css('display', 'initial');
           console.log('Kit quantity reached!');
           localStorage.removeItem('activeKit');
