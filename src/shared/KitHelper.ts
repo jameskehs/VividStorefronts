@@ -208,7 +208,7 @@ export class KitWorkflow {
     // Append informational elements about the kit
     if (globalState.currentPage === StorefrontPage.CUSTOMIZETEMPLATE || globalState.currentPage === StorefrontPage.ADDTOCART) {
       $('.tableMain').prepend(
-        `<h3 class="kit_header">You are currently building the ${this.activeKit.name}. You are on item ${currentItemNumber} of ${totalKitItems}.<br>This kit allows a max of ${this.activeKit.dynamicOptions?.allowedTotalQuantity} items. You currently have ${currentQtyInCart} items in your cart.</h3>` +
+        `<h3 class="kit_header">You are currently building the ${this.activeKit.name}. You are on item ${currentItemNumber} of ${totalKitItems}.<br>This kit allows a max of ${this.activeKit.dynamicOptions?.totalAllowedItems} items. You currently have ${currentQtyInCart} items in your cart.</h3>` +
           `<div class="kit_item_status">` +
           this.activeKit.items
             .map((item, index) => {
@@ -225,6 +225,23 @@ export class KitWorkflow {
             .join('') +
           `</div>`
       );
+    }
+
+    if (globalState.currentPage === StorefrontPage.ADDTOCART) {
+      let quantity = Number($('select#quantity').val());
+      $('select#quantity').on('change', (event) => {
+        quantity = Number((event.currentTarget as HTMLSelectElement).value);
+
+        // Check if qty exceeds total allowed items
+        if (currentQtyInCart + quantity > this.activeKit!.dynamicOptions!.totalAllowedItems) {
+          $('#addToCartButton').css('display', 'none');
+          $('#quantityCol').append(
+            `<span style="color:red">You have exceeded the max quantity of ${this.activeKit!.dynamicOptions!.totalAllowedItems} for this kit.</span>`
+          );
+        } else {
+          $('#addToCartButton').css('display', 'initial');
+        }
+      });
     }
 
     // When the user is on the cart page, check if the kit is complete. If it is, show a message and remove the active kit from local storage. If it is not, navigate to the next item in the kit.
@@ -255,9 +272,16 @@ export class KitWorkflow {
           const item = this.activeKit!.items.find((item) => item.name === cartItem.name);
           if (item) item.qtyInCart = item.PODPackSize ? cartItem.quantity / item.PODPackSize : cartItem.quantity;
         });
-        const nextIndex = this.activeKit.index + 1;
-        localStorage.setItem('activeKit', JSON.stringify({ ...this.activeKit, index: nextIndex }));
-        window.location.href = `/catalog/2-customize.php?&designID=${this.activeKit.items[nextIndex].designID}&contentID=${this.activeKit.items[nextIndex].contentID}`;
+
+        if (currentQtyInCart <= this.activeKit.dynamicOptions!.totalAllowedItems) {
+          $('.tableMain').css('display', 'initial');
+          console.log('Kit quantity reached!');
+          localStorage.removeItem('activeKit');
+        } else {
+          const nextIndex = this.activeKit.index + 1;
+          localStorage.setItem('activeKit', JSON.stringify({ ...this.activeKit, index: nextIndex }));
+          window.location.href = `/catalog/2-customize.php?&designID=${this.activeKit.items[nextIndex].designID}&contentID=${this.activeKit.items[nextIndex].contentID}`;
+        }
       }
     }
   }

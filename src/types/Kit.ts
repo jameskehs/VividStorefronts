@@ -6,7 +6,7 @@ export interface Kit {
 }
 
 export interface DynamicOptions {
-  allowedTotalQuantity: number;
+  totalAllowedItems: number;
 }
 
 interface KitItem {

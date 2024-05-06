@@ -28,7 +28,7 @@ export function main(): void {
       ],
       isDynamic: true,
       dynamicOptions: {
-        allowedTotalQuantity: 7,
+        totalAllowedItems: 7,
       },
     },
   ];
