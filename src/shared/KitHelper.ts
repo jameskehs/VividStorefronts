@@ -253,7 +253,7 @@ export class KitWorkflow {
 
         cartItems.forEach((cartItem) => {
           const item = this.activeKit!.items.find((item) => item.name === cartItem.name);
-          if (item) item.qtyInCart = cartItem.quantity;
+          if (item) item.qtyInCart = item.PODPackSize ? item.PODPackSize / cartItem.quantity : cartItem.quantity;
         });
         const nextIndex = this.activeKit.index + 1;
         localStorage.setItem('activeKit', JSON.stringify({ ...this.activeKit, index: nextIndex }));

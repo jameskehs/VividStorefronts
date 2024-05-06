@@ -15,4 +15,6 @@ interface KitItem {
   contentID: number;
   recommendedQty: number;
   qtyInCart: number;
+  isInventory: boolean;
+  PODPackSize?: number;
 }
