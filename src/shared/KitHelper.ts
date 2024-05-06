@@ -232,7 +232,7 @@ export class KitWorkflow {
       $('select#quantity').on('change', (event) => {
         quantity = Number((event.currentTarget as HTMLSelectElement).value);
         const PODPackSize = this.activeKit!.items[this.activeKit!.index].PODPackSize;
-        PODPackSize !== undefined && (quantity = quantity * PODPackSize);
+        PODPackSize !== undefined && (quantity = quantity / PODPackSize);
 
         // Check if qty exceeds total allowed items
         if (currentQtyInCart + quantity > this.activeKit!.dynamicOptions!.totalAllowedItems) {
