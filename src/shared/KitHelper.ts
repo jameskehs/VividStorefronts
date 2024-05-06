@@ -268,7 +268,7 @@ export class KitWorkflow {
           $(item)
             .children()
             .each((index, child) => {
-              if (index === 0) cartItem.quantity = Number($(child).text().trim());
+              if (index === 0) cartItem.quantity = Number($(child).text().replace(/,/g, '').trim());
               if (index === 1) cartItem.name = $(child).text().trim();
             });
           cartItems.push(cartItem);
