@@ -232,8 +232,12 @@ export class KitWorkflow {
       $('select#quantity').on('change', (event) => {
         quantity = Number((event.currentTarget as HTMLSelectElement).value);
         const PODPackSize = this.activeKit!.items[this.activeKit!.index].PODPackSize;
+        console.log(PODPackSize);
         PODPackSize !== undefined && (quantity = quantity / PODPackSize);
 
+        console.log(`Current qty in cart: ${currentQtyInCart}`);
+        console.log(`Template Quantity: ${quantity}`);
+        console.log(`Total allowed items: ${this.activeKit!.dynamicOptions!.totalAllowedItems}`);
         // Check if qty exceeds total allowed items
         if (currentQtyInCart + quantity > this.activeKit!.dynamicOptions!.totalAllowedItems) {
           $('#addToCartButton').css('display', 'none');
