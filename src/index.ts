@@ -23,6 +23,8 @@ async function loadStorefrontScript(groupID: number) {
     case 124:
       module = await import(/* webpackChunkName: "EpicPiping" */ './store_scripts/EpicPiping');
       break;
+    case 127:
+      module = await import(/* webpackChunkName: "DPiAnesthesia" */ './store_scripts/DPiAnesthesia');
     default:
       console.error('Group ID not recognized');
   }
