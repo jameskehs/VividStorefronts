@@ -16,6 +16,7 @@ async function loadStorefrontScript(groupID: number) {
   let modulePath = ModuleMap[groupID];
   if (modulePath === undefined) {
     console.error(`Module with groupID ${groupID} not found in ModuleMap.`);
+    return;
   }
 
   const module = await import(/* webpackChunkName: "JKTest" */ `./store_scripts/${modulePath}`);
@@ -25,6 +26,7 @@ async function loadStorefrontScript(groupID: number) {
     module.main();
   } else {
     console.error('The loaded module does not have a main function.');
+    return;
   }
 }
 
