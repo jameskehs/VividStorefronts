@@ -14,13 +14,14 @@ async function loadStorefrontScript(groupID: number) {
 
   // Import the required module based on the groupID
   let modulePath = ModuleMap[groupID];
-  const module = await import(/* webpackChunkName: "JKTest" */ `./store_scripts/${modulePath}`);
-
-  if (module === undefined) {
+  if (modulePath === undefined) {
     console.error(`Module with groupID ${groupID} not found in ModuleMap.`);
   }
+
+  const module = await import(/* webpackChunkName: "JKTest" */ `./store_scripts/${modulePath}`);
+
   // Every module should have a main function, this will call it
-  else if (module && typeof module.main === 'function') {
+  if (module && typeof module.main === 'function') {
     module.main();
   } else {
     console.error('The loaded module does not have a main function.');
