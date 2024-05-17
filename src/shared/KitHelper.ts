@@ -1,5 +1,5 @@
 import { StorefrontPage } from '../enums/StorefrontPage.enum';
-import { globalState } from '../index';
+import { GLOBALVARS } from '../index';
 import { Kit } from '../types/Kit';
 
 interface ActiveKit extends Kit {
@@ -8,7 +8,7 @@ interface ActiveKit extends Kit {
 
 export function runKitWorkflow(kits: Kit[]) {
   // On catalog page, kit descriptions will have a span with the class jk_kit. We extract the text in this span and use it to set a click event on the parent product cell. Text inside span should match the name of a kit in the kits array.
-  if (globalState.currentPage === StorefrontPage.CATALOG) {
+  if (GLOBALVARS.currentPage === StorefrontPage.CATALOG) {
     $('.jk_kit').each((index, span) => {
       const jquerySpan = $(span);
       const kitName = jquerySpan.text();
@@ -34,8 +34,8 @@ export function runKitWorkflow(kits: Kit[]) {
   function continueKitWorkflow(activeKit: ActiveKit) {
     // Redirect the user if they navigate away from the kit workflow.
     if (
-      globalState.currentPage === null ||
-      ![StorefrontPage.CUSTOMIZETEMPLATE, StorefrontPage.ADDTOCART, StorefrontPage.CART].includes(globalState.currentPage)
+      GLOBALVARS.currentPage === null ||
+      ![StorefrontPage.CUSTOMIZETEMPLATE, StorefrontPage.ADDTOCART, StorefrontPage.CART].includes(GLOBALVARS.currentPage)
     ) {
       window.location.href = `/catalog/2-customize.php?&designID=${activeKit.items[0].designID}&contentID=${activeKit.items[0].contentID}`;
     }
@@ -44,7 +44,7 @@ export function runKitWorkflow(kits: Kit[]) {
     $('#navWrapper, .crumbs').css('display', 'none');
 
     // Append informational elements about the kit
-    if (globalState.currentPage === StorefrontPage.CUSTOMIZETEMPLATE || globalState.currentPage === StorefrontPage.ADDTOCART) {
+    if (GLOBALVARS.currentPage === StorefrontPage.CUSTOMIZETEMPLATE || GLOBALVARS.currentPage === StorefrontPage.ADDTOCART) {
       $('.tableMain').prepend(
         `<h3 class="kit_header">You are currently building the ${activeKit.name}. You are on item ${activeKit.index + 1} of ${
           activeKit.items.length
@@ -55,10 +55,10 @@ export function runKitWorkflow(kits: Kit[]) {
               return `<p>
               ${
                 index > activeKit.index
-                  ? `<object type="image/svg+xml" data="${globalState.baseURL}/src/assets/X.svg" width="24" height="24"></object>`
+                  ? `<object type="image/svg+xml" data="${GLOBALVARS.baseURL}/src/assets/X.svg" width="24" height="24"></object>`
                   : index === activeKit.index
-                  ? `<object type="image/svg+xml" data="${globalState.baseURL}/src/assets/Clock.svg" width="24" height="24"></object>`
-                  : `<object type="image/svg+xml" data="${globalState.baseURL}/src/assets/Check.svg" width="24" height="24"></object>`
+                  ? `<object type="image/svg+xml" data="${GLOBALVARS.baseURL}/src/assets/Clock.svg" width="24" height="24"></object>`
+                  : `<object type="image/svg+xml" data="${GLOBALVARS.baseURL}/src/assets/Check.svg" width="24" height="24"></object>`
               }
               ${item.name}</p>`;
             })
@@ -68,7 +68,7 @@ export function runKitWorkflow(kits: Kit[]) {
     }
 
     // When the user is on the cart page, check if the kit is complete. If it is, show a message and remove the active kit from local storage. If it is not, navigate to the next item in the kit.
-    if (globalState.currentPage === StorefrontPage.CART) {
+    if (GLOBALVARS.currentPage === StorefrontPage.CART) {
       if (activeKit.index === activeKit.items.length - 1) {
         $('.tableMain').prepend(`<h3 class="kit_header"> 🎉 ${activeKit.name} complete! You may continue to shop or checkout.</h3>`);
         localStorage.removeItem('activeKit');
@@ -83,7 +83,7 @@ export function runKitWorkflow(kits: Kit[]) {
     }
 
     // On the add to cart page, show the recommended quantity for the current item in the kit
-    if (globalState.currentPage === StorefrontPage.ADDTOCART) {
+    if (GLOBALVARS.currentPage === StorefrontPage.ADDTOCART) {
       $('#quantityCol').append(`<span>${activeKit.name} recommends quantity of ${activeKit.items[activeKit.index].recommendedQty}</span>`);
     }
   }
@@ -105,7 +105,7 @@ export class KitWorkflow {
   }
 
   run() {
-    if (globalState.currentPage === StorefrontPage.CATALOG) {
+    if (GLOBALVARS.currentPage === StorefrontPage.CATALOG) {
       this.setupKitClickEvents();
     }
 
@@ -113,8 +113,8 @@ export class KitWorkflow {
     if (this.activeKit !== null) {
       // Redirect the user if they navigated away from the kit workflow.
       if (
-        globalState.currentPage === null ||
-        ![StorefrontPage.CUSTOMIZETEMPLATE, StorefrontPage.ADDTOCART, StorefrontPage.CART].includes(globalState.currentPage)
+        GLOBALVARS.currentPage === null ||
+        ![StorefrontPage.CUSTOMIZETEMPLATE, StorefrontPage.ADDTOCART, StorefrontPage.CART].includes(GLOBALVARS.currentPage)
       ) {
         window.location.href = `/catalog/2-customize.php?&designID=${this.activeKit!.items[this.activeKit!.index].designID}&contentID=${
           this.activeKit!.items[this.activeKit!.index].contentID
@@ -152,7 +152,7 @@ export class KitWorkflow {
     if (this.activeKit === null) return;
 
     // Append informational elements about the kit
-    if (globalState.currentPage === StorefrontPage.CUSTOMIZETEMPLATE || globalState.currentPage === StorefrontPage.ADDTOCART) {
+    if (GLOBALVARS.currentPage === StorefrontPage.CUSTOMIZETEMPLATE || GLOBALVARS.currentPage === StorefrontPage.ADDTOCART) {
       $('.tableMain').prepend(
         `<h3 class="kit_header">You are currently building the ${this.activeKit.name}. You are on item ${this.activeKit.index + 1} of ${
           this.activeKit.items.length
@@ -163,10 +163,10 @@ export class KitWorkflow {
               return `<p>
               ${
                 index > this.activeKit!.index
-                  ? `<object type="image/svg+xml" data="${globalState.baseURL}/src/assets/X.svg" width="24" height="24"></object>`
+                  ? `<object type="image/svg+xml" data="${GLOBALVARS.baseURL}/src/assets/X.svg" width="24" height="24"></object>`
                   : index === this.activeKit!.index
-                  ? `<object type="image/svg+xml" data="${globalState.baseURL}/src/assets/Clock.svg" width="24" height="24"></object>`
-                  : `<object type="image/svg+xml" data="${globalState.baseURL}/src/assets/Check.svg" width="24" height="24"></object>`
+                  ? `<object type="image/svg+xml" data="${GLOBALVARS.baseURL}/src/assets/Clock.svg" width="24" height="24"></object>`
+                  : `<object type="image/svg+xml" data="${GLOBALVARS.baseURL}/src/assets/Check.svg" width="24" height="24"></object>`
               }
               ${item.name}</p>`;
             })
@@ -176,7 +176,7 @@ export class KitWorkflow {
     }
 
     // When the user is on the cart page, check if the kit is complete. If it is, show a message and remove the active kit from local storage. If it is not, navigate to the next item in the kit.
-    if (globalState.currentPage === StorefrontPage.CART) {
+    if (GLOBALVARS.currentPage === StorefrontPage.CART) {
       if (this.activeKit.index === this.activeKit.items.length - 1) {
         $('.tableMain').prepend(`<h3 class="kit_header"> 🎉 ${this.activeKit.name} complete! You may continue to shop or checkout.</h3>`);
         localStorage.removeItem('activeKit');
@@ -191,7 +191,7 @@ export class KitWorkflow {
     }
 
     // On the add to cart page, show the recommended quantity for the current item in the kit
-    if (globalState.currentPage === StorefrontPage.ADDTOCART) {
+    if (GLOBALVARS.currentPage === StorefrontPage.ADDTOCART) {
       $('#quantityCol').append(
         `<span>${this.activeKit.name} recommends quantity of ${this.activeKit.items[this.activeKit.index].recommendedQty}</span>`
       );
@@ -206,7 +206,7 @@ export class KitWorkflow {
     let currentQtyInCart = this.activeKit.items.reduce((acc, item) => acc + item.qtyInCart, 0);
 
     // Append informational elements about the kit
-    if (globalState.currentPage === StorefrontPage.CUSTOMIZETEMPLATE || globalState.currentPage === StorefrontPage.ADDTOCART) {
+    if (GLOBALVARS.currentPage === StorefrontPage.CUSTOMIZETEMPLATE || GLOBALVARS.currentPage === StorefrontPage.ADDTOCART) {
       $('.tableMain').prepend(
         `<h3 class="kit_header">You are currently building the ${this.activeKit.name}. You are on item ${currentItemNumber} of ${totalKitItems}.<br>This kit allows a max of ${this.activeKit.dynamicOptions?.totalAllowedItems} items. You currently have ${currentQtyInCart} items in your cart.</h3>` +
           `<div class="kit_item_status">` +
@@ -215,10 +215,10 @@ export class KitWorkflow {
               return `<p>
                   ${
                     index > this.activeKit!.index
-                      ? `<object type="image/svg+xml" data="${globalState.baseURL}/src/assets/X.svg" width="24" height="24"></object>`
+                      ? `<object type="image/svg+xml" data="${GLOBALVARS.baseURL}/src/assets/X.svg" width="24" height="24"></object>`
                       : index === this.activeKit!.index
-                      ? `<object type="image/svg+xml" data="${globalState.baseURL}/src/assets/Clock.svg" width="24" height="24"></object>`
-                      : `<object type="image/svg+xml" data="${globalState.baseURL}/src/assets/Check.svg" width="24" height="24"></object>`
+                      ? `<object type="image/svg+xml" data="${GLOBALVARS.baseURL}/src/assets/Clock.svg" width="24" height="24"></object>`
+                      : `<object type="image/svg+xml" data="${GLOBALVARS.baseURL}/src/assets/Check.svg" width="24" height="24"></object>`
                   }
                   ${item.qtyInCart} X ${item.name}</p>`;
             })
@@ -227,7 +227,7 @@ export class KitWorkflow {
       );
     }
 
-    if (globalState.currentPage === StorefrontPage.ADDTOCART) {
+    if (GLOBALVARS.currentPage === StorefrontPage.ADDTOCART) {
       let quantity = Number($('select#quantity').val());
       $('select#quantity').on('change', (event) => {
         quantity = Number((event.currentTarget as HTMLSelectElement).value);
@@ -251,7 +251,7 @@ export class KitWorkflow {
     }
 
     // When the user is on the cart page, check if the kit is complete. If it is, show a message and remove the active kit from local storage. If it is not, navigate to the next item in the kit.
-    if (globalState.currentPage === StorefrontPage.CART) {
+    if (GLOBALVARS.currentPage === StorefrontPage.CART) {
       if (currentItemNumber === totalKitItems) {
         $('.tableMain').prepend(`<h3 class="kit_header"> 🎉 ${this.activeKit.name} complete! You may continue to shop or checkout.</h3>`);
         localStorage.removeItem('activeKit');

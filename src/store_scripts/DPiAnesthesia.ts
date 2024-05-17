@@ -1,7 +1,7 @@
-import { globalState } from '../index';
+import { GLOBALVARS } from '../index';
 
 export function main() {
-  console.log(globalState.currentPage);
+  console.log(GLOBALVARS.currentPage);
 
   $('.tableSiteBanner, #navWrapper').wrapAll(`<div class="BannerWrapper"></div>`);
 }

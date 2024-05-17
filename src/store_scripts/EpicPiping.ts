@@ -2,16 +2,16 @@
 //<script>loadStorefrontScript(brandingProfile)</script>
 
 import { StorefrontPage } from '../enums/StorefrontPage.enum';
-import { globalState } from '../index';
+import { GLOBALVARS } from '../index';
 
 export function main() {
-  console.log(globalState.currentPage);
+  console.log(GLOBALVARS.currentPage);
 
   $('.tableSiteBanner, #navWrapper').wrapAll(`<div class="BannerWrapper"></div>`);
   $('.BannerWrapper').wrapAll(`<div class="WrapperContainer"></div>`);
   $('.tableLogin').wrapAll("<div class='loginWrapper'></div>");
 
-  if (globalState.currentPage === StorefrontPage.ADDTOCART) {
+  if (GLOBALVARS.currentPage === StorefrontPage.ADDTOCART) {
     $('.colorSwatches').css('display', 'none');
   }
 }

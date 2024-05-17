@@ -1,10 +1,10 @@
-import { globalState } from '../index';
+import { GLOBALVARS } from '../index';
 import { KitWorkflow, runKitWorkflow } from '../shared/KitHelper';
 import { Kit } from '../types/Kit';
 
 export function main(): void {
   $('.tableSiteBanner, #navWrapper').wrapAll(`<div class="BannerWrapper"></div>`);
-  console.log(globalState.currentPage);
+  console.log(GLOBALVARS.currentPage);
 
   const kits: Kit[] = [
     {

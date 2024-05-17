@@ -1,29 +1,29 @@
 import { Utils } from './shared/Utils';
 import { GlobalState } from './types/GlobalState';
-import { ModuleMap } from './types/ModuleMap';
+import { ScriptMap } from './types/ScriptMap';
 
 // Declare global state object, this can be used across all modules
-export const globalState: GlobalState = {
+export const GLOBALVARS: GlobalState = {
   currentPage: null,
   baseURL: 'https://vividstorefronts.netlify.app',
 };
 
 async function loadStorefrontScript(groupID: number) {
   // Set global state
-  globalState.currentPage = Utils.determineCurrentPage();
+  GLOBALVARS.currentPage = Utils.determineCurrentPage();
 
   // Import the required module based on the groupID
-  let modulePath = ModuleMap[groupID];
-  if (modulePath === undefined) {
+  let scriptPath = ScriptMap[groupID];
+  if (scriptPath === undefined) {
     console.error(`Module with groupID ${groupID} not found in ModuleMap.`);
     return;
   }
 
-  const module = await import(/* webpackChunkName: "JKTest" */ `./store_scripts/${modulePath}`);
+  const script = await import(/* webpackChunkName: "chunk" */ `./store_scripts/${scriptPath}`);
 
   // Every module should have a main function, this will call it
-  if (module && typeof module.main === 'function') {
-    module.main();
+  if (script && typeof script.main === 'function') {
+    script.main();
   } else {
     console.error('The loaded module does not have a main function.');
     return;
