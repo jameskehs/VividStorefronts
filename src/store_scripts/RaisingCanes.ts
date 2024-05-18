@@ -30,7 +30,7 @@ const pricingTiers: { name: string; boxPricing: number }[] = [
   { name: 'Time Square', boxPricing: 14.99 },
 ];
 
-const pricingTierTable = `
+const pricingTierTable: string = `
     <table id="price-tier-table">
         <thead>
             <tr>
@@ -53,7 +53,7 @@ const pricingTierTable = `
     </table>
 `;
 
-const costCenters = [
+const costCenters: string[] = [
   `LRM/ACI Programs_ACI - Active Lifestyle`,
   `LRM/ACI Programs_ACI - Business Development`,
   `LRM/ACI Programs_ACI - Pet Welfare`,
@@ -73,13 +73,15 @@ const costCenters = [
   `Restaurant Supplies_Not Applicable`,
 ];
 
+const inactiveBillTos: string[] = ['0050', '0138'];
+
 export function main() {
   console.log(GLOBALVARS.currentPage);
 
   $('.linkC').html('<a href="/catalog/?g=2710&y=6234">CATALOG</a>');
 
   if (GLOBALVARS.currentPage === StorefrontPage.MYACCOUNT) {
-    $('#contactSalesInfo header').text(`Customer Service Representative:`);
+    $('#contactSalesInfo header').text(`Customer Service Representative`);
   }
 
   if (GLOBALVARS.currentPage === StorefrontPage.CATALOG) {
@@ -126,7 +128,7 @@ export function main() {
     $('#quoteName').prop('maxLength', '4');
     $('#quoteName').on('change', (e) => {
       const inputValue = (e.target as HTMLInputElement).value;
-      if (inputValue === '0050' || inputValue === '0138') {
+      if (inactiveBillTos.includes(inputValue)) {
         alert(`${inputValue} is an Inactive Cost Center`);
         $('#quoteName').val('');
       } else if (inputValue.length !== 4) {
