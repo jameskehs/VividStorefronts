@@ -4,7 +4,7 @@
 import { StorefrontPage } from '../enums/StorefrontPage.enum';
 import { GLOBALVARS } from '../index';
 import { limitPOField } from '../shared/limitPOField';
-import { replaceSizeText } from '../shared/ReplaceSizeText';
+import { replaceSizeText } from '../shared/replaceSizeText';
 
 const pricingTiers: { name: string; boxPricing: number }[] = [
   { name: 'Value', boxPricing: 9.89 },
