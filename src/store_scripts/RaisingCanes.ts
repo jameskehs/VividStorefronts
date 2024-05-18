@@ -3,7 +3,7 @@
 
 import { StorefrontPage } from '../enums/StorefrontPage.enum';
 import { GLOBALVARS } from '../index';
-import { limitCostCenters } from '../shared/LimitCostCenters';
+import { limitPOField } from '../shared/limitPOField';
 import { replaceSizeText } from '../shared/ReplaceSizeText';
 
 const pricingTiers: { name: string; boxPricing: number }[] = [
@@ -116,7 +116,7 @@ export function main() {
     $(`button[rel="Ship to company"]`).text('Ship to DRSO');
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTPAYMENT) {
-    limitCostCenters(costCenters);
+    limitPOField(costCenters);
 
     $('#CCInstructions').html(
       'Enter the information below to complete the payment options for your order.<br><strong>These fields are not required for Franchises</strong>'

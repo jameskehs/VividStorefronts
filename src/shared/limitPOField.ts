@@ -1,6 +1,6 @@
-// Limit the customerPO field to certain options
-export function limitCostCenters(costCenters: string[]) {
-  const costCenterOptions = costCenters
+// Limit the customerPO field to specific options
+export function limitPOField(options: string[]) {
+  const POFieldOptions = options
     .map((cc) => {
       return `<option value="${cc}">${cc}</option>`;
     })
@@ -12,7 +12,7 @@ export function limitCostCenters(costCenters: string[]) {
         <label>Cost Center</label>
         <select>
         <option value="">Choose a Cost Center</option>
-        ${costCenterOptions}
+        ${POFieldOptions}
         </select>
     </div>`);
 

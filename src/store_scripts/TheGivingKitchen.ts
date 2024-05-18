@@ -3,7 +3,7 @@
 
 import { StorefrontPage } from '../enums/StorefrontPage.enum';
 import { GLOBALVARS } from '../index';
-import { limitCostCenters } from '../shared/LimitCostCenters';
+import { limitPOField } from '../shared/limitPOField';
 
 const costCenters = [
   'Fundraising:Golf Events:Golf_GA',
@@ -41,7 +41,7 @@ export function main() {
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTCONFIRMATION) {
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTPAYMENT) {
-    limitCostCenters(costCenters);
+    limitPOField(costCenters);
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTREVIEW) {
   }
