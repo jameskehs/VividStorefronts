@@ -1,5 +1,6 @@
 table#price-tier-table {
   border-collapse: collapse;
+  margin-top: 12px;
 }
 
 #price-tier-table thead td {
