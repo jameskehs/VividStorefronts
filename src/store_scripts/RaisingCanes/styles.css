@@ -1,0 +1,15 @@
+table#price-tier-table {
+  border-collapse: collapse;
+}
+
+#price-tier-table thead td {
+  background-color: #e11b2e;
+  color: #fff;
+  padding: 8px;
+}
+
+#price-tier-table tbody td {
+  padding: 6px;
+  border: 1px solid #eee;
+  background-color: #ffe;
+}

@@ -20,14 +20,22 @@ async function loadStorefrontScript(groupID: number) {
   }
 
   const script = await import(/* webpackChunkName: "chunk" */ `./store_scripts/${scriptPath}/index.ts`);
+  const styling = await import(/* webpackChunkName: "styling" */ `./store_scripts/${scriptPath}/styles.css`);
+
+  console.log(styling);
 
   // Every module should have a main function, this will call it
   if (script && typeof script.main === 'function') {
-    $('head').append(`<link rel='stylesheet' href='${GLOBALVARS.baseURL}/store_scripts/${scriptPath}/styles.css'/>`);
     script.main();
   } else {
     console.error('The loaded module does not have a main function.');
     return;
+  }
+
+  if (styling !== undefined) {
+    $('body').append(`<script>${styling.default}</script>`);
+  } else {
+    console.error('Error loading styles.');
   }
 }
 
