@@ -19,10 +19,11 @@ async function loadStorefrontScript(groupID: number) {
     return;
   }
 
-  const script = await import(/* webpackChunkName: "chunk" */ `./store_scripts/${scriptPath}`);
+  const script = await import(/* webpackChunkName: "chunk" */ `./store_scripts/${scriptPath}/index.ts`);
 
   // Every module should have a main function, this will call it
   if (script && typeof script.main === 'function') {
+    $('head').append(`<link rel='stylesheet' href='./store_scripts/${scriptPath}/styles.css'/>`);
     script.main();
   } else {
     console.error('The loaded module does not have a main function.');

@@ -1,10 +1,10 @@
 // <script src="https://main--vividstorefronts.netlify.app/dist/main.js"></script>
 // <script>loadStorefrontScript(brandingProfile)</script>
 
-import { StorefrontPage } from '../enums/StorefrontPage.enum';
-import { GLOBALVARS } from '../index';
-import { limitPOField } from '../shared/limitPOField';
-import { replaceSizeText } from '../shared/replaceSizeText';
+import { StorefrontPage } from '../../enums/StorefrontPage.enum';
+import { GLOBALVARS } from '../../index';
+import { limitPOField } from '../../shared/limitPOField';
+import { replaceSizeText } from '../../shared/replaceSizeText';
 
 const pricingTiers: { name: string; boxPricing: number }[] = [
   { name: 'Value', boxPricing: 9.89 },

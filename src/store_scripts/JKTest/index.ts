@@ -1,6 +1,6 @@
-import { GLOBALVARS } from '../index';
-import { KitWorkflow, runKitWorkflow } from '../shared/KitHelper';
-import { Kit } from '../types/Kit';
+import { GLOBALVARS } from '../../index';
+import { KitWorkflow, runKitWorkflow } from '../../shared/KitHelper';
+import { Kit } from '../../types/Kit';
 
 export function main(): void {
   $('.tableSiteBanner, #navWrapper').wrapAll(`<div class="BannerWrapper"></div>`);

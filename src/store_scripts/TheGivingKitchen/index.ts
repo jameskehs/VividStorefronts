@@ -1,9 +1,9 @@
 // <script src="https://main--vividstorefronts.netlify.app/dist/main.js"></script>
 // <script>loadStorefrontScript(brandingProfile)</script>
 
-import { StorefrontPage } from '../enums/StorefrontPage.enum';
-import { GLOBALVARS } from '../index';
-import { limitPOField } from '../shared/limitPOField';
+import { StorefrontPage } from '../../enums/StorefrontPage.enum';
+import { GLOBALVARS } from '../../index';
+import { limitPOField } from '../../shared/limitPOField';
 
 const costCenters = [
   'Fundraising:Golf Events:Golf_GA',
