@@ -23,7 +23,7 @@ async function loadStorefrontScript(groupID: number) {
 
   // Every module should have a main function, this will call it
   if (script && typeof script.main === 'function') {
-    $('head').append(`<link rel='stylesheet' href='./store_scripts/${scriptPath}/styles.css'/>`);
+    $('head').append(`<link rel='stylesheet' href='${GLOBALVARS.baseURL}/store_scripts/${scriptPath}/styles.css'/>`);
     script.main();
   } else {
     console.error('The loaded module does not have a main function.');
