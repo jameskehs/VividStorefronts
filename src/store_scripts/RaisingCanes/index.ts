@@ -151,7 +151,7 @@ export function main() {
       );
     }
     if (activeTemplate.includes('MENU')) {
-      $('#customizeTbl').append(pricingTierTable);
+      $('#show_userform').append(pricingTierTable);
     }
   }
 
