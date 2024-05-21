@@ -43,10 +43,15 @@ async function loadStorefrontScript(groupID: number) {
 }
 
 function startLoading() {
+  $('body').append(`<div id="external-script-loader"><div class="lds-ring"><div></div><div></div><div></div><div></div></div></div>`);
   console.log('LOADING');
 }
 
 function endLoading() {
+  $('#external-script-loader').addClass('inactive');
+  setTimeout(() => {
+    $('#external-script-loader').remove();
+  }, 500);
   console.log('FINISHED LOADING');
 }
 
