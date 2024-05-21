@@ -1,4 +1,5 @@
 import { Utils } from './shared/Utils';
+import { runBaseScript } from './shared/index';
 import { GlobalState } from './types/GlobalState';
 import { ScriptMap } from './types/ScriptMap';
 
@@ -19,21 +20,23 @@ async function loadStorefrontScript(groupID: number) {
     return;
   }
 
-  const script = await import(/* webpackChunkName: "chunk" */ `./store_scripts/${scriptPath}/index.ts`);
-  const styling = await import(/* webpackChunkName: "styling" */ `./store_scripts/${scriptPath}/styles.css`);
+  const uniqueScript = await import(/* webpackChunkName: "uniqueScript" */ `./store_scripts/${scriptPath}/index.ts`);
+  const baseStyling = await import(/* webpackChunkName: "basestyling" */ `./shared/styles.css`);
+  const uniqueStyling = await import(/* webpackChunkName: "styling" */ `./store_scripts/${scriptPath}/styles.css`);
 
-  console.log(styling);
+  runBaseScript();
+  $('body').append(`<style>${baseStyling.default}</style>`);
 
   // Every module should have a main function, this will call it
-  if (script && typeof script.main === 'function') {
-    script.main();
+  if (uniqueScript && typeof uniqueScript.main === 'function') {
+    uniqueScript.main();
   } else {
     console.error('The loaded module does not have a main function.');
     return;
   }
 
-  if (styling !== undefined) {
-    $('body').append(`<script>${styling.default}</script>`);
+  if (uniqueStyling !== undefined) {
+    $('body').append(`<style>${uniqueStyling.default}</style>`);
   } else {
     console.error('Error loading styles.');
   }
