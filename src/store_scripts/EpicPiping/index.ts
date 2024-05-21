@@ -7,10 +7,6 @@ import { GLOBALVARS } from '../../index';
 export function main() {
   console.log(GLOBALVARS.currentPage);
 
-  $('.tableSiteBanner, #navWrapper').wrapAll(`<div class="BannerWrapper"></div>`);
-  $('.BannerWrapper').wrapAll(`<div class="WrapperContainer"></div>`);
-  $('.tableLogin').wrapAll("<div class='loginWrapper'></div>");
-
   if (GLOBALVARS.currentPage === StorefrontPage.ADDTOCART) {
     $('.colorSwatches').css('display', 'none');
   }

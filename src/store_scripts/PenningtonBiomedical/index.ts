@@ -7,8 +7,6 @@ import { GLOBALVARS } from '../../index';
 export function main() {
   console.log(GLOBALVARS.currentPage);
 
-  $('.tableSiteBanner, #navWrapper').wrapAll(`<div class="BannerWrapper"></div>`);
-
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTADDRESS) {
     $('#shipInstructions').css('display', 'none');
     $('.tableMain').prepend(

@@ -8,7 +8,7 @@ export const GLOBALVARS: GlobalState = {
   baseURL: 'https://vividstorefronts.netlify.app',
 };
 
-async function loadStorefrontScript(groupID: number) {
+async function loadStorefrontScript(groupID: number, styling?: any) {
   try {
     //~~~~~ Hide the body until everything is loaded ~~~~~//
     $('body').css('display', 'none');
@@ -25,11 +25,11 @@ async function loadStorefrontScript(groupID: number) {
     //~~~~~ Load our scripts and styles ~~~~~//
     const uniqueScript = await import(/* webpackChunkName: "uniqueScript" */ `./store_scripts/${scriptFolder}/index.ts`);
 
-    await import(/* webpackChunkName: "basestyling" */ `./shared/styles.css`);
+    groupID !== 58 && (await import(/* webpackChunkName: "basestyling" */ `./shared/styles.css`));
     await import(/* webpackChunkName: "uniqueStyling" */ `./store_scripts/${scriptFolder}/styles.css`);
 
     //~~~~~ Run shared script and the main function from unique script ~~~~~//
-    runSharedScript();
+    groupID !== 58 && runSharedScript();
 
     if (uniqueScript && typeof uniqueScript.main === 'function') {
       uniqueScript.main();
