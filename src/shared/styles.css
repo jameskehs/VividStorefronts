@@ -8,7 +8,16 @@
   padding: 0 !important;
 }
 
-.logoLinks {
+/* Navigation Styling */
+#navWrapper {
+  float: none;
+  position: initial;
+  margin: 0;
+  padding: 24px 0;
+  width: 100vw;
+  background-color: coral;
+}
+#logoLinks {
   max-width: 1600px;
   margin: 0 auto;
   padding: 0px 64px;
@@ -17,11 +26,11 @@
   align-items: center;
 }
 
-#navWrapper {
-  float: none;
-  position: initial;
-  margin: 0;
-  padding: 24px 0;
+/* Login Bar Styling */
+#loginWrapper {
+  width: 100vw;
+  background-color: tomato;
+  padding: 0px 64px;
 }
 
 table.tableLogin {
@@ -31,18 +40,9 @@ table.tableLogin {
   margin: 0 auto;
 }
 
+/* Main Table Styling */
 table.tableMain {
   top: 0px;
   max-width: 1600px;
   margin: 0 auto;
-}
-
-.WrapperContainer {
-  width: 100%;
-  background-color: #313e3a;
-}
-
-.loginWrapper {
-  background-color: #445f4f;
-  padding: 0px 64px;
 }
