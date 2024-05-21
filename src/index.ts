@@ -10,7 +10,7 @@ export const GLOBALVARS: GlobalState = {
 
 async function loadStorefrontScript(groupID: number) {
   try {
-    $('body').css('display", "none');
+    $('body').css('display', 'none');
     //~~~~~ Set Global Variables ~~~~~//
     GLOBALVARS.currentPage = Utils.determineCurrentPage();
 
