@@ -9,14 +9,18 @@
 }
 
 /* Navigation Styling */
-#headWrapper {
+#navWrapper {
   float: none;
   position: initial;
   margin: 0;
+}
+
+#headWrapper {
   padding: 24px 0;
   width: 100vw;
   background-color: coral;
 }
+
 #logoLinks {
   max-width: 1600px;
   margin: 0 auto;
