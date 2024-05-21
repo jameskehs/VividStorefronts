@@ -5,6 +5,9 @@ import { Kit } from '../../types/Kit';
 export function main(): void {
   console.log(GLOBALVARS.currentPage);
 
+  $(':root').css('--primary-color', 'green');
+  $(':root').css('--secondary-color', 'yellow');
+
   const kits: Kit[] = [
     {
       name: 'Grand Opening Kit',
