@@ -25,8 +25,8 @@ async function loadStorefrontScript(groupID: number) {
   const uniqueStyling = await import(/* webpackChunkName: "styling" */ `./store_scripts/${scriptPath}/styles.css`);
 
   runBaseScript();
-  $('body').append(`<style>${baseStyling.default}</style>`);
-
+  $('head').append(`<style>${baseStyling.default}</style>`);
+  console.log(baseStyling);
   // Every module should have a main function, this will call it
   if (uniqueScript && typeof uniqueScript.main === 'function') {
     uniqueScript.main();
@@ -36,7 +36,7 @@ async function loadStorefrontScript(groupID: number) {
   }
 
   if (uniqueStyling !== undefined) {
-    $('body').append(`<style>${uniqueStyling.default}</style>`);
+    $('head').append(`<style>${uniqueStyling.default}</style>`);
   } else {
     console.error('Error loading styles.');
   }
