@@ -3,6 +3,15 @@
   --secondary-color: grey;
 }
 
+.logoLinks {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 0px 64px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .prodCell .left a {
   background: #fff !important;
   display: block;
