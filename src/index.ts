@@ -1,31 +1,34 @@
 import { Utils } from './shared/Utils';
-import { runBaseScript } from './shared/index';
+import { runSharedScript } from './shared/index';
 import { GlobalState } from './types/GlobalState';
 import { ScriptMap } from './types/ScriptMap';
 
-// Declare global state object, this can be used across all modules
+//~~~~~ Declare global state object, this can be used across all modules ~~~~~//
 export const GLOBALVARS: GlobalState = {
   currentPage: null,
   baseURL: 'https://vividstorefronts.netlify.app',
 };
 
 async function loadStorefrontScript(groupID: number) {
-  // Set global state
+  //~~~~~ Set Global Variables ~~~~~//
   GLOBALVARS.currentPage = Utils.determineCurrentPage();
 
-  // Import the required module based on the groupID
-  let scriptPath = ScriptMap[groupID];
-  if (scriptPath === undefined) {
+  //~~~~~ Find the script folder to import from ~~~~~//
+  let scriptFolder = ScriptMap[groupID];
+  if (scriptFolder === undefined) {
     console.error(`Module with groupID ${groupID} not found in ModuleMap.`);
     return;
   }
 
-  const uniqueScript = await import(/* webpackChunkName: "uniqueScript" */ `./store_scripts/${scriptPath}/index.ts`);
-  await import(/* webpackChunkName: "basestyling" */ `./shared/styles.css`);
-  await import(/* webpackChunkName: "styling" */ `./store_scripts/${scriptPath}/styles.css`);
+  //~~~~~ Load our scripts and styles ~~~~~//
+  const uniqueScript = await import(/* webpackChunkName: "uniqueScript" */ `./store_scripts/${scriptFolder}/index.ts`);
 
-  runBaseScript();
-  // Every module should have a main function, this will call it
+  await import(/* webpackChunkName: "basestyling" */ `./shared/styles.css`);
+  await import(/* webpackChunkName: "uniqueStyling" */ `./store_scripts/${scriptFolder}/styles.css`);
+
+  //~~~~~ Run shared script and the main function from unique script ~~~~~//
+  runSharedScript();
+
   if (uniqueScript && typeof uniqueScript.main === 'function') {
     uniqueScript.main();
   } else {
@@ -34,5 +37,5 @@ async function loadStorefrontScript(groupID: number) {
   }
 }
 
-// Expose loadStoreScript to the global scope
+//~~~~~ Expose loadStorefrontScript to the window ~~~~~//
 (window as any).loadStorefrontScript = loadStorefrontScript;
