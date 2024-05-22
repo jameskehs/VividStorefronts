@@ -25,7 +25,7 @@ async function loadStorefrontScript(groupID: number, styling?: any) {
     //~~~~~ Load our scripts and styles ~~~~~//
     const uniqueScript = await import(/* webpackChunkName: "uniqueScript" */ `./store_scripts/${scriptFolder}/index.ts`);
 
-    (groupID === 66 || groupID === 128) && (await import(/* webpackChunkName: "basestyling" */ `./shared/styles.css`));
+    (groupID === 66 || groupID === 123) && (await import(/* webpackChunkName: "basestyling" */ `./shared/styles.css`));
     await import(/* webpackChunkName: "uniqueStyling" */ `./store_scripts/${scriptFolder}/styles.css`);
 
     //~~~~~ Run shared script and the main function from unique script ~~~~~//
