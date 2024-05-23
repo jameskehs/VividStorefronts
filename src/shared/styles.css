@@ -34,6 +34,15 @@ a.login:hover {
   color: var(--primary-text-color) !important;
 }
 
+.cartPrice {
+  color: var(--primary-text-color) !important;
+}
+
+.ui-state-default {
+  background-color: var(--primary-color) !important;
+  color: var(--primary-text-color) !important;
+}
+
 /* End Dynamic Styling */
 
 * {
@@ -176,8 +185,8 @@ p.prod_desc {
 .color_swatch {
   height: 20px !important;
   width: 20px !important;
-  border-radius: 4px !important;
-  border: 1px solid #bdbdbd !important;
+  border-radius: 100% !important;
+  border: 1px solid #d4d4d4 !important;
 }
 
 ul.TreeControl {
