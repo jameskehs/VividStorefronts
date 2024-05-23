@@ -53,3 +53,71 @@ table.tableMain {
   max-width: 1600px;
   margin: 0 auto;
 }
+
+/* Product Description Styling */
+p.prod_sku {
+  background-color: #3e3e3e;
+  width: fit-content;
+  font-size: 0.8rem;
+  margin-bottom: 12px !important;
+}
+.prod_info_tags {
+  display: flex;
+  gap: 2px;
+  min-height: 60px;
+  flex-wrap: wrap;
+  font-size: 0.85rem;
+  max-width: 90%;
+}
+.prod_info_tags p,
+.prod_sku {
+  background-color: #424a4a;
+  color: #eee;
+  height: fit-content;
+  padding: 6px;
+  border-radius: 4px;
+  margin: 0 !important;
+}
+p.tag_apparel_decoration {
+  background-color: #2980b9;
+}
+p.tag_print_dimensions {
+  background-color: #d35400;
+}
+p.tag_packsize {
+  background-color: #c0392b;
+}
+p.prod_desc {
+  margin-bottom: 15px !important;
+}
+.apparel_colors {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 8px 0;
+  gap: 2px;
+}
+.color_swatch {
+  height: 20px;
+  width: 20px;
+  border-radius: 4px;
+  border: 1px solid #bdbdbd;
+}
+/* End of Product Description Styling */
+
+/*
+<div class='prod_desc_container' style='white-space:nowrap'>
+<div class='apparel_colors' style='display:flex'>
+<div class='color_swatch' style='border:1px solid black;height:20px;width:20px;background-color: #21262c;'></div>
+<div class='color_swatch' style='border:1px solid black;height:20px;width:20px;background-color: #2d507b;'></div>
+<div class='color_swatch' style='border:1px solid black;height:20px;width:20px;background-color: #fff;'></div>
+</div>
+<div class='prod_info_tags'>
+<p class='tag_apparel_brand'>Richardson</p>
+<p class='tag_apparel_decoration'>Patch on Front</p>
+<p class='tag_print_dimensions'></p>
+<p class='tag_packsize'></p>
+</div>
+<p class='prod_desc'>112 Tricolor Trucker Hat</p>
+<p class='prod_sku'>FLY_INV_0007</p>
+</div>
+*/
