@@ -25,6 +25,15 @@ a.login {
   color: var(--secondary-text-color) !important;
 }
 
+a.login:hover {
+  color: var(--secondary-text-hover-color) !important;
+}
+
+.ui-box header {
+  background-color: var(--primary-color) !important;
+  color: var(--primary-text-color) !important;
+}
+
 /* End Dynamic Styling */
 
 * {
