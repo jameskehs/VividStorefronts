@@ -49,7 +49,7 @@ async function loadStorefrontScript(groupID: number, styling?: StylingParameter,
     const scriptOptions: OptionsParameter = { ...defaultOptions, ...options };
 
     // Conditionally import base styling
-    if (groupID === 66 || groupID === 130) {
+    if (groupID === 66 || groupID === 130 || groupID === 124) {
       await import(/* webpackChunkName: "basestyling" */ `./shared/styles.css`);
     }
 
