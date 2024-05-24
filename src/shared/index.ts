@@ -9,4 +9,6 @@ export function runSharedScript(options: OptionsParameter) {
   $('.tableLogin').wrapAll("<div id='loginWrapper'></div>");
 
   options.hideHomeLink && $('.linkH').hide();
+  options.hideAddressBook && $('button#saveAddressBook, table#addressBook').hide();
+  options.hideCompanyShipTo && $('div#shipToCompany').hide();
 }
