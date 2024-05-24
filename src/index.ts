@@ -9,10 +9,19 @@ export const GLOBALVARS: GlobalState = {
 };
 
 interface StylingParameter {
-  primaryColor?: string;
+  navbarBackground?: string;
+  navbarTextColor?: string;
+  navbarHoverColor?: string;
+
+  loginbarBackground?: string;
+  loginbarTextColor?: string;
+  loginbarHoverColor?: string;
+
+  primaryBackground?: string;
   primaryTextColor?: string;
   primaryHoverColor?: string;
-  secondaryColor?: string;
+
+  secondaryBackground?: string;
   secondaryTextColor?: string;
   secondaryHoverColor?: string;
 }
@@ -58,12 +67,21 @@ async function loadStorefrontScript(groupID: number, styling?: StylingParameter)
 function setCSSVariables(styling: StylingParameter) {
   const root = $(':root');
   root.css({
-    '--primary-color': styling.primaryColor ?? root.css('--primary-color'),
-    '--primary-text-color': styling.primaryTextColor ?? root.css('--primary-text-color'),
-    '--primary-hover-color': styling.primaryHoverColor ?? root.css('--primary-hover-color'),
-    '--secondary-color': styling.secondaryColor ?? root.css('--secondary-color'),
-    '--secondary-text-color': styling.secondaryTextColor ?? root.css('--secondary-text-color'),
-    '--secondary-hover-color': styling.secondaryHoverColor ?? root.css('--secondary-hover-color'),
+    '--navbar-bg': styling.navbarBackground ?? root.css('--navbar-bg'),
+    '--navbar-text': styling.navbarTextColor ?? root.css('--navbar-text'),
+    '--navbar-hover': styling.navbarHoverColor ?? root.css('--navbar-hover'),
+
+    '--loginbar-bg': styling.loginbarBackground ?? root.css('--loginbar-bg'),
+    '--loginbar-text': styling.loginbarTextColor ?? root.css('--loginbar-text'),
+    '--loginbar-hover': styling.loginbarHoverColor ?? root.css('--loginbar-hover'),
+
+    '--primary-color': styling.primaryBackground ?? root.css('--primary-color'),
+    '--primary-text': styling.primaryTextColor ?? root.css('--primary-text'),
+    '--primary-hover': styling.primaryHoverColor ?? root.css('--primary-hover'),
+
+    '--secondary-color': styling.secondaryBackground ?? root.css('--secondary-color'),
+    '--secondary-text': styling.secondaryTextColor ?? root.css('--secondary-text'),
+    '--secondary-hover': styling.secondaryHoverColor ?? root.css('--secondary-hover'),
   });
 }
 

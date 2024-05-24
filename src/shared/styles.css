@@ -20,12 +20,21 @@
 */
 
 :root {
+  --navbar-bg: #e9e9e9;
+  --navbar-text: #000;
+  --navbar-hover: #333;
+
+  --loginbar-bg: #cfcfcf;
+  --loginbar-text: #000;
+  --loginbar-hover: red;
+
   --primary-color: #e9e9e9;
-  --primary-text-color: #000;
-  --primary-hover-color: #333;
+  --primary-text: #000;
+  --primary-hover: #333;
+
   --secondary-color: #cfcfcf;
-  --secondary-text-color: #000;
-  --secondary-hover-color: red;
+  --secondary-text: #000;
+  --secondary-hover: red;
 }
 /* Dynamic Styling */
 div.anchorCatalog {
@@ -39,6 +48,7 @@ div.anchorCatalog {
   padding: 10px 14px 10px 15px;
   background-color: transparent;
   font-weight: 700;
+  transition: all 0.2s ease;
 }
 
 #menu li a:hover {
