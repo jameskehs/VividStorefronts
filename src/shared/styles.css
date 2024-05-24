@@ -240,6 +240,23 @@ span.meta .ui-state-error {
 #QLmyLists {
   display: none;
 }
+
+.parentSubcategoryCell:hover .browseBtn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.browseBtn {
+  position:absolute;
+  height:100%
+  width:100%;
+}
+
+.browseBtn span {
+  position: unset;
+}
+
 /* Product Description Styling */
 .prodCaption {
   text-align: left;
