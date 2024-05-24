@@ -242,13 +242,13 @@ span.meta .ui-state-error {
 }
 
 .prodCell.parentSubcategoryCell {
-  background-color: #FFF;
+  background-color: #fff;
   margin: 10px;
   border-radius: 8px;
 }
 
 .subcategoryImage {
-  height:100%;
+  height: 100%;
 }
 
 .parentSubcategoryCell img {
@@ -264,9 +264,9 @@ span.meta .ui-state-error {
 }
 
 .browseBtn {
-  position:absolute;
-  height:100%
-  width:100%;
+  position: absolute;
+  height: 100%;
+  width: 100%;
 }
 
 .browseBtn span {
