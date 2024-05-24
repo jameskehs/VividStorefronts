@@ -2,7 +2,8 @@ import { Utils } from './shared/Utils';
 import { runSharedScript } from './shared/index';
 import { GlobalState } from './types/GlobalState';
 import { ScriptMap } from './types/ScriptMap';
-//~~~~~ Declare global state object, this can be used across all modules ~~~~~//
+
+// Declare global state object
 export const GLOBALVARS: GlobalState = {
   currentPage: null,
   baseURL: 'https://vividstorefronts.netlify.app',
@@ -26,31 +27,45 @@ interface StylingParameter {
   secondaryHoverColor?: string;
 }
 
-async function loadStorefrontScript(groupID: number, styling?: StylingParameter) {
+export interface OptionsParameter {
+  hideHomeLink?: boolean;
+  hideCompanyShipTo?: boolean;
+  hideAddressBook?: boolean;
+}
+
+const defaultOptions: OptionsParameter = {
+  hideHomeLink: false,
+  hideCompanyShipTo: false,
+  hideAddressBook: false,
+};
+
+async function loadStorefrontScript(groupID: number, styling?: StylingParameter, options?: OptionsParameter) {
   try {
-    //~~~~~ Hide the body until everything is loaded ~~~~~//
-    $('body').css('display', 'none');
-
-    //~~~~~ Set Global Variables ~~~~~//
+    // Set global variables and merge options with defaults
     GLOBALVARS.currentPage = Utils.determineCurrentPage();
+    const scriptOptions: OptionsParameter = { ...defaultOptions, ...options };
 
-    (groupID === 66 || groupID === 130) && (await import(/* webpackChunkName: "basestyling" */ `./shared/styles.css`));
+    // Conditionally import base styling
+    if (groupID === 66 || groupID === 130) {
+      await import(/* webpackChunkName: "basestyling" */ `./shared/styles.css`);
+    }
 
-    //~~~~~ Set Styling Variables ~~~~~//
-    if (styling !== undefined) setCSSVariables(styling);
-    //~~~~~ Run shared script  ~~~~~//
-    groupID !== 58 && runSharedScript();
+    // Apply styling variables if provided
+    if (styling) setCSSVariables(styling);
 
-    //~~~~~ Find the script folder to import from and load our modules ~~~~~//
-    let scriptFolder = ScriptMap[groupID];
-    if (scriptFolder === undefined) {
+    // Run shared script if applicable
+    if (groupID !== 58) runSharedScript(scriptOptions);
+
+    // Determine and load the appropriate script module
+    const scriptFolder = ScriptMap[groupID];
+    if (!scriptFolder) {
       throw new Error(`Module with groupID ${groupID} not found in ModuleMap.`);
     }
 
     const uniqueScript = await import(/* webpackChunkName: "uniqueScript" */ `./store_scripts/${scriptFolder}/index.ts`);
     await import(/* webpackChunkName: "uniqueStyling" */ `./store_scripts/${scriptFolder}/styles.css`);
 
-    // ~~~~~ Run the main function of the loaded module ~~~~~//
+    // Execute the main function of the loaded module
     if (uniqueScript && typeof uniqueScript.main === 'function') {
       uniqueScript.main();
     } else {
@@ -58,9 +73,6 @@ async function loadStorefrontScript(groupID: number, styling?: StylingParameter)
     }
   } catch (error: unknown) {
     console.error(error);
-  } finally {
-    //~~~~~ Show the body once everything is complete ~~~~~//
-    $('body').css('display', 'block');
   }
 }
 
@@ -85,5 +97,5 @@ function setCSSVariables(styling: StylingParameter) {
   });
 }
 
-//~~~~~ Expose loadStorefrontScript to the window ~~~~~//
+// Expose loadStorefrontScript to the window
 (window as any).loadStorefrontScript = loadStorefrontScript;
