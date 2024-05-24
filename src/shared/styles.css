@@ -229,7 +229,7 @@ ul.TreeControl {
 }
 
 #products {
-  border: none;
+  border: none !important;
 }
 span.meta .ui-state-default,
 span.meta .ui-state-error {
