@@ -44,7 +44,7 @@ div.anchorCatalog {
 #menu li a,
 #menu li.menuG a,
 #menu li:last-child a {
-  color: var(--primary-text-color) !important;
+  color: var(--navbar-text) !important;
   padding: 10px 14px 10px 15px;
   background-color: transparent;
   font-weight: 700;
@@ -52,7 +52,7 @@ div.anchorCatalog {
 }
 
 #menu li a:hover {
-  color: var(--primary-hover-color) !important;
+  color: var(--navbar-hover) !important;
 }
 
 #menu li a:before {
@@ -71,7 +71,7 @@ div.anchorCatalog {
   position: absolute;
   right: 15px;
   left: 15px;
-  background-color: var(--secondary-color);
+  background-color: var(--navbar-hover);
   top: 28px;
   height: 2px;
   transition: all 0.2s ease;
@@ -84,25 +84,25 @@ div.anchorCatalog {
 
 .login,
 a.login {
-  color: var(--secondary-text-color) !important;
+  color: var(--loginbar-text) !important;
 }
 
 a.login:hover {
-  color: var(--secondary-hover-color) !important;
+  color: var(--loginbar-hover) !important;
 }
 
 .ui-box header {
   background-color: var(--primary-color) !important;
-  color: var(--primary-text-color) !important;
+  color: var(--primary-text) !important;
 }
 
 .cartPrice {
-  color: var(--primary-text-color) !important;
+  color: var(--primary-text) !important;
 }
 
 .ui-state-default {
   background-color: var(--primary-color) !important;
-  color: var(--primary-text-color) !important;
+  color: var(--primary-text) !important;
 }
 
 /* End Dynamic Styling */
@@ -134,7 +134,7 @@ div.source {
 #headWrapper {
   padding: 24px 0;
   width: 100vw;
-  background-color: var(--primary-color);
+  background-color: var(--navbar-bg);
 }
 
 #logoLinks {
@@ -148,7 +148,7 @@ div.source {
 /* Login Bar Styling */
 #loginWrapper {
   width: 100vw;
-  background-color: var(--secondary-color);
+  background-color: var(--loginbar-bg);
   padding: 0px 64px;
 }
 
