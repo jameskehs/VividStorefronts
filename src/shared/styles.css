@@ -103,7 +103,7 @@ a.login:hover {
   color: var(--primary-text) !important;
 }
 
-.cartPrice {
+.cartTotal .cartPrice {
   color: var(--primary-text) !important;
 }
 
@@ -294,8 +294,17 @@ img.finishedGoodThmb {
   position: unset;
 }
 
+#shoppingCartTbl {
+  background: #FFF;
+  border-radius: 8px;
+}
 #shoppingCartTbl th.ui-state-default {
   border: none;
+}
+
+#shoppingCartTbl header.dark {
+  border: none;
+  padding: 12px;
 }
 
 th.ui-state-default:hover {
