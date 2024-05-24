@@ -20,6 +20,33 @@ div.anchorCatalog {
   color: var(--primary-hover-color) !important;
 }
 
+#menu li.menuG a:before {
+  background-color: var(--primary-second-color) !important;
+  height: 2px;
+}
+
+#menu li a:before,
+#menu li.menuG a:before {
+  content: '';
+  position: absolute;
+  right: 15px;
+  left: 15px;
+  background-color: var(--secondary-color);
+  top: 28px;
+  height: 2px;
+  transition: all 0.2s ease;
+}
+
+#menu li a:before {
+  opacity: 0;
+  width: 0%;
+}
+
+#menu li a:hover:before {
+  opacity: 1;
+  width: calc(100% - 30px);
+}
+
 .login,
 a.login {
   color: var(--secondary-text-color) !important;
