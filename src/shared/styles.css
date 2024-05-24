@@ -289,6 +289,10 @@ th.ui-state-default:hover {
   background-color: var(--primary-color);
 }
 
+.tblImage {
+  border: none;
+}
+
 /* Product Description Styling */
 .prodCaption {
   text-align: left;
