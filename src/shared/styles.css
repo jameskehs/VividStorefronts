@@ -281,6 +281,14 @@ img.finishedGoodThmb {
   position: unset;
 }
 
+#shoppingCartTbl th.ui-state-default {
+  border: none;
+}
+
+th.ui-state-default:hover {
+  background-color: var(--primary-color);
+}
+
 /* Product Description Styling */
 .prodCaption {
   text-align: left;
