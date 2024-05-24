@@ -238,12 +238,16 @@ span.meta .ui-state-error {
 
 span.meta p.ui-state-error {
   position: absolute;
-  top: 50%;
+  top: 60px;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, 0);
   z-index: 9999;
 }
 
+#QLupload,
+#QLmyLists {
+  display: none;
+}
 /* Product Description Styling */
 .prodCaption {
   text-align: left;
