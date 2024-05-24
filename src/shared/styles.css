@@ -292,7 +292,7 @@ th.ui-state-default:hover {
 .tblImage {
   border: none;
 }
-..prodCell .warningBox {
+.prodCell .warningBox {
   display: none;
 }
 .disabled {
