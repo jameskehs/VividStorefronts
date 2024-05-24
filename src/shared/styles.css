@@ -20,9 +20,13 @@ div.anchorCatalog {
   color: var(--primary-hover-color) !important;
 }
 
+#menu li a:before {
+  opacity: 0;
+  width: 0%;
+}
+
 #menu li.menuG a:before {
-  background-color: var(--primary-second-color) !important;
-  height: 2px;
+  opacity: 1;
 }
 
 #menu li a:before,
@@ -35,11 +39,6 @@ div.anchorCatalog {
   top: 28px;
   height: 2px;
   transition: all 0.2s ease;
-}
-
-#menu li a:before {
-  opacity: 0;
-  width: 0%;
 }
 
 #menu li a:hover:before {
