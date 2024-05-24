@@ -34,23 +34,23 @@ async function loadStorefrontScript(groupID: number, styling?: StylingParameter)
     //~~~~~ Set Global Variables ~~~~~//
     GLOBALVARS.currentPage = Utils.determineCurrentPage();
 
-    //~~~~~ Find the script folder to import from ~~~~~//
+    (groupID === 66 || groupID === 130) && (await import(/* webpackChunkName: "basestyling" */ `./shared/styles.css`));
+
+    //~~~~~ Set Styling Variables ~~~~~//
+    if (styling !== undefined) setCSSVariables(styling);
+    //~~~~~ Run shared script  ~~~~~//
+    groupID !== 58 && runSharedScript();
+
+    //~~~~~ Find the script folder to import from and load our modules ~~~~~//
     let scriptFolder = ScriptMap[groupID];
     if (scriptFolder === undefined) {
       throw new Error(`Module with groupID ${groupID} not found in ModuleMap.`);
     }
 
-    //~~~~~ Load our scripts and styles ~~~~~//
     const uniqueScript = await import(/* webpackChunkName: "uniqueScript" */ `./store_scripts/${scriptFolder}/index.ts`);
-
-    (groupID === 66 || groupID === 130) && (await import(/* webpackChunkName: "basestyling" */ `./shared/styles.css`));
     await import(/* webpackChunkName: "uniqueStyling" */ `./store_scripts/${scriptFolder}/styles.css`);
 
-    //~~~~~ Set Styling Variables ~~~~~//
-    if (styling !== undefined) setCSSVariables(styling);
-    //~~~~~ Run shared script and the main function from unique script ~~~~~//
-    groupID !== 58 && runSharedScript();
-
+    // ~~~~~ Run the main function of the loaded module ~~~~~//
     if (uniqueScript && typeof uniqueScript.main === 'function') {
       uniqueScript.main();
     } else {
