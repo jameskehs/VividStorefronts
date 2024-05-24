@@ -292,6 +292,12 @@ th.ui-state-default:hover {
 .tblImage {
   border: none;
 }
+..prodCell .warningBox {
+  display: none;
+}
+.disabled {
+  opacity: 0.5;
+}
 
 /* Product Description Styling */
 .prodCaption {
