@@ -41,6 +41,9 @@ const defaultOptions: OptionsParameter = {
 
 async function loadStorefrontScript(groupID: number, styling?: StylingParameter, options?: OptionsParameter) {
   try {
+    // Hide the body until everything is loaded. This is to prevent flashing of unstyled content
+    $('body').hide();
+
     // Set global variables and merge options with defaults
     GLOBALVARS.currentPage = Utils.determineCurrentPage();
     const scriptOptions: OptionsParameter = { ...defaultOptions, ...options };
@@ -73,6 +76,9 @@ async function loadStorefrontScript(groupID: number, styling?: StylingParameter,
     }
   } catch (error: unknown) {
     console.error(error);
+  } finally {
+    // Show the body once everything is complete
+    $('body').show();
   }
 }
 
