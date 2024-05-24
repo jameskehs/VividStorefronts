@@ -165,6 +165,7 @@ div.source {
   width: 100vw;
   background-color: var(--loginbar-bg);
   padding: 0px 64px;
+  box-shadow: 0px 5px 9px rgb(0 0 0 / 34%);
 }
 
 table.tableLogin {
@@ -172,15 +173,19 @@ table.tableLogin {
   float: none;
   max-width: 1600px;
   margin: 0 auto;
-  box-shadow: 0px 5px 9px rgb(0 0 0 / 34%);
 }
 
 /* Main Table Styling */
 table.tableMain {
   top: 0px;
   max-width: 1600px;
-  margin: 0 auto;
+  margin: 16px auto;
 }
+
+#searchbar input[type='text'] {
+  width: 27px;
+}
+
 .prodCell {
   padding: 8px !important;
   border: none;
