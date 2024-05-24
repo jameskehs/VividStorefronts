@@ -10,6 +10,8 @@ export const GLOBALVARS: GlobalState = {
 };
 
 interface StylingParameter {
+  bodyBackground?: string;
+
   navbarBackground?: string;
   navbarTextColor?: string;
   navbarHoverColor?: string;
@@ -85,6 +87,8 @@ async function loadStorefrontScript(groupID: number, styling?: StylingParameter,
 function setCSSVariables(styling: StylingParameter) {
   const root = $(':root');
   root.css({
+    '--body-bg': styling.bodyBackground ?? root.css('--body-bg'),
+
     '--navbar-bg': styling.navbarBackground ?? root.css('--navbar-bg'),
     '--navbar-text': styling.navbarTextColor ?? root.css('--navbar-text'),
     '--navbar-hover': styling.navbarHoverColor ?? root.css('--navbar-hover'),
