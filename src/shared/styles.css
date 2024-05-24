@@ -241,6 +241,10 @@ span.meta .ui-state-error {
   display: none;
 }
 
+img.finishedGoodThmb {
+  height: 250px;
+}
+
 .prodCell.parentSubcategoryCell {
   background-color: #fff;
   margin: 10px;
