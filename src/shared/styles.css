@@ -241,6 +241,22 @@ span.meta .ui-state-error {
   display: none;
 }
 
+.prodCell.parentSubcategoryCell {
+  background-color: #FFF;
+  margin: 10px;
+  border-radius: 8px;
+}
+
+.subcategoryImage {
+  height:100%;
+}
+
+.parentSubcategoryCell img {
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+}
+
 .parentSubcategoryCell:hover .browseBtn {
   display: flex;
   justify-content: center;
