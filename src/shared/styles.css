@@ -172,6 +172,7 @@ table.tableLogin {
   float: none;
   max-width: 1600px;
   margin: 0 auto;
+  box-shadow: 0px 5px 9px rgb(0 0 0 / 34%);
 }
 
 /* Main Table Styling */
