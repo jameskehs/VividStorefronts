@@ -236,14 +236,6 @@ span.meta .ui-state-error {
   width: fit-content;
 }
 
-span.meta p.ui-state-error {
-  position: absolute;
-  top: 60px;
-  left: 50%;
-  transform: translate(-50%, 0);
-  z-index: 9999;
-}
-
 #QLupload,
 #QLmyLists {
   display: none;
