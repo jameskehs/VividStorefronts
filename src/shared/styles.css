@@ -103,7 +103,7 @@ a.login:hover {
   color: var(--primary-text) !important;
 }
 
-.cartTotal .cartPrice {
+.cartPrice {
   color: var(--primary-text) !important;
 }
 
