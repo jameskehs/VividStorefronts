@@ -138,14 +138,17 @@ export class KitWorkflow {
           ''
         )}" class="kitCell" style="height:100%;width:100%;background-color:transparent;position:absolute;z-index:999"></div>`
       );
-      $('.kitCell').on('mouseenter', function () {
+
+      productCell.append(kitElement);
+      kitElement.on('mouseenter', function () {
+        console.log('Mouse enter kit');
         $(this).closest('.prodCell').css('transform', 'scale(1.05)');
       });
 
-      $('.kitCell').on('mouseleave', function () {
+      kitElement.on('mouseleave', function () {
+        console.log('Mouse exit kit');
         $(this).closest('.prodCell').css('transform', 'scale(1)');
       });
-      productCell.append(kitElement);
       kitElement.on('click', () => this.startKitWorkflow(kitName));
     });
   }
