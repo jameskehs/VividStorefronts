@@ -198,6 +198,7 @@ export class KitWorkflow {
       );
 
       if (this.activeKit.enforceRecommendedQty) {
+        console.log('Enforcing Qty');
         $('select#quantity').val(this.activeKit.items[this.activeKit.index].recommendedQty);
         $('select#quantity').trigger('blur');
         $('select#quantity').prop('disabled', true);

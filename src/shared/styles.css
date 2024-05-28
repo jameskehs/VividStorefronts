@@ -136,6 +136,21 @@ ul.TreeControl li a:hover {
   font-style: normal;
 }
 
+div#kit_status_container {
+  background-color: #252525;
+  padding: 8px;
+  border-radius: 8px;
+  color: #EEE;
+  border: 3px solid #7a7a7a;
+}
+
+div.kit_item_status p {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 700;
+}
+
 div.source {
   font-size: 3rem;
   color: #000;
