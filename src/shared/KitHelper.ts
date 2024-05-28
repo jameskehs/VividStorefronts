@@ -141,11 +141,11 @@ export class KitWorkflow {
 
       productCell.append(kitElement);
       kitElement.on('mouseenter', function () {
-        $(this).closest('a:not(.anchor)').css('transform', 'scale(1.05)');
+        $(this).siblings('section').children('a').css('transform', 'scale(1.05)');
       });
 
       kitElement.on('mouseleave', function () {
-        $(this).closest('a:not(.anchor)').css('transform', 'scale(1)');
+        $(this).siblings('section').children('a').css('transform', 'scale(1)');
       });
       kitElement.on('click', () => this.startKitWorkflow(kitName));
     });
