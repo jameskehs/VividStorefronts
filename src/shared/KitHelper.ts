@@ -185,6 +185,10 @@ export class KitWorkflow {
         return;
       } else {
         $('.tableMain').css('display', 'none');
+        $('.memoRow input')
+          .last()
+          .val($('.memoRow input').last().val() + ` PART OF ${this.activeKit.name}`)
+          .trigger('blur');
         const nextIndex = this.activeKit.index + 1;
         localStorage.setItem('activeKit', JSON.stringify({ ...this.activeKit, index: nextIndex }));
         window.location.href = `/catalog/2-customize.php?&designID=${this.activeKit.items[nextIndex].designID}&contentID=${this.activeKit.items[nextIndex].contentID}`;
@@ -198,7 +202,6 @@ export class KitWorkflow {
       );
 
       if (this.activeKit.enforceRecommendedQty) {
-        console.log('Enforcing Qty');
         $('input#quantity').val(this.activeKit.items[this.activeKit.index].recommendedQty);
         $('input#quantity').trigger('blur');
         $('input#quantity').prop('disabled', true);
