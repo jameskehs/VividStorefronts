@@ -3,6 +3,7 @@ export interface Kit {
   items: KitItem[];
   isDynamic: boolean;
   dynamicOptions?: DynamicOptions;
+  enforceRecommendedQty: boolean;
 }
 
 export interface DynamicOptions {

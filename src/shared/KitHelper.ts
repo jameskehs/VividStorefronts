@@ -190,11 +190,17 @@ export class KitWorkflow {
       }
     }
 
-    // On the add to cart page, show the recommended quantity for the current item in the kit
+    // On the add to cart page, show the recommended quantity for the current item in the kit. If enforceRecommendedQty is true, force the recommended qty.
     if (GLOBALVARS.currentPage === StorefrontPage.ADDTOCART) {
       $('#quantityCol').append(
         `<span>${this.activeKit.name} recommends quantity of ${this.activeKit.items[this.activeKit.index].recommendedQty}</span>`
       );
+
+      if (this.activeKit.enforceRecommendedQty) {
+        $('select#quantity').val(this.activeKit.items[this.activeKit.index].recommendedQty);
+        $('select#quantity').trigger('blur');
+        $('select#quantity').prop('disabled', true);
+      }
     }
   }
 
