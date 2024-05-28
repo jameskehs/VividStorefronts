@@ -35,10 +35,10 @@ export function main(): void {
     {
       name: 'Welcome Bag - B-Quick Managers (Full Time)',
       items: [
-        { name: 'Manager Polos', designID: 9444, contentID: 45458, recommendedQty: 5, qtyInCart: 0, isInventory: true },
-        { name: 'Bennys Cap', designID: 9062, contentID: 45461, recommendedQty: 1, qtyInCart: 0, isInventory: true },
-        { name: 'Name Tag Holder', designID: 9849, contentID: 45460, recommendedQty: 1, qtyInCart: 0, isInventory: true },
-        { name: 'Name Tag Insert', designID: 9504, contentID: 45459, recommendedQty: 1, qtyInCart: 0, isInventory: false },
+        { name: 'Bennys Cap', designID: 11067, contentID: 45472, recommendedQty: 1, qtyInCart: 0, isInventory: true },
+        { name: 'Manager Polos', designID: 11068, contentID: 45473, recommendedQty: 5, qtyInCart: 0, isInventory: true },
+        { name: 'Name Tag Holder', designID: 11069, contentID: 45474, recommendedQty: 1, qtyInCart: 0, isInventory: true },
+        { name: 'Name Tag Insert', designID: 11070, contentID: 45475, recommendedQty: 1, qtyInCart: 0, isInventory: false },
       ],
       isDynamic: false,
       enforceRecommendedQty: true,

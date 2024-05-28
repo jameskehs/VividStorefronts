@@ -107,6 +107,10 @@ a.login:hover {
   color: var(--primary-text) !important;
 }
 
+#shoppingCartTbl .dtContent .cartPrice {
+  color: #000 !important;
+}
+
 .ui-state-default {
   background-color: var(--primary-color) !important;
   color: var(--primary-text) !important;
