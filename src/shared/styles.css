@@ -215,6 +215,7 @@ table.tableMain {
 .prodCell {
   padding: 8px !important;
   border: none;
+  transition:all .2s ease;
 }
 
 .prodCell a:hover{

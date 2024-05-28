@@ -141,12 +141,10 @@ export class KitWorkflow {
 
       productCell.append(kitElement);
       kitElement.on('mouseenter', function () {
-        console.log('Mouse enter kit');
         $(this).closest('.prodCell').css('transform', 'scale(1.05)');
       });
 
       kitElement.on('mouseleave', function () {
-        console.log('Mouse exit kit');
         $(this).closest('.prodCell').css('transform', 'scale(1)');
       });
       kitElement.on('click', () => this.startKitWorkflow(kitName));
