@@ -154,7 +154,8 @@ export class KitWorkflow {
     // Append informational elements about the kit
     if (GLOBALVARS.currentPage === StorefrontPage.CUSTOMIZETEMPLATE || GLOBALVARS.currentPage === StorefrontPage.ADDTOCART) {
       $('.tableMain').prepend(
-        `<h3 class="kit_header">You are currently building the ${this.activeKit.name}. You are on item ${this.activeKit.index + 1} of ${
+        `<div id="kit_status_container">
+        <h3 class="kit_header">You are currently building the ${this.activeKit.name}. You are on item ${this.activeKit.index + 1} of ${
           this.activeKit.items.length
         }.</h3>` +
           `<div class="kit_item_status">` +
@@ -171,7 +172,7 @@ export class KitWorkflow {
               ${item.name}</p>`;
             })
             .join('') +
-          `</div>`
+          `</div></div>`
       );
     }
 
