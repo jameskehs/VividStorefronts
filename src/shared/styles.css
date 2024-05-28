@@ -212,6 +212,10 @@ table.tableMain {
   width: 27px;
 }
 
+.kitCell:hover {
+  cursor: pointer;
+}
+
 .prodCell {
   padding: 8px !important;
   border: none;
