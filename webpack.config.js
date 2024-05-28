@@ -38,7 +38,10 @@ module.exports = {
   plugins: [
     // ...
     new CopyPlugin({
-      patterns: [{ from: 'src/index.html', to: '' }],
+      patterns: [
+        { from: 'src/index.html', to: '' },
+        { from: 'src/assets', to: 'assets' },
+      ],
     }),
   ],
 };

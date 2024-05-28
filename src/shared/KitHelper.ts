@@ -163,10 +163,10 @@ export class KitWorkflow {
               return `<p>
               ${
                 index > this.activeKit!.index
-                  ? `<object type="image/svg+xml" data="${GLOBALVARS.baseURL}/src/assets/X.svg" width="24" height="24"></object>`
+                  ? `<object type="image/svg+xml" data="${GLOBALVARS.baseURL}/assets/X.svg" width="24" height="24"></object>`
                   : index === this.activeKit!.index
-                  ? `<object type="image/svg+xml" data="${GLOBALVARS.baseURL}/src/assets/Clock.svg" width="24" height="24"></object>`
-                  : `<object type="image/svg+xml" data="${GLOBALVARS.baseURL}/src/assets/Check.svg" width="24" height="24"></object>`
+                  ? `<object type="image/svg+xml" data="${GLOBALVARS.baseURL}/assets/Clock.svg" width="24" height="24"></object>`
+                  : `<object type="image/svg+xml" data="${GLOBALVARS.baseURL}/assets/Check.svg" width="24" height="24"></object>`
               }
               ${item.name}</p>`;
             })
@@ -221,10 +221,10 @@ export class KitWorkflow {
               return `<p>
                   ${
                     index > this.activeKit!.index
-                      ? `<object type="image/svg+xml" data="${GLOBALVARS.baseURL}/src/assets/X.svg" width="24" height="24"></object>`
+                      ? `<object type="image/svg+xml" data="${GLOBALVARS.baseURL}/assets/X.svg" width="24" height="24"></object>`
                       : index === this.activeKit!.index
-                      ? `<object type="image/svg+xml" data="${GLOBALVARS.baseURL}/src/assets/Clock.svg" width="24" height="24"></object>`
-                      : `<object type="image/svg+xml" data="${GLOBALVARS.baseURL}/src/assets/Check.svg" width="24" height="24"></object>`
+                      ? `<object type="image/svg+xml" data="${GLOBALVARS.baseURL}/assets/Clock.svg" width="24" height="24"></object>`
+                      : `<object type="image/svg+xml" data="${GLOBALVARS.baseURL}/assets/Check.svg" width="24" height="24"></object>`
                   }
                   ${item.qtyInCart} X ${item.name}</p>`;
             })
