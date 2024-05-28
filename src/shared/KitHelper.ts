@@ -202,9 +202,9 @@ export class KitWorkflow {
       );
 
       if (this.activeKit.enforceRecommendedQty) {
-        $('input#quantity').val(this.activeKit.items[this.activeKit.index].recommendedQty).prop('disabled', true);
+        $('input#quantity').val(this.activeKit.items[this.activeKit.index].recommendedQty);
         setTimeout(() => {
-          $('input#quantity').trigger('change');
+          $('input#quantity').trigger('change').prop('disabled', true);
         }, 1000);
       }
     }
