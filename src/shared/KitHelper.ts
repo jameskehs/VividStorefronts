@@ -178,6 +178,10 @@ export class KitWorkflow {
 
     // When the user is on the cart page, check if the kit is complete. If it is, show a message and remove the active kit from local storage. If it is not, navigate to the next item in the kit.
     if (GLOBALVARS.currentPage === StorefrontPage.CART) {
+      const newMemoFieldValue =
+        $('.memoRow input').last().val()?.toString().replace('Your job name/memo here', '') + ` PART OF ${this.activeKit.name}`;
+      $('.memoRow input').last().val(newMemoFieldValue).trigger('blur');
+
       if (this.activeKit.index === this.activeKit.items.length - 1) {
         $('.tableMain').prepend(`<h3 class="kit_header"> 🎉 ${this.activeKit.name} complete! You may continue to shop or checkout.</h3>`);
         localStorage.removeItem('activeKit');
@@ -185,9 +189,6 @@ export class KitWorkflow {
         return;
       } else {
         $('.tableMain').css('display', 'none');
-        const newMemoFieldValue =
-          $('.memoRow input').last().val()?.toString().replace('Your job name/memo here', '') + ` PART OF ${this.activeKit.name}`;
-        $('.memoRow input').last().val(newMemoFieldValue).trigger('blur');
         const nextIndex = this.activeKit.index + 1;
         localStorage.setItem('activeKit', JSON.stringify({ ...this.activeKit, index: nextIndex }));
         window.location.href = `/catalog/2-customize.php?&designID=${this.activeKit.items[nextIndex].designID}&contentID=${this.activeKit.items[nextIndex].contentID}`;
@@ -201,9 +202,7 @@ export class KitWorkflow {
       );
 
       if (this.activeKit.enforceRecommendedQty) {
-        $('input#quantity').val(this.activeKit.items[this.activeKit.index].recommendedQty);
-        $('input#quantity').trigger('blur');
-        $('input#quantity').prop('disabled', true);
+        $('input#quantity').val(this.activeKit.items[this.activeKit.index].recommendedQty).trigger('change').prop('disabled', true);
       }
     }
   }
