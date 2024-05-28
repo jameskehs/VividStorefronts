@@ -185,10 +185,9 @@ export class KitWorkflow {
         return;
       } else {
         $('.tableMain').css('display', 'none');
-        $('.memoRow input')
-          .last()
-          .val($('.memoRow input').last().val() + ` PART OF ${this.activeKit.name}`)
-          .trigger('blur');
+        const newMemoFieldValue =
+          $('.memoRow input').last().val()?.toString().replace('Your job name/memo here', '') + ` PART OF ${this.activeKit.name}`;
+        $('.memoRow input').last().val(newMemoFieldValue).trigger('blur');
         const nextIndex = this.activeKit.index + 1;
         localStorage.setItem('activeKit', JSON.stringify({ ...this.activeKit, index: nextIndex }));
         window.location.href = `/catalog/2-customize.php?&designID=${this.activeKit.items[nextIndex].designID}&contentID=${this.activeKit.items[nextIndex].contentID}`;
