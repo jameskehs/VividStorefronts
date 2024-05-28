@@ -179,7 +179,7 @@ export class KitWorkflow {
     // When the user is on the cart page, check if the kit is complete. If it is, show a message and remove the active kit from local storage. If it is not, navigate to the next item in the kit.
     if (GLOBALVARS.currentPage === StorefrontPage.CART) {
       const newMemoFieldValue =
-        $('.memoRow input').last().val()?.toString().replace('Your job name/memo here', '') + ` PART OF ${this.activeKit.name}`;
+        `PART OF ${this.activeKit.name} | ` + $('.memoRow input').last().val()?.toString().replace('Your job name/memo here', '');
       $('.memoRow input').last().val(newMemoFieldValue).trigger('blur');
 
       if (this.activeKit.index === this.activeKit.items.length - 1) {
