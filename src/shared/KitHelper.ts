@@ -133,7 +133,10 @@ export class KitWorkflow {
       const kitName = $(span).text();
       const productCell = $(span).closest('.prodCell').eq(0);
       const kitElement = $(
-        `<div id="${kitName.replace(/\s+/g, '')}" style="height:100%;width:100%;background-color:transparent;position:absolute;z-index:999"></div>`
+        `<div id="${kitName.replace(
+          /\s+/g,
+          ''
+        )}" class="kitCell" style="height:100%;width:100%;background-color:transparent;position:absolute;z-index:999"></div>`
       );
       productCell.append(kitElement);
       kitElement.on('click', () => this.startKitWorkflow(kitName));

@@ -136,7 +136,7 @@ ul.TreeControl li a:hover {
 * {
   box-sizing: border-box;
   font-family: 'Poppins', sans-serif;
-  font-weight: 400;
+  font-weight: 500;
   font-style: normal;
 }
 
@@ -217,7 +217,7 @@ table.tableMain {
   border: none;
 }
 
-.prodCell a:hover {
+.prodCell a:hover, .kitCell a:hover {
   transform: scale(1.05);
 }
 
