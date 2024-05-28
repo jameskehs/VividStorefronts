@@ -217,7 +217,7 @@ table.tableMain {
   border: none;
 }
 
-.prodCell a:hover, .kitCell:hover {
+.prodCell a:hover{
   transform: scale(1.05);
 }
 
