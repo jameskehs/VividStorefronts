@@ -419,6 +419,10 @@ div.downloadOnly {
   color: #FFF;
 }
 
+.downloadOnly {
+  margin:4px 0;
+}
+
 /* End of Product Description Styling */
 
 /*
