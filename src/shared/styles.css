@@ -407,11 +407,6 @@ p.prod_desc {
 }
 
 .prodCell .left a.doURL {
-  position: absolute;
-  top: 30px;
-  left: 80px;
-  transform: translate(-50%, -50%);
-  z-index: 999;
   background-color: transparent !important;
 }
 
