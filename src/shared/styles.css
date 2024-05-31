@@ -124,13 +124,12 @@ ul.TreeControl li#active {
   border-left-color: var(--secondary-color);
 }
 
-ul.TreeControl li a:hover {
-  font-weight: 700;
+
+
+.pw-img.download:before {
+  color: var(--primary-text);
 }
 
-#sideBarNav {
-  width: 375px !important;
-}
 /* End Dynamic Styling */
 
 * {
@@ -138,6 +137,13 @@ ul.TreeControl li a:hover {
   font-family: 'Poppins', sans-serif;
   font-weight: 500;
   font-style: normal;
+}
+ul.TreeControl li a:hover {
+  font-weight: 700;
+}
+
+#sideBarNav {
+  width: 375px !important;
 }
 
 div#kit_status_container {
@@ -222,7 +228,7 @@ table.tableMain {
   transition:all .2s ease;
 }
 
-.prodCell a:hover:not(.doURL){
+.prodCell a:hover{
   transform: scale(1.05);
 }
 
@@ -400,12 +406,22 @@ p.prod_desc {
   border: 1px solid #d4d4d4 !important;
 }
 
-.doURL {
+.prodCell .left a.doURL {
   position: absolute;
-  top: 50%;
-  left: 50%;
+  top: 30px;
+  left: 80px;
   transform: translate(-50%, -50%);
   z-index: 999;
+  background-color: transparent !important;
+}
+
+div.downloadOnly {
+  background-color: #3d3d3d !important;
+  color: #FFF !important;
+}
+
+.doURL .downloadOnly .download::before {
+  color: #FFF;
 }
 
 /* End of Product Description Styling */
