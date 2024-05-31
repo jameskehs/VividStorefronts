@@ -423,6 +423,19 @@ div.downloadOnly {
   margin:4px 0;
 }
 
+.tblPageEdit .active {
+  background-color: var(--primary-color)!important;
+  color: var(--primary-text) !important;
+}
+
+.tblPageEdit .ui-state-default {
+  background-color: #EEE !important;
+}
+
+.tblPageEdit .ui-state-default a {
+  color: #000 !important;
+}
+
 /* End of Product Description Styling */
 
 /*
