@@ -372,7 +372,7 @@ p.prod_sku {
   border-radius: 4px;
   margin: 0 !important;
 }
-.prod_info_tags p:empty {
+.prod_info_tags p:empty, .prod_sku:empty {
   display: none;
 }
 p.tag_apparel_decoration {
