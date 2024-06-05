@@ -43,6 +43,10 @@ body {
   background-color: var(--body-bg);
 }
 
+.tableSiteBanner img {
+  height:125px;
+  margin:0;
+}
 
 div.anchorCatalog {
   background-color: var(--primary-color) !important;
