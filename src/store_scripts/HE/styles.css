@@ -26,7 +26,7 @@ div#hamburger-overlay {
 .humburger-icon:hover,
 .hamburger-exit:hover {
   cursor: pointer;
-  color: '#ED8B00';
+  color: #ed8b00;
 }
 
 #mobile-menu li a {
@@ -49,7 +49,7 @@ ul#mobile-menu {
 }
 
 @media only screen and (max-width: 1000px) {
-  #navWrapper {
+  #navWrapper #menu {
     display: none;
   }
   .hamburger-icon {
