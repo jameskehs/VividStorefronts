@@ -1,3 +1,20 @@
+@font-face {
+  font-family: 'Trade Gothic LT Bold Italic';
+  src: url(../user/site_fonts/TradeGothicBoldItalic.ttf);
+}
+@font-face {
+  font-family: 'Helvetica Neue LT Std Medium';
+  src: url(../user/site_fonts/HelveticaNeueLTStd-Md.otf);
+}
+@font-face {
+  font-family: 'Helvetica Neue LT Std Bold';
+  src: url(../user/site_fonts/HelveticaNeueLTStd-Bd.otf);
+}
+
+* {
+  font-family: 'Helvetica Neue LT Std Medium';
+}
+
 .hamburger-icon {
   display: none !important;
   color: #fff;
