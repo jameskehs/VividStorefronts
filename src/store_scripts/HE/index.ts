@@ -235,7 +235,13 @@ export function main() {
     localStorage.removeItem('shouldRedirectToCatalog');
   });
 
-  $('#logoLinks').append(`<i class="fa-solid fa-bars hamburger-icon"></i>`);
+  const shoppingCartLinks = $('.linkS a');
+  shoppingCartLinks.each((index, link) => {
+    $(link).html($(link).text().replace('SHOPPING CART', '<i class="fa-solid fa-cart-shopping"></i>'));
+  });
+
+  $('.linkC a').attr('href', '/catalog/?g=3073&y=6985');
+  $('#navWrapper').append(`<i class="fa-solid fa-bars hamburger-icon"></i>`);
   $('#mainContainerSF').append(`<div id="hamburger-overlay">
 						<i class="fa-solid fa-xmark hamburger-exit"></i>
 						<ul id="mobile-menu">
@@ -253,13 +259,6 @@ export function main() {
   							</li>
 						</ul>
   					</div>`);
-
-  const shoppingCartLinks = $('.linkS a');
-  shoppingCartLinks.each((index, link) => {
-    $(link).html($(link).text().replace('SHOPPING CART', '<i class="fa-solid fa-cart-shopping"></i>'));
-  });
-
-  $('.linkC a').attr('href', '/catalog/?g=3073&y=6985');
   $('.hamburger-icon').on('click', () => {
     $('#hamburger-overlay').show();
   });
