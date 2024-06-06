@@ -23,7 +23,7 @@ div#hamburger-overlay {
   top: 25px;
 }
 
-.humburger-icon:hover,
+.hamburger-icon:hover,
 .hamburger-exit:hover {
   cursor: pointer;
   color: #ed8b00;
@@ -59,4 +59,29 @@ ul#mobile-menu {
   .tableMain_wrap {
     overflow-x: scroll;
   }
+}
+
+.fa-caret-left,
+.fa-caret-down {
+  position: absolute;
+  right: 25px;
+}
+.fa-solid:hover {
+  color: #ed8b00;
+  transition: all 0.1s ease;
+}
+.dropdown-btn {
+  display: flex;
+}
+.dropdown-container {
+  display: none;
+}
+:not(.dropdown-btn.active) .fa-caret-down {
+  display: none;
+}
+.dropdown-btn.active .fa-caret-left {
+  display: none;
+}
+.dropdown-btn.active .fa-caret-down {
+  display: block;
 }

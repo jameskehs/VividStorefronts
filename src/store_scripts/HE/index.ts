@@ -315,15 +315,15 @@ export function main() {
       const storedHTML = sessionStorage.getItem('JK_Dropdown');
 
       function adjustHTML() {
-        $(`li.TCbullet[style="text-indent:10px;"]`).each((index, item) => {
-          $(item).attr('style', 'margin-left:10px;');
-        });
-        $(`li.TCbullet[style="text-indent:20px;"]`).each((index, item) => {
-          $(item).attr('style', 'margin-left:20px;');
-        });
-        $(`li.TCbullet[style="text-indent:30px;"]`).each((index, item) => {
-          $(item).attr('style', 'margin-left:30px;');
-        });
+        // $(`li.TCbullet[style="text-indent:10px;"]`).each((index, item) => {
+        //   $(item).attr('style', 'margin-left:10px;');
+        // });
+        // $(`li.TCbullet[style="text-indent:20px;"]`).each((index, item) => {
+        //   $(item).attr('style', 'margin-left:20px;');
+        // });
+        // $(`li.TCbullet[style="text-indent:30px;"]`).each((index, item) => {
+        //   $(item).attr('style', 'margin-left:30px;');
+        // });
         //Find parent categories, add dropdown-btn class and JK_Drop_${categoryName} class
         parentCategories.forEach((category) => {
           if ($(`a[alt="${category}"]`)[0] === undefined) return;
