@@ -23,6 +23,12 @@ div#hamburger-overlay {
   top: 25px;
 }
 
+.humburger-icon:hover,
+.hamburger-exit:hover {
+  cursor: pointer;
+  color: '#ED8B00';
+}
+
 #mobile-menu li a {
   font-size: 24px;
   font-weight: 400;
@@ -42,16 +48,14 @@ ul#mobile-menu {
   background-color: black;
 }
 
-@media only screen and (max-width: 850px) {
+@media only screen and (max-width: 1000px) {
   #navWrapper {
     display: none;
   }
   .hamburger-icon {
-    display: initial !important;
+    display: block !important;
   }
-  .tableSiteBanner img {
-    height: 30px;
-  }
+
   .tableMain_wrap {
     overflow-x: scroll;
   }
