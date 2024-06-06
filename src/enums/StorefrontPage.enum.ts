@@ -1,5 +1,6 @@
 export enum StorefrontPage {
   ADDTOCART = 'Add To Cart Page',
+  BILLINGADDRESS = 'Billing Address Page',
   CART = 'Cart Page',
   CATALOG = 'Catalog Page',
   CHECKOUTADDRESS = 'Checkout Address Page',
