@@ -78,6 +78,7 @@ ul#mobile-menu {
   }
 }
 
+/* Dropdown Styling */
 .fa-caret-left,
 .fa-caret-down {
   position: absolute;
@@ -101,4 +102,32 @@ ul#mobile-menu {
 }
 .dropdown-btn.active .fa-caret-down {
   display: block;
+}
+
+/* Subcategory Cell Styling */
+.prodCell.parentSubcategoryCell {
+  border-color: #eee;
+  border-width: 3px;
+  padding: 0px !important;
+}
+
+.subcategoryName {
+  background-color: #000000a8;
+  color: #eee;
+  top: 0px;
+  right: 0px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 28px;
+}
+
+.prodCell.parentSubcategoryCell:hover .subcategoryName {
+  display: none;
+}
+
+.parentSubcategoryCell:hover .browseBtn {
+  background: #000000a8;
 }
