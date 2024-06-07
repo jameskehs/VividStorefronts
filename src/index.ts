@@ -70,7 +70,6 @@ function setCSSVariables(stylingVariables: StylingParameter) {
   for (const variableName in stylingVariables) {
     const defaultCSSValue = root.css(StylingParameterMetadata[variableName as keyof StylingParameter].CSSVariableName);
     if (variableName in StylingParameterMetadata) {
-      console.log('Setting', StylingParameterMetadata[variableName as keyof StylingParameter].CSSVariableName, 'To', variableName);
       root.css(
         StylingParameterMetadata[variableName as keyof StylingParameter].CSSVariableName,
         stylingVariables[variableName as keyof StylingParameter] ?? defaultCSSValue

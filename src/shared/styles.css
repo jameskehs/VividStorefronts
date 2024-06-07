@@ -410,11 +410,11 @@ p.tag_apparel_decoration {
 }
 p.tag_print_dimensions {
   background-color: var(--tag-dimensions-bg);
-  background-color: var(--tag-dimensions-text);
+  color: var(--tag-dimensions-text);
 }
 p.tag_packsize {
   background-color: var(--tag-packsize-bg);
-  background-color: var(--tag-dimensions-text);
+  color: var(--tag-dimensions-text);
 }
 
 p.prod_desc {
