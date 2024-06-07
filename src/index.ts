@@ -68,7 +68,9 @@ async function loadStorefrontScript(groupID: number, styling?: StylingParameter,
 function setCSSVariables(stylingVariables: StylingParameter) {
   const root = $(':root');
   for (const variable in stylingVariables) {
+    console.log(variable);
     if (variable in StylingParameterMetadata) {
+      console.log('Setting', StylingParameterMetadata[variable as keyof StylingParameter].CSSVariableName, 'To', variable);
       root.css(StylingParameterMetadata[variable as keyof StylingParameter].CSSVariableName, variable);
     }
   }
