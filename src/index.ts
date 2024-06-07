@@ -67,11 +67,14 @@ async function loadStorefrontScript(groupID: number, styling?: StylingParameter,
 
 function setCSSVariables(stylingVariables: StylingParameter) {
   const root = $(':root');
-  for (const variable in stylingVariables) {
-    console.log(variable);
-    if (variable in StylingParameterMetadata) {
-      console.log('Setting', StylingParameterMetadata[variable as keyof StylingParameter].CSSVariableName, 'To', variable);
-      root.css(StylingParameterMetadata[variable as keyof StylingParameter].CSSVariableName, variable);
+  for (const variableName in stylingVariables) {
+    const defaultCSSValue = root.css(StylingParameterMetadata[variableName as keyof StylingParameter].CSSVariableName);
+    if (variableName in StylingParameterMetadata) {
+      console.log('Setting', StylingParameterMetadata[variableName as keyof StylingParameter].CSSVariableName, 'To', variableName);
+      root.css(
+        StylingParameterMetadata[variableName as keyof StylingParameter].CSSVariableName,
+        stylingVariables[variableName as keyof StylingParameter] ?? defaultCSSValue
+      );
     }
   }
 }
