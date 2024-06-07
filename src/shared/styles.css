@@ -307,6 +307,7 @@ img.finishedGoodThmb {
   height: 100%;
   width: 100%;
   object-fit: contain;
+  padding:24px;
 }
 
 .parentSubcategoryCell:hover .browseBtn {
@@ -373,6 +374,7 @@ p.prod_sku {
   flex-wrap: wrap;
   font-size: 0.85rem;
   max-width: 90%;
+  margin-bottom: 8px;
 }
 .prod_info_tags p,
 .prod_sku {
@@ -396,12 +398,14 @@ p.tag_packsize {
   background-color: #c0392b;
 }
 p.prod_desc {
-  margin-bottom: 15px !important;
+  margin-bottom: 4px !important;
+  min-height: 38px;
+  white-space: wrap;
 }
 .apparel_colors {
   display: flex;
   flex-wrap: wrap;
-  margin: 8px 0;
+  margin-bottom: 8px;
   gap: 2px;
 }
 .color_swatch {

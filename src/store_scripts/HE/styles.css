@@ -83,6 +83,7 @@ ul#mobile-menu {
 .fa-caret-down {
   position: absolute;
   right: 25px;
+  transform: scale(1.5);
 }
 .fa-solid:hover {
   color: #ed8b00;
@@ -130,4 +131,8 @@ ul#mobile-menu {
 
 .parentSubcategoryCell:hover .browseBtn {
   background: #000000a8;
+}
+
+#menu li a {
+  font-family: 'Trade Gothic LT Bold Italic', sans-serif;
 }
