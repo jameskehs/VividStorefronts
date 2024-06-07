@@ -370,7 +370,6 @@ p.prod_sku {
 .prod_info_tags {
   display: flex;
   gap: 2px;
-  min-height: 60px;
   flex-wrap: wrap;
   font-size: 0.85rem;
   max-width: 90%;
