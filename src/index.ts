@@ -2,32 +2,13 @@ import { Utils } from './shared/Utils';
 import { runSharedScript } from './shared/index';
 import { GlobalState } from './types/GlobalState';
 import { ScriptMap } from './types/ScriptMap';
+import { StylingParameter, StylingParameterMetadata } from './types/StylingParameter';
 
 // Declare global state object
 export const GLOBALVARS: GlobalState = {
   currentPage: null,
   baseURL: 'https://vividstorefronts.netlify.app',
 };
-
-interface StylingParameter {
-  bodyBackground?: string;
-
-  navbarBackground?: string;
-  navbarTextColor?: string;
-  navbarHoverColor?: string;
-
-  loginbarBackground?: string;
-  loginbarTextColor?: string;
-  loginbarHoverColor?: string;
-
-  primaryBackground?: string;
-  primaryTextColor?: string;
-  primaryHoverColor?: string;
-
-  secondaryBackground?: string;
-  secondaryTextColor?: string;
-  secondaryHoverColor?: string;
-}
 
 export interface OptionsParameter {
   hideHomeLink?: boolean;
@@ -84,27 +65,13 @@ async function loadStorefrontScript(groupID: number, styling?: StylingParameter,
   }
 }
 
-function setCSSVariables(styling: StylingParameter) {
+function setCSSVariables(stylingVariables: StylingParameter) {
   const root = $(':root');
-  root.css({
-    '--body-bg': styling.bodyBackground ?? root.css('--body-bg'),
-
-    '--navbar-bg': styling.navbarBackground ?? root.css('--navbar-bg'),
-    '--navbar-text': styling.navbarTextColor ?? root.css('--navbar-text'),
-    '--navbar-hover': styling.navbarHoverColor ?? root.css('--navbar-hover'),
-
-    '--loginbar-bg': styling.loginbarBackground ?? root.css('--loginbar-bg'),
-    '--loginbar-text': styling.loginbarTextColor ?? root.css('--loginbar-text'),
-    '--loginbar-hover': styling.loginbarHoverColor ?? root.css('--loginbar-hover'),
-
-    '--primary-color': styling.primaryBackground ?? root.css('--primary-color'),
-    '--primary-text': styling.primaryTextColor ?? root.css('--primary-text'),
-    '--primary-hover': styling.primaryHoverColor ?? root.css('--primary-hover'),
-
-    '--secondary-color': styling.secondaryBackground ?? root.css('--secondary-color'),
-    '--secondary-text': styling.secondaryTextColor ?? root.css('--secondary-text'),
-    '--secondary-hover': styling.secondaryHoverColor ?? root.css('--secondary-hover'),
-  });
+  for (const variable in stylingVariables) {
+    if (variable in StylingParameterMetadata) {
+      root.css(StylingParameterMetadata[variable as keyof StylingParameter].CSSVariableName, variable);
+    }
+  }
 }
 
 // Expose loadStorefrontScript to the window

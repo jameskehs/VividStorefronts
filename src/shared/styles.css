@@ -37,7 +37,23 @@
   --secondary-color: #cfcfcf;
   --secondary-text: #000;
   --secondary-hover: red;
+
+  --tag-brand-bg: #424a4a;
+  --tag-brand-text: #eee;
+
+  --tag-decoration-bg: #2980b9;
+  --tag-decoration-text: #eee;
+
+  --tag-dimensions-bg: #d35400;
+  --tag-dimensions-text: #eee;
+
+  --tag-packsize-bg: #c0392b;
+  --tag-packsize-text: #eee;
+
+  --tag-sku-bg: #3e3e3e;
+  --tag-sku-text: #eee;
 }
+
 /* Dynamic Styling */
 body {
   background-color: var(--body-bg);
@@ -362,7 +378,8 @@ th.ui-state-default:hover {
   text-align: left;
 }
 p.prod_sku {
-  background-color: #3e3e3e;
+  background-color: var(--tag-sku-bg);
+  color: var(--tag-sku-text);
   width: fit-content;
   font-size: 0.8rem;
   margin-bottom: 12px !important;
@@ -388,14 +405,18 @@ p.prod_sku {
   display: none;
 }
 p.tag_apparel_decoration {
-  background-color: #2980b9;
+  background-color: var(--tag-decoration-bg);
+  color: var(--tag-decoration-text)
 }
 p.tag_print_dimensions {
-  background-color: #d35400;
+  background-color: var(--tag-dimensions-bg);
+  background-color: var(--tag-dimensions-text);
 }
 p.tag_packsize {
-  background-color: #c0392b;
+  background-color: var(--tag-packsize-bg);
+  background-color: var(--tag-dimensions-text);
 }
+
 p.prod_desc {
   margin-bottom: 4px !important;
   min-height: 38px;
@@ -442,6 +463,10 @@ div.downloadOnly {
 
 .tblPageEdit .ui-state-default a {
   color: #000 !important;
+}
+
+.format_rules {
+  text-align: left;
 }
 
 /* End of Product Description Styling */
