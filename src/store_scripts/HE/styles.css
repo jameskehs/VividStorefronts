@@ -164,3 +164,26 @@ table.dataTable thead th div.DataTables_sort_wrapper span {
   background-color: var(--primary-color);
   color: var(--primary-color-text);
 }
+
+/* Hides Delivery Time and Est. Cost columns in the shipping method table */
+table#shipping_method_table tbody tr td:nth-child(5),
+#shipMethodBox header table tbody tr td:nth-child(4),
+table#shipping_method_table tbody tr td:nth-child(3),
+#shipMethodBox header table tbody tr td:nth-child(2) {
+  display: none;
+}
+
+/* Hides Turnaround Fee and Shipping & Handling Charges in Order Summary */
+div#taxRushShipGrand tr:nth-of-type(3),
+div#taxRushShipGrand tr:nth-of-type(5) {
+  display: none;
+}
+
+/* Hides PO field on payment page */
+div#custPOBox {
+  display: none;
+}
+
+div#orderPaymentType {
+  display: none;
+}

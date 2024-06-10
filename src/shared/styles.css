@@ -481,6 +481,14 @@ th.ui-state-default {
   color: var(--primary-text);
 }
 
+.FedEx-email-notify {
+  display: none;
+}
+
+#shipMethodBox header table {
+  color: var(--primary-text);
+}
+
 /*
 <div class='prod_desc_container' style='white-space:nowrap'>
 <div class='apparel_colors' style='display:flex'>

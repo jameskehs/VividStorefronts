@@ -28,6 +28,8 @@ export class Utils {
         return StorefrontPage.CHECKOUTREVIEW;
       case '/checkout/9-confirm.php':
         return StorefrontPage.CHECKOUTCONFIRMATION;
+      case '/checkout/61-billing.php':
+        return StorefrontPage.BILLINGADDRESS;
       default:
         return null;
     }
