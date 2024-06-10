@@ -1,7 +1,6 @@
 export interface Kit {
   name: string;
   items: KitItem[];
-  isDynamic: boolean;
   dynamicOptions?: DynamicOptions;
   enforceRecommendedQty: boolean;
 }
@@ -15,7 +14,6 @@ interface KitItem {
   designID: number;
   contentID: number;
   recommendedQty: number;
-  qtyInCart: number;
   isInventory: boolean;
   PODPackSize?: number;
 }

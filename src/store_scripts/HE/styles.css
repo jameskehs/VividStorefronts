@@ -165,6 +165,10 @@ table.dataTable thead th div.DataTables_sort_wrapper span {
   color: var(--primary-color-text);
 }
 
+#mobile-menu li a:hover {
+  color: var(--navbar-hover) !important;
+}
+
 /* Hides Delivery Time and Est. Cost columns in the shipping method table */
 table#shipping_method_table tbody tr td:nth-child(5),
 #shipMethodBox header table tbody tr td:nth-child(4),
