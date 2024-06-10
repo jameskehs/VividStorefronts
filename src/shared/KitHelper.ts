@@ -162,7 +162,7 @@ export class KitWorkflow {
   continueKitWorkflow(): void {
     if (this.activeKit === null) return;
     localStorage.removeItem('shouldRedirectToCatalog');
-    const hideKitDetails = JSON.parse(localStorage.getItem('hideKitDetails') ?? 'false');
+    let hideKitDetails = JSON.parse(localStorage.getItem('hideKitDetails') ?? 'false');
 
     // Append informational elements about the kit
     if (GLOBALVARS.currentPage === StorefrontPage.CUSTOMIZETEMPLATE || GLOBALVARS.currentPage === StorefrontPage.ADDTOCART) {
@@ -174,7 +174,7 @@ export class KitWorkflow {
         }.</h3>
         <button type="button" class="toggle_kit_details">${hideKitDetails ? 'Show Details' : 'Hide Details'}</button>
             </div>
-          <div class="kit_item_status">` +
+          <div class="kit_item_status ${hideKitDetails ? 'hide_kit_details' : ''}">` +
           this.activeKit.items
             .map((item, index) => {
               return `<p>
@@ -192,8 +192,9 @@ export class KitWorkflow {
       );
 
       $('button.toggle_kit_details').on('click', () => {
+        hideKitDetails = !hideKitDetails;
         $('.kit_item_status').toggleClass('hide_kit_details');
-        localStorage.setItem('hideKitDetails', JSON.stringify(!hideKitDetails));
+        localStorage.setItem('hideKitDetails', JSON.stringify(hideKitDetails));
         $('button.toggle_kit_details').text(hideKitDetails ? 'Show Details' : 'Hide Details');
       });
     }
