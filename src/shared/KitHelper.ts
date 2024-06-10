@@ -155,6 +155,7 @@ export class KitWorkflow {
     const kit = this.kits.find((kit) => kit.name === kitName);
     if (kit === undefined) return;
     localStorage.setItem('activeKit', JSON.stringify({ ...kit, index: 0 }));
+    localStorage.setItem('hideKitDetails', JSON.stringify(false));
     const { designID, contentID } = kit.items[0];
     window.location.href = `/catalog/2-customize.php?&designID=${designID}&contentID=${contentID}`;
   }
