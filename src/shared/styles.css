@@ -511,6 +511,10 @@ th.ui-state-default {
   color: var(--primary-text);
 }
 
+div.grid a.anchor {
+  height: auto;
+}
+
 /*
 <div class='prod_desc_container' style='white-space:nowrap'>
 <div class='apparel_colors' style='display:flex'>
