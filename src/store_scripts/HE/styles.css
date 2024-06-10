@@ -1,4 +1,4 @@
-/* @font-face {
+@font-face {
   font-family: 'Trade Gothic LT Bold Italic';
   src: url(../../assets/fonts/TradeGothicBoldItalic.ttf);
 }
@@ -76,9 +76,9 @@ ul#mobile-menu {
   .tableMain_wrap {
     overflow-x: scroll;
   }
-} */
+}
 /* Dropdown Styling */
-/* .fa-caret-left,
+.fa-caret-left,
 .fa-caret-down {
   position: absolute;
   right: 25px;
@@ -102,10 +102,10 @@ ul#mobile-menu {
 }
 .dropdown-btn.active .fa-caret-down {
   display: block;
-} */
+}
 
 /* Subcategory Cell Styling */
-/* .prodCell.parentSubcategoryCell {
+.prodCell.parentSubcategoryCell {
   border-color: #eee;
   border-width: 3px;
   padding: 0px !important;
@@ -134,4 +134,4 @@ ul#mobile-menu {
 
 #menu li a {
   font-family: 'Trade Gothic LT Bold Italic', sans-serif;
-} */
+}
