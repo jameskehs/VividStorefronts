@@ -400,6 +400,7 @@ export function main() {
     });
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTADDRESS) {
+    $('#addressBook, #newAddress').hide();
     $('#shipToCompany button.btnEdit').remove();
     $(`button[rel="Ship to company"]`).text('Ship to My Branch');
     $('#PorCAddress .ui-box header span').text('Choose a shipping address');
@@ -410,11 +411,11 @@ export function main() {
         `<button id="ship-to-diff-add-btn" class="jqButton btnArrowRight btnRight ui-button ui-corner-all ui-widget" type="button">Ship to another address</button>`
       );
     $('#ship-to-diff-add-btn').on('click', () => {
-      $('#addressBook, #newAddress').css('display', 'table');
+      $('#addressBook, #newAddress').show();
     });
     $("select.country option:not(:contains('United States'))").remove();
     $(
-      "select.state option[value='AS'], select.state option[value='AA'], select.state option[value='AE'], select.state option[value='AP'], select.state option[value='GU'], select.state option[value='MH'], select.state option[value='MP'], select.state option[value='PR'], select.state 		option[value='UM'], select.state option[value='VI']"
+      "select.state option[value='AS'], select.state option[value='AA'], select.state option[value='AE'], select.state option[value='AP'], select.state option[value='GU'], select.state option[value='MH'], select.state option[value='MP'], select.state option[value='PR'], select.state option[value='UM'], select.state option[value='VI']"
     ).remove();
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTCONFIRMATION) {
