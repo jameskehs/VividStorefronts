@@ -168,7 +168,7 @@ export class KitWorkflow {
     if (GLOBALVARS.currentPage === StorefrontPage.CUSTOMIZETEMPLATE || GLOBALVARS.currentPage === StorefrontPage.ADDTOCART) {
       $('.tableMain').prepend(
         `<div id="kit_status_container">
-            <div class="kit_header_container">
+            <div id="kit_header_container">
               <h3 class="kit_header">You are currently building the ${this.activeKit.name}. You are on item ${this.activeKit.index + 1} of ${
           this.activeKit.items.length
         }.</h3>
