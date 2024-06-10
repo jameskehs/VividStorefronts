@@ -284,6 +284,7 @@ table.tableMain {
   display: block;
   border-radius: 8px;
   transition: all 0.2s ease;
+  height: 250px;
 }
 span.zoom {
   z-index: 9999;
