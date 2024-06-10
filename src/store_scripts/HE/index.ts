@@ -53,6 +53,7 @@ const kits: Kit[] = [
   {
     name: 'Small Decal Kit',
     enforceRecommendedQty: true,
+    autoAdvance: true,
     items: [
       { name: 'HE-EWHEEL', designID: 8486, contentID: 40175, recommendedQty: 1, isInventory: true },
       { name: 'HE-D10x10', designID: 8483, contentID: 40172, recommendedQty: 2, isInventory: true },

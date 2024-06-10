@@ -230,6 +230,10 @@ export class KitWorkflow {
           $('input#quantity').trigger('change').prop('disabled', true);
         }, 1000);
       }
+
+      if (this.activeKit.autoAdvance && this.activeKit.items[this.activeKit.index].isInventory) {
+        $('button#addToCartButton').trigger('click');
+      }
     }
   }
 
