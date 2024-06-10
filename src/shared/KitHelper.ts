@@ -203,7 +203,7 @@ export class KitWorkflow {
     if (GLOBALVARS.currentPage === StorefrontPage.CART) {
       const newMemoFieldValue =
         `PART OF ${this.activeKit.name} | ` + $('.memoRow input').last().val()?.toString().replace('Your job name/memo here', '');
-      $('.memoRow input').last().val(newMemoFieldValue).trigger('blur');
+      $('#shoppingCartTbl .memoRow input').last().val(newMemoFieldValue).trigger('blur');
 
       if (this.activeKit.index === this.activeKit.items.length - 1) {
         $('.tableMain').prepend(`<h3 class="kit_header"> 🎉 ${this.activeKit.name} complete! You may continue to shop or checkout.</h3>`);
