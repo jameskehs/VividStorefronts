@@ -122,7 +122,7 @@ export class KitWorkflow {
       }
 
       // Hide navigation and breadcrumbs to discourage user from navigating away from the kit
-      $('#navWrapper, .crumbs').css('display', 'none');
+      $('#navWrapper, .crumbs').hide();
 
       this.continueKitWorkflow();
     }
@@ -170,7 +170,7 @@ export class KitWorkflow {
       GLOBALVARS.currentPage === StorefrontPage.ADDTOCART ||
       GLOBALVARS.currentPage === StorefrontPage.CART
     ) {
-      $('.tableMain').prepend(
+      $('.tableMain').insertBefore(
         `<div id="kit_status_container" class=${
           this.activeKit.autoAdvance && this.activeKit.items[this.activeKit.index].isInventory ? 'fullscreen_kit' : ''
         }>
@@ -212,13 +212,13 @@ export class KitWorkflow {
       $('#shoppingCartTbl .memoRow input').last().val(newMemoFieldValue).trigger('blur');
 
       if (this.activeKit.index === this.activeKit.items.length - 1) {
-        $('.tableMain').prepend(`<h3 class="kit_header"> 🎉 ${this.activeKit.name} complete! You may continue to shop or checkout.</h3>`);
+        $('.tableMain').insertBefore(`<h3 class="kit_header"> 🎉 ${this.activeKit.name} complete! You may continue to shop or checkout.</h3>`);
         localStorage.removeItem('activeKit');
         $('#kit_status_container').remove();
-        $('#navWrapper, .crumbs').css('display', 'initial');
+        $('#navWrapper, .crumbs').show();
         return;
       } else {
-        $('.tableMain').css('display', 'none');
+        $('.tableMain').hide();
         const nextIndex = this.activeKit.index + 1;
         localStorage.setItem('activeKit', JSON.stringify({ ...this.activeKit, index: nextIndex }));
         window.location.href = `/catalog/2-customize.php?&designID=${this.activeKit.items[nextIndex].designID}&contentID=${this.activeKit.items[nextIndex].contentID}`;
