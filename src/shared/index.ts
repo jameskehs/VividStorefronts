@@ -8,9 +8,10 @@ export function runSharedScript(options: OptionsParameter) {
   $('#logoLinks').wrapAll(`<div id="headWrapper"></div>`);
   $('.tableLogin').wrapAll("<div id='loginWrapper'></div>");
 
-  options.hideHomeLink && $('.linkH').hide();
-  options.hideAddressBook && $('button#saveAddressBook, table#addressBook').hide();
-  options.hideCompanyShipTo && $('div#shipToCompany').hide();
+  options.hideHomeLink && $('.linkH').remove();
+  options.hideAddressBook && $('button#saveAddressBook, table#addressBook').remove();
+  options.hideCompanyShipTo && $('div#shipToCompany').remove();
+  options.lockAddressBook && $('button[title="Import address book"], button#saveAddressBook').remove();
 
   // Add "On Demand" tag to products that are not inventoried
   /*$('.prodCell').each(function (index, cell) {

@@ -14,12 +14,14 @@ export interface OptionsParameter {
   hideHomeLink?: boolean;
   hideCompanyShipTo?: boolean;
   hideAddressBook?: boolean;
+  lockAddressBook?: boolean;
 }
 
 const defaultOptions: OptionsParameter = {
   hideHomeLink: false,
   hideCompanyShipTo: false,
   hideAddressBook: false,
+  lockAddressBook: false,
 };
 
 async function loadStorefrontScript(groupID: number, styling?: StylingParameter, options?: OptionsParameter) {
