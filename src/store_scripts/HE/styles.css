@@ -135,3 +135,27 @@ ul#mobile-menu {
 #menu li a {
   font-family: 'Trade Gothic LT Bold Italic', sans-serif;
 }
+
+/* Hide phone number and email of sales rep/CSR on My Account page */
+.repInfo table,
+.contactSalesInfo table {
+  display: none;
+}
+
+/* Hide Change Login ID, Change Password, and My Profile links on My Account page */
+#QLloginID,
+#QLpassword,
+#QLprofile {
+  display: none;
+}
+
+table.dataTable thead th div.DataTables_sort_wrapper span {
+  right: unset;
+  left: 0px;
+  background-color: #e2e2e2;
+  border-radius: 4px;
+}
+
+#datatable th.ui-state-default {
+  border-radius: 0px;
+}
