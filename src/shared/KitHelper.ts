@@ -187,10 +187,25 @@ export class KitWorkflow {
               return `<p>
             ${
               index > this.activeKit!.index
-                ? `<object type="image/svg+xml" data="${GLOBALVARS.baseURL}/assets/X.svg" width="24" height="24"></object>`
+                ? `<svg version="1.1" id="X" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
+                <style type="text/css">
+                    #X{fill:#D85B53;height:24px}
+                </style>
+                <path class="st0" d="M12,0C5.4,0,0,5.4,0,12s5.4,12,12,12s12-5.4,12-12S18.6,0,12,0z M17.9,15.8l-2.1,2.1L12,14.1l-3.8,3.8l-2.1-2.1L9.9,12L6.1,8.2l2.1-2.1L12,9.9l3.8-3.8l2.1,2.1L14.1,12L17.9,15.8z"/>
+            </svg>`
                 : index === this.activeKit!.index
-                ? `<object type="image/svg+xml" data="${GLOBALVARS.baseURL}/assets/Clock.svg" width="24" height="24"></object>`
-                : `<object type="image/svg+xml" data="${GLOBALVARS.baseURL}/assets/Check.svg" width="24" height="24"></object>`
+                ? `<svg version="1.1" id="Time" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
+                <style type="text/css">
+                    #Time{fill:#FFBF66;height:24px}
+                </style>
+                <path class="st0" d="M12,0C5.4,0,0,5.4,0,12s5.4,12,12,12s12-5.4,12-12S18.6,0,12,0z M16.4,13.1H12c-0.6,0-1.1-0.5-1.1-1.1V5.5c0-0.6,0.5-1.1,1.1-1.1s1.1,0.5,1.1,1.1v5.5h3.3c0.6,0,1.1,0.5,1.1,1.1S17,13.1,16.4,13.1z"/>
+            </svg>`
+                : `<svg version="1.1" id="Check" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
+                <style type="text/css">
+                    #Check{fill-rule:evenodd;clip-rule:evenodd;fill:#34A853;;height:24px}
+                </style>
+                <path class="st0" d="M12,24c6.6,0,12-5.4,12-12S18.6,0,12,0S0,5.4,0,12S5.4,24,12,24z M16.2,7.8c0.5-0.5,1.2-0.5,1.7,0c0.5,0.5,0.5,1.2,0,1.7l-6.8,6.8l0,0c-0.5,0.5-1.2,0.5-1.7,0c0,0,0,0,0,0l0,0l-3.4-3.4c-0.5-0.5-0.5-1.2,0-1.7c0.5-0.5,1.2-0.5,1.7,0c0,0,0,0,0,0l2.5,2.5L16.2,7.8L16.2,7.8z"/>
+            </svg>`
             }
             ${item.name}</p>`;
             })
