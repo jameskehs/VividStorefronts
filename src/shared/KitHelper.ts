@@ -164,8 +164,15 @@ export class KitWorkflow {
     localStorage.removeItem('shouldRedirectToCatalog');
     let hideKitDetails = JSON.parse(localStorage.getItem('hideKitDetails') ?? 'false');
 
+    if (this.activeKit.autoAdvance && this.activeKit.items[this.activeKit.index].isInventory) {
+    }
+
     // Append informational elements about the kit
-    if (GLOBALVARS.currentPage === StorefrontPage.CUSTOMIZETEMPLATE || GLOBALVARS.currentPage === StorefrontPage.ADDTOCART) {
+    if (
+      GLOBALVARS.currentPage === StorefrontPage.CUSTOMIZETEMPLATE ||
+      GLOBALVARS.currentPage === StorefrontPage.ADDTOCART ||
+      GLOBALVARS.currentPage === StorefrontPage.CART
+    ) {
       $('.tableMain').prepend(
         `<div id="kit_status_container">
             <div id="kit_header_container">
@@ -208,6 +215,7 @@ export class KitWorkflow {
       if (this.activeKit.index === this.activeKit.items.length - 1) {
         $('.tableMain').prepend(`<h3 class="kit_header"> 🎉 ${this.activeKit.name} complete! You may continue to shop or checkout.</h3>`);
         localStorage.removeItem('activeKit');
+        $('#kit_status_container').remove();
         $('#navWrapper, .crumbs').css('display', 'initial');
         return;
       } else {
