@@ -286,7 +286,7 @@ table.tableMain {
   transition: all 0.2s ease;
 }
 span.zoom {
-  z-index: 999;
+  z-index: 9999;
 }
 
 div.grid a.anchor {
