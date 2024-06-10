@@ -469,8 +469,17 @@ div.downloadOnly {
 .format_rules {
   text-align: left;
 }
-
 /* End of Product Description Styling */
+
+th.ui-state-default {
+  border-radius: 0px;
+  padding: 4px !important;
+  border: none !important;
+}
+
+#shipToBox header table {
+  color: var(--primary-text);
+}
 
 /*
 <div class='prod_desc_container' style='white-space:nowrap'>
