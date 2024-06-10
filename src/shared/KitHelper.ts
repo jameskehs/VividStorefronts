@@ -164,9 +164,6 @@ export class KitWorkflow {
     localStorage.removeItem('shouldRedirectToCatalog');
     let hideKitDetails = JSON.parse(localStorage.getItem('hideKitDetails') ?? 'false');
 
-    if (this.activeKit.autoAdvance && this.activeKit.items[this.activeKit.index].isInventory) {
-    }
-
     // Append informational elements about the kit
     if (
       GLOBALVARS.currentPage === StorefrontPage.CUSTOMIZETEMPLATE ||
@@ -174,7 +171,9 @@ export class KitWorkflow {
       GLOBALVARS.currentPage === StorefrontPage.CART
     ) {
       $('.tableMain').prepend(
-        `<div id="kit_status_container">
+        `<div id="kit_status_container" class=${
+          this.activeKit.autoAdvance && this.activeKit.items[this.activeKit.index].isInventory ? 'fullscreen_kit' : ''
+        }>
             <div id="kit_header_container">
               <h3 class="kit_header">You are currently building the ${this.activeKit.name}. You are on item ${this.activeKit.index + 1} of ${
           this.activeKit.items.length

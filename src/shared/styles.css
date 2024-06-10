@@ -166,7 +166,7 @@ ul.TreeControl li a:hover {
   width: 375px !important;
 }
 
-div#kit_status_container.fullscreenKit {
+div#kit_status_container.fullscreen_kit {
   position: fixed;
   top: 0;
   bottom: 0;
