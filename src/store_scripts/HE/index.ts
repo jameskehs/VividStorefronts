@@ -18,6 +18,7 @@ interface HEBillingAddress {
 const kits: Kit[] = [
   {
     name: 'New Branch Startup Kit',
+    autoAdvance: true,
     items: [
       { name: 'One Pocket Blade Folder', designID: 8487, contentID: 40176, recommendedQty: 1, isInventory: true },
       { name: 'Two Pocket Folder', designID: 8545, contentID: 40235, recommendedQty: 1, isInventory: true },
