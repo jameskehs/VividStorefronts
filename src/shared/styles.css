@@ -186,6 +186,10 @@ div.source {
   color: #000;
 }
 
+.hide_kit_details {
+  display: none;
+}
+
 #mainContentSF {
   width: 100%;
   max-width: none;

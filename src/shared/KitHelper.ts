@@ -161,15 +161,20 @@ export class KitWorkflow {
 
   continueKitWorkflow(): void {
     if (this.activeKit === null) return;
+    localStorage.removeItem('shouldRedirectToCatalog');
+    const hideKitDetails = JSON.parse(localStorage.getItem('hideKitDetails') ?? 'false');
 
     // Append informational elements about the kit
     if (GLOBALVARS.currentPage === StorefrontPage.CUSTOMIZETEMPLATE || GLOBALVARS.currentPage === StorefrontPage.ADDTOCART) {
       $('.tableMain').prepend(
         `<div id="kit_status_container">
-        <h3 class="kit_header">You are currently building the ${this.activeKit.name}. You are on item ${this.activeKit.index + 1} of ${
+            <div class="kit_header_container">
+              <h3 class="kit_header">You are currently building the ${this.activeKit.name}. You are on item ${this.activeKit.index + 1} of ${
           this.activeKit.items.length
-        }.</h3>` +
-          `<div class="kit_item_status">` +
+        }.</h3>
+        <button type="button" class="toggle_kit_details">${hideKitDetails ? 'Show Details' : 'Hide Details'}</button>
+            </div>
+          <div class="kit_item_status">` +
           this.activeKit.items
             .map((item, index) => {
               return `<p>
@@ -185,6 +190,12 @@ export class KitWorkflow {
             .join('') +
           `</div></div>`
       );
+
+      $('button.toggle_kit_details').on('click', () => {
+        $('.kit_item_status').toggleClass('hide_kit_details');
+        localStorage.setItem('hideKitDetails', JSON.stringify(!hideKitDetails));
+        $('button.toggle_kit_details').text(hideKitDetails ? 'Show Details' : 'Hide Details');
+      });
     }
 
     // When the user is on the cart page, check if the kit is complete. If it is, show a message and remove the active kit from local storage. If it is not, navigate to the next item in the kit.
