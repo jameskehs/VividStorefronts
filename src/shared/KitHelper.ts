@@ -170,32 +170,32 @@ export class KitWorkflow {
       GLOBALVARS.currentPage === StorefrontPage.ADDTOCART ||
       GLOBALVARS.currentPage === StorefrontPage.CART
     ) {
-      $('.tableMain').insertBefore(
+      $(
         `<div id="kit_status_container" class=${
           this.activeKit.autoAdvance && this.activeKit.items[this.activeKit.index].isInventory ? 'fullscreen_kit' : ''
         }>
-            <div id="kit_header_container">
-              <h3 class="kit_header">You are currently building the ${this.activeKit.name}. You are on item ${this.activeKit.index + 1} of ${
+          <div id="kit_header_container">
+            <h3 class="kit_header">You are currently building the ${this.activeKit.name}. You are on item ${this.activeKit.index + 1} of ${
           this.activeKit.items.length
         }.</h3>
-        <button type="button" class="toggle_kit_details">${hideKitDetails ? 'Show Details' : 'Hide Details'}</button>
-            </div>
-          <div class="kit_item_status ${hideKitDetails ? 'hide_kit_details' : ''}">` +
+      <button type="button" class="toggle_kit_details">${hideKitDetails ? 'Show Details' : 'Hide Details'}</button>
+          </div>
+        <div class="kit_item_status ${hideKitDetails ? 'hide_kit_details' : ''}">` +
           this.activeKit.items
             .map((item, index) => {
               return `<p>
-              ${
-                index > this.activeKit!.index
-                  ? `<object type="image/svg+xml" data="${GLOBALVARS.baseURL}/assets/X.svg" width="24" height="24"></object>`
-                  : index === this.activeKit!.index
-                  ? `<object type="image/svg+xml" data="${GLOBALVARS.baseURL}/assets/Clock.svg" width="24" height="24"></object>`
-                  : `<object type="image/svg+xml" data="${GLOBALVARS.baseURL}/assets/Check.svg" width="24" height="24"></object>`
-              }
-              ${item.name}</p>`;
+            ${
+              index > this.activeKit!.index
+                ? `<object type="image/svg+xml" data="${GLOBALVARS.baseURL}/assets/X.svg" width="24" height="24"></object>`
+                : index === this.activeKit!.index
+                ? `<object type="image/svg+xml" data="${GLOBALVARS.baseURL}/assets/Clock.svg" width="24" height="24"></object>`
+                : `<object type="image/svg+xml" data="${GLOBALVARS.baseURL}/assets/Check.svg" width="24" height="24"></object>`
+            }
+            ${item.name}</p>`;
             })
             .join('') +
           `</div></div>`
-      );
+      ).insertBefore('.tableMain');
 
       $('button.toggle_kit_details').on('click', () => {
         hideKitDetails = !hideKitDetails;
@@ -212,7 +212,7 @@ export class KitWorkflow {
       $('#shoppingCartTbl .memoRow input').last().val(newMemoFieldValue).trigger('blur');
 
       if (this.activeKit.index === this.activeKit.items.length - 1) {
-        $('.tableMain').insertBefore(`<h3 class="kit_header"> 🎉 ${this.activeKit.name} complete! You may continue to shop or checkout.</h3>`);
+        $(`<h3 class="kit_header"> 🎉 ${this.activeKit.name} complete! You may continue to shop or checkout.</h3>`).insertBefore('.tableMain');
         localStorage.removeItem('activeKit');
         $('#kit_status_container').remove();
         $('#navWrapper, .crumbs').show();
