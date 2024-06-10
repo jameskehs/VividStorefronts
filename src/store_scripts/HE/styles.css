@@ -159,3 +159,8 @@ table.dataTable thead th div.DataTables_sort_wrapper span {
 #datatable th.ui-state-default {
   border-radius: 0px;
 }
+
+.dt-buttons button.ui-state-default {
+  background-color: var(--primary-color);
+  color: var(--primary-color-text);
+}
