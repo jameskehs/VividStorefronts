@@ -1,0 +1,11 @@
+.ship-message {
+  background-color: #ffc4c4;
+  max-width: 1600px;
+  margin: 8px auto;
+  border: 2px solid red;
+  border-radius: 4px;
+  font-size: 1.5rem;
+  text-wrap: wrap;
+  padding: 12px 32px;
+  text-align: center;
+}

@@ -9,7 +9,7 @@ export function main() {
 
   document.title = 'Krispy Krunchy Online Store';
 
-  let shipMsg = `<p class="ship-message">Orders over $100 receive free shipping. Please NOTE: Shipping will show in your total at the checkout process but your card will only be charged for items ordered - no shipping!</p>`;
+  let shipMsg = `<p class="ship-message">Orders over $100 receive free shipping.<br>Please NOTE: Shipping will show in your total at the checkout process but your card will only be charged for items ordered - no shipping!</p>`;
   $(shipMsg).insertBefore('.tableMain');
 
   // Change "Shipping & Handling" to "Shipping" in the order summary
