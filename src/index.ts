@@ -42,7 +42,8 @@ async function loadStorefrontScript(groupID: number, styling?: StylingParameter,
       groupID === 132 ||
       groupID === 70 ||
       groupID === 95 ||
-      groupID === 121
+      groupID === 121 ||
+      groupID === 85
     ) {
       await import(/* webpackChunkName: "basestyling" */ `./shared/styles.css`);
     }
