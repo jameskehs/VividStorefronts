@@ -40,3 +40,8 @@ ul.TreeControl li.TCbullet a {
 ul.TreeControl {
   background-color: #fff;
 }
+
+img.finishedGoodThmb,
+.prodCell .left a {
+  height: 400px;
+}
