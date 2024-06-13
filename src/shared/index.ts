@@ -1,4 +1,5 @@
-import { OptionsParameter } from '../index';
+import { StorefrontPage } from '../enums/StorefrontPage.enum';
+import { GLOBALVARS, OptionsParameter } from '../index';
 
 export function runSharedScript(options: OptionsParameter) {
   console.log('Hello from the shared script!');
@@ -13,9 +14,9 @@ export function runSharedScript(options: OptionsParameter) {
   options.hideCompanyShipTo && $('div#shipToCompany').remove();
   options.lockAddressBook && $('button[title="Import address book"], button#saveAddressBook').remove();
 
-  $(() => {
+  if (GLOBALVARS.currentPage === StorefrontPage.CATALOG) {
     loadDropdownMenu();
-  });
+  }
 
   // Add "On Demand" tag to products that are not inventoried
   /*$('.prodCell').each(function (index, cell) {
