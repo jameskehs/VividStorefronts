@@ -516,6 +516,15 @@ div.grid a.anchor {
   height: auto;
 }
 
+#show_sample {
+  box-sizing: content-box;
+}
+
+ul.dropdown-content {
+  background-color: #eee;
+  margin-right: 5px !important;
+}
+
 /*
 <div class='prod_desc_container' style='white-space:nowrap'>
 <div class='apparel_colors' style='display:flex'>

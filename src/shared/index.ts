@@ -13,6 +13,10 @@ export function runSharedScript(options: OptionsParameter) {
   options.hideCompanyShipTo && $('div#shipToCompany').remove();
   options.lockAddressBook && $('button[title="Import address book"], button#saveAddressBook').remove();
 
+  $(() => {
+    loadDropdownMenu();
+  });
+
   // Add "On Demand" tag to products that are not inventoried
   /*$('.prodCell').each(function (index, cell) {
     const inventoryTag = $(this).find('.meta p.ui-state-error, .meta p.ui-state-default');
@@ -20,4 +24,50 @@ export function runSharedScript(options: OptionsParameter) {
       $('span.meta', this).prepend('<p class="ui-state-default ui-corner-all" style="text-align: center;">On Demand</p>');
     }
   });*/
+}
+
+function loadDropdownMenu() {
+  const $menu = $('.TreeControl ul');
+  const $items = $menu.children('li');
+
+  let $currentParent = null;
+
+  $items.each(function () {
+    const $item = $(this);
+    const indent = parseInt($item.css('text-indent'));
+
+    if (indent === 0) {
+      $item.addClass('dropdown');
+      $item.append('<ul class="dropdown-content"></ul>');
+      $currentParent = $item;
+    } else if (indent === 10 || indent === 20) {
+      $item.addClass('nested-dropdown');
+      $currentParent!.find('ul').first().append($item);
+    }
+  });
+
+  // Set initial state based on localStorage
+  $items.each(function () {
+    const $item = $(this);
+    if ($item.hasClass('dropdown') && $item.find('.dropdown-content').children().length > 0) {
+      const id = $item.find('a').attr('href');
+      $item.prepend(`<button class="toggle-btn" style="position:absolute;right:10px;border:1px solid #ddd !important;height:20px;">Open</button>`);
+      const isOpen = localStorage.getItem(id!) === 'true';
+      $item.find('.dropdown-content').toggle(isOpen);
+      $item.find('.toggle-btn').text(isOpen ? 'Close' : 'Open');
+    }
+  });
+
+  $('.toggle-btn').on('click', function (e): void {
+    e.stopPropagation();
+    const $btn = $(this);
+    const $dropdownContent = $btn.siblings('.dropdown-content');
+    $dropdownContent.toggle();
+    const isOpen = $dropdownContent.is(':visible');
+    $btn.text(isOpen ? 'Close' : 'Open');
+
+    // Store state in localStorage
+    const id = $btn.siblings('a').attr('href');
+    localStorage.setItem(id!, JSON.stringify(isOpen));
+  });
 }
