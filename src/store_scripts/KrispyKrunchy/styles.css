@@ -1,0 +1,35 @@
+* {
+  font-family: 'program', 'Poppins', sans-serif;
+  font-size: 1.2rem;
+}
+
+body {
+  background-image: url(https://firstgx.mypresswise.com/user/images/krispy-krunchy/KKC_Graphic.webp);
+  background-position: bottom left;
+}
+
+.prodCell h3 {
+  font-size: 1.3rem;
+}
+
+ul.TreeControl li.TCbullet a {
+  font-size: 1.5rem;
+}
+
+#menu li a {
+  font-size: 1.6rem;
+}
+
+.prodCell .left a {
+  border: 2px solid #eee;
+}
+
+.catalogTbl,
+ul.TreeControl {
+  background-color: #fff;
+}
+
+img.finishedGoodThmb,
+.prodCell .left a {
+  height: 400px;
+}
