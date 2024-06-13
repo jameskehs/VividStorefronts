@@ -1,3 +1,7 @@
+* {
+  font-family: 'program', 'Poppins', sans-serif;
+}
+
 .ship-message {
   background-color: #ffc4c4;
   max-width: 1600px;
