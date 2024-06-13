@@ -15,7 +15,7 @@ export function runSharedScript(options: OptionsParameter) {
   options.lockAddressBook && $('button[title="Import address book"], button#saveAddressBook').remove();
 
   if (GLOBALVARS.currentPage === StorefrontPage.CATALOG) {
-    loadDropdownMenu();
+    options.enableDropdown && loadDropdownMenu();
   }
 
   // Add "On Demand" tag to products that are not inventoried

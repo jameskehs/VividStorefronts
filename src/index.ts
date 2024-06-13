@@ -11,10 +11,11 @@ export const GLOBALVARS: GlobalState = {
 };
 
 export interface OptionsParameter {
-  hideHomeLink?: boolean;
-  hideCompanyShipTo?: boolean;
-  hideAddressBook?: boolean;
-  lockAddressBook?: boolean;
+  hideHomeLink: boolean;
+  hideCompanyShipTo: boolean;
+  hideAddressBook: boolean;
+  lockAddressBook: boolean;
+  enableDropdown: boolean;
 }
 
 const defaultOptions: OptionsParameter = {
@@ -22,6 +23,7 @@ const defaultOptions: OptionsParameter = {
   hideCompanyShipTo: false,
   hideAddressBook: false,
   lockAddressBook: false,
+  enableDropdown: false,
 };
 
 async function loadStorefrontScript(groupID: number, styling?: StylingParameter, options?: OptionsParameter) {
