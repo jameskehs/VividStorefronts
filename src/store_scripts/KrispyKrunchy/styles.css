@@ -20,7 +20,7 @@ ul.TreeControl li.TCbullet a {
   font-size: 1.6rem;
 }
 
-.prodCell .left a {
+.prodCell .left a:not(span.meta a) {
   border: 2px solid #eee;
 }
 
