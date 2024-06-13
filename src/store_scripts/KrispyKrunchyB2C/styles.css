@@ -3,6 +3,11 @@
   font-size: 1.2rem;
 }
 
+body {
+  background-image: url(https://firstgx.mypresswise.com/user/images/krispy-krunchy/KKC_Graphic.webp);
+  background-position: bottom left;
+}
+
 .ship-message {
   background-color: #ffc4c4;
   max-width: 1600px;
