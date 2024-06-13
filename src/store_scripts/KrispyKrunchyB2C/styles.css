@@ -1,5 +1,6 @@
 * {
   font-family: 'program', 'Poppins', sans-serif;
+  font-size: 1.2rem;
 }
 
 .ship-message {
@@ -12,4 +13,16 @@
   text-wrap: wrap;
   padding: 12px 32px;
   text-align: center;
+}
+
+.prodCell h3 {
+  font-size: 1.3rem;
+}
+
+ul.TreeControl li.TCbullet a {
+  font-size: 1.5rem;
+}
+
+#menu li a {
+  font-size: 1.6rem;
 }
