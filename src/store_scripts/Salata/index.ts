@@ -3,11 +3,18 @@
 
 import { StorefrontPage } from '../../enums/StorefrontPage.enum';
 import { GLOBALVARS } from '../../index';
+import { replaceAttrText } from '../../shared/replaceSizeText';
 
 export function main() {
   console.log(GLOBALVARS.currentPage);
 
   if (GLOBALVARS.currentPage === StorefrontPage.ADDTOCART) {
+    const productName = $('.tablesorter tbody tr td').eq(1).text().trim();
+
+    if (productName.includes('SLTML0075') || productName.includes('SLTML0074')) {
+      replaceAttrText('Size', 'Version');
+      replaceAttrText('Color', 'Location');
+    }
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CART) {
   }
