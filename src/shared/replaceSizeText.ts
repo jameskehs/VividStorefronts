@@ -7,6 +7,6 @@ export function replaceSizeText(replacementText: string) {
 
 export function replaceAttrText(attribute: 'SIZE' | 'COLOR', replacementText: string) {
   $('.tablesorter tbody td').each((index, cell) => {
-    $(cell).text() === attribute && $(cell).html(`<strong>${replacementText}</strong>`);
+    $(cell).text() === attribute && $(cell).html(`<strong>${replacementText.toUpperCase()}</strong>`);
   });
 }
