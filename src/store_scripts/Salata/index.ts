@@ -12,8 +12,8 @@ export function main() {
     const productName = $('.tablesorter tbody tr td').eq(1).text().trim();
 
     if (productName.includes('SLTML0075') || productName.includes('SLTML0074')) {
-      replaceAttrText('Size', 'Version');
-      replaceAttrText('Color', 'Location');
+      replaceAttrText('SIZE', 'Version');
+      replaceAttrText('COLOR', 'Location');
     }
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CART) {
