@@ -526,6 +526,13 @@ ul.dropdown-content {
   margin-right: 5px !important;
 }
 
+img#productImage {
+  width: 400px;
+  background-color: #fff;
+  padding: 12px;
+  border-radius: 10px;
+}
+
 /*
 <div class='prod_desc_container' style='white-space:nowrap'>
 <div class='apparel_colors' style='display:flex'>
