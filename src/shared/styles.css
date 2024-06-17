@@ -331,6 +331,7 @@ span.meta .ui-state-error {
 
 img.finishedGoodThmb {
   height: 250px;
+  padding: 4px;
 }
 
 .prodCell.parentSubcategoryCell {
