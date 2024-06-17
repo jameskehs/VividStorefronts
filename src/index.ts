@@ -35,6 +35,11 @@ async function loadStorefrontScript(groupID: number, styling?: StylingParameter,
     GLOBALVARS.currentPage = Utils.determineCurrentPage();
     const scriptOptions: OptionsParameter = { ...defaultOptions, ...options };
 
+    const scriptFolder = ScriptMap[groupID];
+    if (!scriptFolder) {
+      throw new Error(`Module with groupID ${groupID} not found in ModuleMap.`);
+    }
+
     // Conditionally import base styling
     // Don't use shared styling for Canes, TGK, or DPI
     if (![58, 111, 127].includes(groupID)) {
@@ -47,12 +52,7 @@ async function loadStorefrontScript(groupID: number, styling?: StylingParameter,
     // Run shared script if applicable
     if (groupID !== 58) runSharedScript(scriptOptions);
 
-    // Determine and load the appropriate script module
-    const scriptFolder = ScriptMap[groupID];
-    if (!scriptFolder) {
-      throw new Error(`Module with groupID ${groupID} not found in ModuleMap.`);
-    }
-
+    // Load the appropriate script module
     const uniqueScript = await import(/* webpackChunkName: "uniqueScript" */ `./store_scripts/${scriptFolder}/index.ts`);
     await import(/* webpackChunkName: "uniqueStyling" */ `./store_scripts/${scriptFolder}/styles.css`);
 
