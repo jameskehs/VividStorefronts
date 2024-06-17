@@ -330,7 +330,8 @@ span.meta .ui-state-error {
 }
 
 img.finishedGoodThmb {
-  height: 250px;
+  max-height: 250px;
+  height: auto;
   padding: 4px;
 }
 
