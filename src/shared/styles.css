@@ -529,7 +529,8 @@ ul.dropdown-content {
 }
 
 img#productImage {
-  width: 400px;
+  max-width: 400px;
+  width: auto;
   background-color: #fff;
   padding: 12px;
   border-radius: 10px;
