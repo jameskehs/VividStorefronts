@@ -528,6 +528,10 @@ ul.dropdown-content {
   margin-right: 5px !important;
 }
 
+.toggle-btn:hover svg {
+  fill: var(--primary-color);
+}
+
 img#productImage {
   max-width: 400px;
   width: auto;
