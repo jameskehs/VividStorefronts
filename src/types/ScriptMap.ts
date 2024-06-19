@@ -14,4 +14,5 @@ export const ScriptMap: Record<number, string> = {
   122: 'Salata',
   130: 'PenningtonBiomedical',
   132: 'TheDogStop',
+  134: 'ChestersChicken',
 };
