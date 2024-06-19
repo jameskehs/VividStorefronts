@@ -59,7 +59,7 @@ function loadDropdownMenu() {
       <button class="toggle-btn" style="position:absolute;right:10px;border:1px solid #ddd !important;height:20px;">${closedArrow}</button>`);
       const isOpen = localStorage.getItem(id!) === 'true';
       $item.find('.dropdown-content').toggle(isOpen);
-      $item.find('.toggle-btn').text(isOpen ? openArrow : closedArrow);
+      $item.find('.toggle-btn').html(isOpen ? openArrow : closedArrow);
     }
   });
 
