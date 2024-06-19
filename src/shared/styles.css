@@ -536,6 +536,9 @@ img#productImage {
   border-radius: 10px;
 }
 
+.list-style-buttons {
+  display: none;
+}
 /*
 <div class='prod_desc_container' style='white-space:nowrap'>
 <div class='apparel_colors' style='display:flex'>
