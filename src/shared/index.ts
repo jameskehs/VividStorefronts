@@ -69,7 +69,7 @@ function loadDropdownMenu() {
     const $dropdownContent = $btn.siblings('.dropdown-content');
     $dropdownContent.toggle();
     const isOpen = $dropdownContent.is(':visible');
-    $btn.text(isOpen ? openArrow : closedArrow);
+    $btn.html(isOpen ? openArrow : closedArrow);
 
     // Store state in localStorage
     const id = $btn.siblings('a').attr('href');
