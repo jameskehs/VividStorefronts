@@ -50,7 +50,7 @@ async function loadStorefrontScript(groupID: number, styling?: StylingParameter,
     if (styling) setCSSVariables(styling);
 
     // Run shared script if applicable
-    if (groupID !== 58) runSharedScript(scriptOptions);
+    if (groupID !== 58) $(() => runSharedScript(scriptOptions));
 
     // Load the appropriate script module
     const uniqueScript = await import(/* webpackChunkName: "uniqueScript" */ `./store_scripts/${scriptFolder}/index.ts`);
