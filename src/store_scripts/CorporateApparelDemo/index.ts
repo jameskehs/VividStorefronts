@@ -26,6 +26,8 @@ export function main() {
   if (GLOBALVARS.currentPage === StorefrontPage.CREATEEDITACCOUNT) {
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CUSTOMIZETEMPLATE) {
+    // There is currently a bug where "This side of the design does not require customization." shows even when the product does require customization"
+    $('#no_customize').closest('td').hide();
   }
   if (GLOBALVARS.currentPage === StorefrontPage.MYACCOUNT) {
   }
