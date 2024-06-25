@@ -41,8 +41,8 @@ async function loadStorefrontScript(groupID: number, styling?: StylingParameter,
     }
 
     // Conditionally import base styling
-    // Don't use shared styling for Canes, TGK, or DPI
-    if (![58, 111, 127].includes(groupID)) {
+    // Don't use shared styling for Canes, TGK
+    if (![58, 111].includes(groupID)) {
       await import(/* webpackChunkName: "basestyling" */ `./shared/styles.css`);
     }
 
