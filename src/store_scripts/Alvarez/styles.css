@@ -1,0 +1,9 @@
+.site-banner {
+  background-color: #5d140d;
+  height: 48px;
+  display: flex;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+}
