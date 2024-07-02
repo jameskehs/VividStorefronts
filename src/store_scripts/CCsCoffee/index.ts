@@ -9,7 +9,7 @@ export function main() {
 
   if (GLOBALVARS.currentPage === StorefrontPage.ADDTOCART) {
     $('.tablesorter tr').each(function (index, element) {
-      if ($(this).text().includes('qtyAvailable')) {
+      if ($(this).text().includes('AVAILABLE')) {
         $(this).hide();
       }
     });
