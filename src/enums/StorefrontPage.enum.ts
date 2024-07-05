@@ -10,6 +10,7 @@ export enum StorefrontPage {
   CHECKOUTSHIPPING = 'Checkout Shipping Page',
   CREATEEDITACCOUNT = 'Account Form Page',
   CUSTOMIZETEMPLATE = 'Customize Page',
+  LOGIN = 'Login Page',
   MYACCOUNT = 'My Account Page',
   VIEWORDERS = 'View Orders Page',
 }
