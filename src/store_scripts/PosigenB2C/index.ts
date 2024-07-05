@@ -1,4 +1,4 @@
-// <script src="https://main--vividstorefronts.netlify.app/main.js"></script>
+// <script src="https://main--vividstorefronts.netlify.app"></script>
 // <script>loadStorefrontScript(brandingProfile)</script>
 
 import { StorefrontPage } from '../../enums/StorefrontPage.enum';
@@ -7,23 +7,7 @@ import { GLOBALVARS } from '../../index';
 export function main() {
   console.log(GLOBALVARS.currentPage);
 
-  if (GLOBALVARS.currentPage === StorefrontPage.LOGIN) {
-    if (!sessionStorage.getItem('direct-overlay-disabled')) {
-      $('body').append(`
-        <div id="direct-login-form">
-          <h1 style="text-align:center;padding:24px 0">Are you an Employee or Corporate user?</h1>
-          <div id="LoginBtns">
-            <button id="employee-login" type="button" href="/">Employee</button>
-            <a href="https://www.vivid-think.com/login.php">Corporate</a>
-          </div>
-        </div>`);
-
-      $('#employee-login').on('click', () => {
-        sessionStorage.setItem('direct-overlay-disabled', 'true');
-        $('#direct-login-form').remove();
-      });
-    }
-  } else {
+  if (!(GLOBALVARS.currentPage === StorefrontPage.LOGIN)) {
     sessionStorage.removeItem('direct-overlay-disabled');
   }
 
