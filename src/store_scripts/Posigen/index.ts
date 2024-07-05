@@ -3,9 +3,26 @@
 
 import { StorefrontPage } from '../../enums/StorefrontPage.enum';
 import { GLOBALVARS } from '../../index';
+import { KitWorkflow } from '../../shared/KitHelper';
+import { Kit } from '../../types/Kit';
 
 export function main() {
   console.log(GLOBALVARS.currentPage);
+
+  const kits: Kit[] = [
+    {
+      name: 'Advocates Referrals Kit',
+      items: [
+        { name: 'Advocate Referral One Pages', designID: 11422, contentID: 45960, recommendedQty: 1, isInventory: false },
+        { name: 'Advocate Referral Stickers', designID: 11423, contentID: 45961, recommendedQty: 1, isInventory: false },
+        { name: 'Advocate Referral Yard Sign', designID: 11421, contentID: 45959, recommendedQty: 1, isInventory: false },
+      ],
+      enforceRecommendedQty: true,
+    },
+  ];
+
+  const kitWorkflow = new KitWorkflow(kits);
+  kitWorkflow.run();
 
   if (GLOBALVARS.currentPage === StorefrontPage.ADDTOCART) {
   }
