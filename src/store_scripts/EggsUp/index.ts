@@ -7,10 +7,6 @@ import { GLOBALVARS } from '../../index';
 export function main() {
   console.log(GLOBALVARS.currentPage);
 
-  if (!(GLOBALVARS.currentPage === StorefrontPage.LOGIN)) {
-    sessionStorage.removeItem('direct-overlay-disabled');
-  }
-
   if (GLOBALVARS.currentPage === StorefrontPage.ADDTOCART) {
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CART) {
@@ -18,7 +14,6 @@ export function main() {
   if (GLOBALVARS.currentPage === StorefrontPage.CATALOG) {
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTADDRESS) {
-    $('#PorCAddress header').text('PERSONAL SHIP TO ADDRESS');
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTCONFIRMATION) {
   }
