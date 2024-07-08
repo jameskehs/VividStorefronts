@@ -17,7 +17,7 @@ export function main() {
         { name: 'Advocate Referral Stickers', designID: 11423, contentID: 45961, recommendedQty: 1, isInventory: false },
         { name: 'Advocate Referral Yard Sign', designID: 11421, contentID: 45959, recommendedQty: 1, isInventory: false },
       ],
-      enforceRecommendedQty: true,
+      enforceRecommendedQty: false,
     },
   ];
 
