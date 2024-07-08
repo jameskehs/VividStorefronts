@@ -177,7 +177,8 @@ div#kit_status_container.fullscreen_kit {
   max-width: 100%;
 }
 
-div#kit_status_container {
+div#kit_status_container,
+h3.kit_header {
   background-color: #252525;
   padding: 8px;
   border-radius: 8px;
