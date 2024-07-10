@@ -7,6 +7,8 @@ import { GLOBALVARS } from '../../index';
 export function main() {
   console.log(GLOBALVARS.currentPage);
 
+  $('.linkC a').attr('href', '/catalog/?g=3502&y=8178');
+
   if (GLOBALVARS.currentPage === StorefrontPage.ADDTOCART) {
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CART) {
