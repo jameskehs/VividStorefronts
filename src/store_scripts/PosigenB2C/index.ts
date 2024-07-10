@@ -3,9 +3,26 @@
 
 import { StorefrontPage } from '../../enums/StorefrontPage.enum';
 import { GLOBALVARS } from '../../index';
+import { KitWorkflow } from '../../shared/KitHelper';
+import { Kit } from '../../types/Kit';
 
 export function main() {
   console.log(GLOBALVARS.currentPage);
+
+  const kits: Kit[] = [
+    {
+      name: 'Advocates Referrals Kit',
+      items: [
+        { name: 'Advocate Referral One Pages (Set of 10)', designID: 11422, contentID: 45960, recommendedQty: 50, isInventory: false },
+        { name: 'Advocate Referral Stickers (Set of 10)', designID: 11423, contentID: 45961, recommendedQty: 12, isInventory: false },
+        { name: 'Advocate Referral Yard Sign (Set of 10)', designID: 11421, contentID: 45959, recommendedQty: 1, isInventory: false },
+      ],
+      enforceRecommendedQty: false,
+    },
+  ];
+
+  const kitWorkflow = new KitWorkflow(kits);
+  kitWorkflow.run();
 
   if (!(GLOBALVARS.currentPage === StorefrontPage.LOGIN)) {
     sessionStorage.removeItem('direct-overlay-disabled');
