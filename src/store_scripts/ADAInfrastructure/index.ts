@@ -27,8 +27,8 @@ export function main() {
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CUSTOMIZETEMPLATE) {
     $(function () {
-      replacePhoneInputs('Mobile', 'Mobile Phone');
-      replacePhoneInputs('Work', 'Work Phone');
+      replacePhoneInputs('Mobile', 'Mobile Phone', true);
+      replacePhoneInputs('Work', 'Work Phone', false);
     });
   }
   if (GLOBALVARS.currentPage === StorefrontPage.MYACCOUNT) {
