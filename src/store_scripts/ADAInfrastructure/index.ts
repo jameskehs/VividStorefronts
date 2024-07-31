@@ -26,28 +26,44 @@ export function main() {
   if (GLOBALVARS.currentPage === StorefrontPage.CREATEEDITACCOUNT) {
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CUSTOMIZETEMPLATE) {
-    // Create a container for the mobile phone inputs
-    const mobilePhoneContainer = $(
-      `<tr>
-        <td align="right" valign="top">
-          <span class="required_star">*</span>
-          <strong>Mobile Phone:&nbsp;</strong>
-        </td>
-        <td align="left">
-          <div class="phone-container"></div>
-        </td>
-      </tr>`
-    );
-
-    $('#show_userform table tbody').append(mobilePhoneContainer);
-
-    // Append the mobile phone inputs to the container
-    $('input[name="N108"], input[name="N109"], input[name="N110"], input[name="N111"]').each(function () {
-      $('.mobile-phone-container').append($(this));
+    $(function () {
+      replacePhoneInputs('Mobile');
+      replacePhoneInputs('Work');
     });
   }
   if (GLOBALVARS.currentPage === StorefrontPage.MYACCOUNT) {
   }
   if (GLOBALVARS.currentPage === StorefrontPage.VIEWORDERS) {
   }
+}
+
+function replacePhoneInputs(inputName: string) {
+  let phoneContainer = $(`
+    <tr>
+      <td align="right" valign="top">
+        <span class="required_star">*</span>
+        <strong>Mobile Phone:&nbsp;</strong>
+      </td>
+      <td align="left">
+        <div class="phone-container"></div>
+      </td>
+    </tr>`);
+
+  let rowIndex = null;
+  let firstItem = true;
+
+  $('#show_userform table tr').each((index, element) => {
+    const [label, input] = $(element).children();
+    if (label.innerText.includes(inputName)) {
+      if (firstItem) {
+        rowIndex = index;
+        firstItem = false;
+      }
+
+      $(input).appendTo($(phoneContainer).find('.phone-container'));
+      $(element).remove();
+    }
+  });
+
+  $(`#show_userform table tr:eq(${rowIndex})`).after(phoneContainer);
 }
