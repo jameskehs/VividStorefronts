@@ -37,11 +37,11 @@ export function main() {
   }
 }
 
-function replacePhoneInputs(labelMatch: string, inputName: string) {
+function replacePhoneInputs(labelMatch: string, inputName: string, required: boolean) {
   let phoneContainer = $(`
     <tr>
       <td align="right" valign="top">
-        <span class="required_star">*</span>
+        ${required && '<span class="required_star">*</span>'}
         <strong>${inputName}:&nbsp;</strong>
       </td>
       <td align="left">
