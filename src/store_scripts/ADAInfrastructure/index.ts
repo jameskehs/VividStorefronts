@@ -26,10 +26,14 @@ export function main() {
   if (GLOBALVARS.currentPage === StorefrontPage.CREATEEDITACCOUNT) {
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CUSTOMIZETEMPLATE) {
-    $(function () {
-      replacePhoneInputs('Mobile', 'Mobile Phone', true);
-      replacePhoneInputs('Work', 'Work Phone', false);
-    });
+    const productName = $('.templateName a').text().trim();
+
+    if (['US QR Code Business Cards', 'US Standard Business Cards'].includes(productName)) {
+      $(function () {
+        replacePhoneInputs('Mobile', 'Mobile Phone', true);
+        replacePhoneInputs('Work', 'Work Phone', false);
+      });
+    }
   }
   if (GLOBALVARS.currentPage === StorefrontPage.MYACCOUNT) {
   }
