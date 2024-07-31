@@ -70,5 +70,5 @@ function replacePhoneInputs(labelMatch: string, inputName: string, required: boo
     }
   });
   console.log('Inserting phone inputs at row index:', rowIndex);
-  $(`#show_userform table tr:eq(${rowIndex})`).after(phoneContainer);
+  $(`#show_userform table tr:eq(${rowIndex! - 1})`).after(phoneContainer);
 }
