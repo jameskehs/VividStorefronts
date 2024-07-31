@@ -42,7 +42,7 @@ function replacePhoneInputs(labelMatch: string, inputName: string) {
     <tr>
       <td align="right" valign="top">
         <span class="required_star">*</span>
-        <strong>${inputName} Phone:&nbsp;</strong>
+        <strong>${inputName}:&nbsp;</strong>
       </td>
       <td align="left">
         <div class="phone-container"></div>
