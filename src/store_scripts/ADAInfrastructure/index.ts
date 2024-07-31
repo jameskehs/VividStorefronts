@@ -26,6 +26,25 @@ export function main() {
   if (GLOBALVARS.currentPage === StorefrontPage.CREATEEDITACCOUNT) {
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CUSTOMIZETEMPLATE) {
+    // Create a container for the mobile phone inputs
+    const mobilePhoneContainer = $(
+      `<tr>
+        <td align="right" valign="top">
+          <span class="required_star">*</span>
+          <strong>Mobile Phone:&nbsp;</strong>
+        </td>
+        <td align="left">
+          <div class="phone-container"></div>
+        </td>
+      </tr>`
+    );
+
+    $('#show_userform table tbody').append(mobilePhoneContainer);
+
+    // Append the mobile phone inputs to the container
+    $('input[name="N108"], input[name="N109"], input[name="N110"], input[name="N111"]').each(function () {
+      $('.mobile-phone-container').append($(this));
+    });
   }
   if (GLOBALVARS.currentPage === StorefrontPage.MYACCOUNT) {
   }
