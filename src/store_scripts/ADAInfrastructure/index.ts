@@ -27,8 +27,8 @@ export function main() {
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CUSTOMIZETEMPLATE) {
     $(function () {
-      replacePhoneInputs('Mobile');
-      replacePhoneInputs('Work');
+      replacePhoneInputs('Mobile', 'Mobile Phone');
+      replacePhoneInputs('Work', 'Work Phone');
     });
   }
   if (GLOBALVARS.currentPage === StorefrontPage.MYACCOUNT) {
@@ -37,12 +37,12 @@ export function main() {
   }
 }
 
-function replacePhoneInputs(inputName: string) {
+function replacePhoneInputs(labelMatch: string, inputName: string) {
   let phoneContainer = $(`
     <tr>
       <td align="right" valign="top">
         <span class="required_star">*</span>
-        <strong>Mobile Phone:&nbsp;</strong>
+        <strong>${inputName} Phone:&nbsp;</strong>
       </td>
       <td align="left">
         <div class="phone-container"></div>
@@ -54,13 +54,13 @@ function replacePhoneInputs(inputName: string) {
 
   $('#show_userform table tr').each((index, element) => {
     const [label, input] = $(element).children();
-    if (label.innerText.includes(inputName)) {
+    if (label.innerText.includes(labelMatch)) {
       if (firstItem) {
         rowIndex = index;
         firstItem = false;
       }
 
-      $(input).appendTo($(phoneContainer).find('.phone-container'));
+      $(input).appendTo(phoneContainer.find('.phone-container'));
       $(element).remove();
     }
   });
