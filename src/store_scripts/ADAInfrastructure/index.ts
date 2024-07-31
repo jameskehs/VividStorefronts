@@ -60,7 +60,6 @@ function replacePhoneInputs(labelMatch: string, inputName: string, required: boo
     const [label, input] = $(element).children();
     if (label.innerText.includes(labelMatch)) {
       if (firstItem) {
-        console.log('Found first phone input at row index:', index);
         rowIndex = index;
         firstItem = false;
       }
@@ -69,6 +68,5 @@ function replacePhoneInputs(labelMatch: string, inputName: string, required: boo
       $(element).remove();
     }
   });
-  console.log('Inserting phone inputs at row index:', rowIndex);
   $(`#show_userform table tr:eq(${rowIndex! - 1})`).after(phoneContainer);
 }
