@@ -19,6 +19,22 @@ export function main() {
       ],
       enforceRecommendedQty: false,
     },
+    {
+      name: 'New Hire Kit (Mens)',
+      items: [
+        { name: 'Mens Dri Fit Polo', designID: 8566, contentID: 40286, recommendedQty: 2, isInventory: true },
+        { name: 'Dad Cap', designID: 8800, contentID: 40630, recommendedQty: 1, isInventory: true },
+      ],
+      enforceRecommendedQty: true,
+    },
+    {
+      name: 'New Hire Kit (Womens)',
+      items: [
+        { name: 'Womens Dri Fit Polo', designID: 8573, contentID: 40293, recommendedQty: 2, isInventory: true },
+        { name: 'Dad Cap', designID: 8800, contentID: 40630, recommendedQty: 1, isInventory: true },
+      ],
+      enforceRecommendedQty: true,
+    },
   ];
 
   const kitWorkflow = new KitWorkflow(kits);

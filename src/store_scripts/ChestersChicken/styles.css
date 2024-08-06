@@ -1,3 +1,4 @@
-#dispCustomerPO {
+/* Hide PO field */
+#custPOBox {
   display: none;
 }
