@@ -1,4 +1,5 @@
 /* Hide PO field */
-#custPOBox {
+#custPOBox,
+#turnAroundTbl {
   display: none;
 }
