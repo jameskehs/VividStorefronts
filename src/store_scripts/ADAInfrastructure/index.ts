@@ -18,6 +18,7 @@ export function main() {
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTCONFIRMATION) {
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTPAYMENT) {
+    $('#CCInstructions').text('Enter payment details below (if applicable)');
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTREVIEW) {
   }
