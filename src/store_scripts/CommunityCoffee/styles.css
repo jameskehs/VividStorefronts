@@ -1,0 +1,4 @@
+#qtyAvailableDisplay,
+input#qtyAvailable {
+  display: none;
+}
