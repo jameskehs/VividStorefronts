@@ -18,6 +18,8 @@ export function main() {
     if (productName.includes('Magnetic Menu Board')) {
       replaceAttrText('SIZE', 'PRICE');
     }
+
+    $('#qtyAvailableDisplay').closest('tr').hide();
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CART) {
   }
