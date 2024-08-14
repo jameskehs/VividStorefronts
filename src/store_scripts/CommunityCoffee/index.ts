@@ -19,7 +19,7 @@ export function main() {
       replaceAttrText('SIZE', 'PRICE');
     }
 
-    $('#qtyAvailableDisplay').closest('tr').hide();
+    $('#qtyAvailableDisplay, input#qtyAvailable').closest('tr').hide();
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CART) {
   }
