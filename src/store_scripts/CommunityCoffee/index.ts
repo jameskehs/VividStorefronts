@@ -3,11 +3,21 @@
 
 import { StorefrontPage } from '../../enums/StorefrontPage.enum';
 import { GLOBALVARS } from '../../index';
+import { replaceAttrText } from '../../shared/replaceSizeText';
 
 export function main() {
   console.log(GLOBALVARS.currentPage);
 
   if (GLOBALVARS.currentPage === StorefrontPage.ADDTOCART) {
+    const productName = $('.tablesorter tbody tr td').eq(1).text().trim();
+
+    if (productName.includes('RTD Pricing Stickers')) {
+      replaceAttrText('SIZE', 'PRICE');
+      replaceAttrText('COLOR', 'DRINK SIZE');
+    }
+    if (productName.includes('Magnetic Menu Board')) {
+      replaceAttrText('SIZE', 'PRICE');
+    }
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CART) {
   }
