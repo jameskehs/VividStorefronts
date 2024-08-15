@@ -26,9 +26,24 @@ export function main() {
   if (GLOBALVARS.currentPage === StorefrontPage.CREATEEDITACCOUNT) {
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CUSTOMIZETEMPLATE) {
+    $('#customizeTbl h2').text('Preview your Design');
   }
   if (GLOBALVARS.currentPage === StorefrontPage.MYACCOUNT) {
   }
   if (GLOBALVARS.currentPage === StorefrontPage.VIEWORDERS) {
+  }
+
+  if (
+    [
+      StorefrontPage.CHECKOUTADDRESS,
+      StorefrontPage.CHECKOUTCONFIRMATION,
+      StorefrontPage.CHECKOUTPAYMENT,
+      StorefrontPage.CHECKOUTREVIEW,
+      StorefrontPage.CHECKOUTSHIPPING,
+    ].includes(GLOBALVARS.currentPage!)
+  ) {
+    $('.checkoutProgress').append(
+      "<h1 style='max-width:900px; margin:0 auto; padding: 24px 0'>All T-shirt orders must be received by Monday, September 25, 2023. You may choose direct shipping via USPS to your shipping address provided or pick up at Vivid Ink, <a href='https://www.google.com/maps?q=8640+Airline+Hwy,+Baton+Rouge,+LA+70815' target='_blank'>8640 Airline Hwy, Baton Rouge, LA 70815</a> between October 11, 2023 and  October 13, 2023.</h1>"
+    );
   }
 }
