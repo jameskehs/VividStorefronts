@@ -2,3 +2,7 @@
   width: 1600px;
   margin: 0 auto;
 }
+
+table.tableSiteBanner img {
+  display: none;
+}
