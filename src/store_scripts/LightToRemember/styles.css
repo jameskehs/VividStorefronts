@@ -3,6 +3,7 @@
   margin: 0 auto;
 }
 
-table.tableSiteBanner img {
+table.tableSiteBanner img,
+#shipToCompany {
   display: none;
 }

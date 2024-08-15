@@ -43,7 +43,7 @@ export function main() {
     ].includes(GLOBALVARS.currentPage!)
   ) {
     $('.checkoutProgress').append(
-      "<h1 style='max-width:900px; margin:0 auto; padding: 24px 0'>All T-shirt orders must be received by Monday, September 25, 2023. You may choose direct shipping via USPS to your shipping address provided or pick up at Vivid Ink, <a href='https://www.google.com/maps?q=8640+Airline+Hwy,+Baton+Rouge,+LA+70815' target='_blank'>8640 Airline Hwy, Baton Rouge, LA 70815</a> between October 11, 2023 and  October 13, 2023.</h1>"
+      "<h1 style='max-width:900px; margin:0 auto; padding: 24px 0'>All T-shirt orders must be received by Tuesday, September 24, 2024. You may choose direct shipping via USPS to your shipping address provided or pick up at Vivid Ink, <a href='https://www.google.com/maps?q=8640+Airline+Hwy,+Baton+Rouge,+LA+70815' target='_blank'>8640 Airline Hwy, Baton Rouge, LA 70815</a>. Shirts will be available for pick up on October 9th. Vivid Ink is open Monday - Friday 8 AM-5 PM.</h1>"
     );
   }
 }
