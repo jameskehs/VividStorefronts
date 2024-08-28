@@ -109,6 +109,76 @@ export function main() {
     if (productName === 'Laminated Tablet Menus - MENU3759') {
       $('.tablesorter').append(pricingTierTable);
     }
+
+    if (productName.startsWith('FB')) {
+      $('tablesorter').append(`<h1>Football Team Key</h1>
+
+<div style="overflow-y: auto; height: 400px; border: 1px solid #ddd; width: 100%;">
+    <table style="width: 100%; border-collapse: collapse;">
+        <thead>
+            <tr>
+                <th style="border: 1px solid #ddd; padding: 8px; background-color: #f4f4f4;">Football Sponsorship</th>
+                <th style="border: 1px solid #ddd; padding: 8px; background-color: #f4f4f4;">Acronym</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td style="border: 1px solid #ddd; padding: 8px;">Abilene Christian University</td><td style="border: 1px solid #ddd; padding: 8px;">ACU</td></tr>
+            <tr><td style="border: 1px solid #ddd; padding: 8px;">Air Force Academy</td><td style="border: 1px solid #ddd; padding: 8px;">AIRFORCE</td></tr>
+            <tr><td style="border: 1px solid #ddd; padding: 8px;">Arizona Cardinals</td><td style="border: 1px solid #ddd; padding: 8px;">CARDINALS</td></tr>
+            <tr><td style="border: 1px solid #ddd; padding: 8px;">Baylor</td><td style="border: 1px solid #ddd; padding: 8px;">BAYLOR</td></tr>
+            <tr><td style="border: 1px solid #ddd; padding: 8px;">Cane's Branded</td><td style="border: 1px solid #ddd; padding: 8px;">CANES</td></tr>
+            <tr><td style="border: 1px solid #ddd; padding: 8px;">CIF</td><td style="border: 1px solid #ddd; padding: 8px;">CIF</td></tr>
+            <tr><td style="border: 1px solid #ddd; padding: 8px;">Dallas Cowboys</td><td style="border: 1px solid #ddd; padding: 8px;">COWBOYS</td></tr>
+            <tr><td style="border: 1px solid #ddd; padding: 8px;">EKU</td><td style="border: 1px solid #ddd; padding: 8px;">EKU</td></tr>
+            <tr><td style="border: 1px solid #ddd; padding: 8px;">Fresno State University</td><td style="border: 1px solid #ddd; padding: 8px;">FRESNO</td></tr>
+            <tr><td style="border: 1px solid #ddd; padding: 8px;">House Divided - OK</td><td style="border: 1px solid #ddd; padding: 8px;">OK_HD</td></tr>
+            <tr><td style="border: 1px solid #ddd; padding: 8px;">Kansas State University</td><td style="border: 1px solid #ddd; padding: 8px;">KANSASSTATE</td></tr>
+            <tr><td style="border: 1px solid #ddd; padding: 8px;">House Divided - KS</td><td style="border: 1px solid #ddd; padding: 8px;">KS_HD</td></tr>
+            <tr><td style="border: 1px solid #ddd; padding: 8px;">Kent State University</td><td style="border: 1px solid #ddd; padding: 8px;">KENTST</td></tr>
+            <tr><td style="border: 1px solid #ddd; padding: 8px;">Lamar University</td><td style="border: 1px solid #ddd; padding: 8px;">LAMAR</td></tr>
+            <tr><td style="border: 1px solid #ddd; padding: 8px;">Lindenwood University</td><td style="border: 1px solid #ddd; padding: 8px;">LINDENWOOD</td></tr>
+            <tr><td style="border: 1px solid #ddd; padding: 8px;">McNeese State University</td><td style="border: 1px solid #ddd; padding: 8px;">MCNEESE</td></tr>
+            <tr><td style="border: 1px solid #ddd; padding: 8px;">New Orleans Saints</td><td style="border: 1px solid #ddd; padding: 8px;">SAINTS</td></tr>
+            <tr><td style="border: 1px solid #ddd; padding: 8px;">Tulane Athletics</td><td style="border: 1px solid #ddd; padding: 8px;">TULANE</td></tr>
+            <tr><td style="border: 1px solid #ddd; padding: 8px;">Nicholls State</td><td style="border: 1px solid #ddd; padding: 8px;">NICHOLLS</td></tr>
+            <tr><td style="border: 1px solid #ddd; padding: 8px;">Northern Arizona University</td><td style="border: 1px solid #ddd; padding: 8px;">NAU</td></tr>
+            <tr><td style="border: 1px solid #ddd; padding: 8px;">Northern Illinois University</td><td style="border: 1px solid #ddd; padding: 8px;">NIU</td></tr>
+            <tr><td style="border: 1px solid #ddd; padding: 8px;">Northwestern State University</td><td style="border: 1px solid #ddd; padding: 8px;">NWSU</td></tr>
+            <tr><td style="border: 1px solid #ddd; padding: 8px;">Ohio State University</td><td style="border: 1px solid #ddd; padding: 8px;">OHIOSTATE</td></tr>
+            <tr><td style="border: 1px solid #ddd; padding: 8px;">Oklahoma State University</td><td style="border: 1px solid #ddd; padding: 8px;">OKSTATE</td></tr>
+            <tr><td style="border: 1px solid #ddd; padding: 8px;">Purple & Gold</td><td style="border: 1px solid #ddd; padding: 8px;">PRPL_GOLD</td></tr>
+            <tr><td style="border: 1px solid #ddd; padding: 8px;">Sam Houston State</td><td style="border: 1px solid #ddd; padding: 8px;">SAMHOUSTON</td></tr>
+            <tr><td style="border: 1px solid #ddd; padding: 8px;">Southeastern Louisiana University</td><td style="border: 1px solid #ddd; padding: 8px;">SELU</td></tr>
+            <tr><td style="border: 1px solid #ddd; padding: 8px;">Southern Methodist University</td><td style="border: 1px solid #ddd; padding: 8px;">SMU</td></tr>
+            <tr><td style="border: 1px solid #ddd; padding: 8px;">Southern University</td><td style="border: 1px solid #ddd; padding: 8px;">SU</td></tr>
+            <tr><td style="border: 1px solid #ddd; padding: 8px;">Stephen F. Austin University</td><td style="border: 1px solid #ddd; padding: 8px;">SFAU</td></tr>
+            <tr><td style="border: 1px solid #ddd; padding: 8px;">Texas A&M</td><td style="border: 1px solid #ddd; padding: 8px;">TXAM</td></tr>
+            <tr><td style="border: 1px solid #ddd; padding: 8px;">Texas Christian University</td><td style="border: 1px solid #ddd; padding: 8px;">TXCU</td></tr>
+            <tr><td style="border: 1px solid #ddd; padding: 8px;">Texas State University</td><td style="border: 1px solid #ddd; padding: 8px;">TXSU</td></tr>
+            <tr><td style="border: 1px solid #ddd; padding: 8px;">Texas Tech</td><td style="border: 1px solid #ddd; padding: 8px;">TXTECH</td></tr>
+            <tr><td style="border: 1px solid #ddd; padding: 8px;">Titans</td><td style="border: 1px solid #ddd; padding: 8px;">TITANS</td></tr>
+            <tr><td style="border: 1px solid #ddd; padding: 8px;">UC Davis</td><td style="border: 1px solid #ddd; padding: 8px;">UCDAVIS</td></tr>
+            <tr><td style="border: 1px solid #ddd; padding: 8px;">UGA</td><td style="border: 1px solid #ddd; padding: 8px;">UGA</td></tr>
+            <tr><td style="border: 1px solid #ddd; padding: 8px;">UGA - Sponsorship Logo</td><td style="border: 1px solid #ddd; padding: 8px;">UGASPONSOR</td></tr>
+            <tr><td style="border: 1px solid #ddd; padding: 8px;">ULM</td><td style="border: 1px solid #ddd; padding: 8px;">ULM</td></tr>
+            <tr><td style="border: 1px solid #ddd; padding: 8px;">University of Arkansas</td><td style="border: 1px solid #ddd; padding: 8px;">UA</td></tr>
+            <tr><td style="border: 1px solid #ddd; padding: 8px;">University of Central Oklahoma</td><td style="border: 1px solid #ddd; padding: 8px;">UCO</td></tr>
+            <tr><td style="border: 1px solid #ddd; padding: 8px;">University of Hawaii</td><td style="border: 1px solid #ddd; padding: 8px;">UHI</td></tr>
+            <tr><td style="border: 1px solid #ddd; padding: 8px;">University of Houston</td><td style="border: 1px solid #ddd; padding: 8px;">UHOUSTON</td></tr>
+            <tr><td style="border: 1px solid #ddd; padding: 8px;">University of Kansas</td><td style="border: 1px solid #ddd; padding: 8px;">UKS</td></tr>
+            <tr><td style="border: 1px solid #ddd; padding: 8px;">University of Louisiana at Lafayette</td><td style="border: 1px solid #ddd; padding: 8px;">ULL</td></tr>
+            <tr><td style="border: 1px solid #ddd; padding: 8px;">University of Oklahoma</td><td style="border: 1px solid #ddd; padding: 8px;">UO</td></tr>
+            <tr><td style="border: 1px solid #ddd; padding: 8px;">University of South Alabama</td><td style="border: 1px solid #ddd; padding: 8px;">USA</td></tr>
+            <tr><td style="border: 1px solid #ddd; padding: 8px;">University of Texas Permian Basin</td><td style="border: 1px solid #ddd; padding: 8px;">UTPB</td></tr>
+            <tr><td style="border: 1px solid #ddd; padding: 8px;">University of Tulsa</td><td style="border: 1px solid #ddd; padding: 8px;">UTULSA</td></tr>
+            <tr><td style="border: 1px solid #ddd; padding: 8px;">University of North Texas</td><td style="border: 1px solid #ddd; padding: 8px;">UNTX</td></tr>
+            <tr><td style="border: 1px solid #ddd; padding: 8px;">UNLV</td><td style="border: 1px solid #ddd; padding: 8px;">UNLV</td></tr>
+            <tr><td style="border: 1px solid #ddd; padding: 8px;">UT</td><td style="border: 1px solid #ddd; padding: 8px;">UT</td></tr>
+            <tr><td style="border: 1px solid #ddd; padding: 8px;">UTSA</td><td style="border: 1px solid #ddd; padding: 8px;">UTSA</td></tr>
+        </tbody>
+    </table>
+</div>`);
+    }
   }
 
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTADDRESS) {
