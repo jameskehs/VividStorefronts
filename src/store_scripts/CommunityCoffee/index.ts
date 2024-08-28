@@ -34,7 +34,6 @@ export function main() {
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTREVIEW) {
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTSHIPPING) {
-    $('.deliveryTimeCol, #shipping_method_table tbody tr td:nth-of-type(3)').hide();
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CREATEEDITACCOUNT) {
   }

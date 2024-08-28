@@ -36,8 +36,6 @@ export function main() {
         clearInterval(shipInterval);
       }
     }, 500);
-
-    $('.deliveryTimeCol, #shipping_method_table tbody tr td:nth-of-type(3)').hide();
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CREATEEDITACCOUNT) {
   }
