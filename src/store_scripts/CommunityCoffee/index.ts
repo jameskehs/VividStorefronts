@@ -26,6 +26,7 @@ export function main() {
   if (GLOBALVARS.currentPage === StorefrontPage.CATALOG) {
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTADDRESS) {
+    $('.deliveryTimeCol, #shipping_method_table tbody tr td:nth-of-type(3)').hide();
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTCONFIRMATION) {
   }
