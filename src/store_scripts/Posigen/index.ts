@@ -13,9 +13,9 @@ export function main() {
     {
       name: 'Advocates Referrals Kit',
       items: [
-        { name: 'Advocate Referral One Pages (Set of 10)', designID: 11422, contentID: 45960, recommendedQty: 50, isInventory: false },
-        { name: 'Advocate Referral Stickers (Set of 10)', designID: 11423, contentID: 45961, recommendedQty: 12, isInventory: false },
-        { name: 'Advocate Referral Yard Sign (Set of 10)', designID: 11421, contentID: 45959, recommendedQty: 1, isInventory: false },
+        { name: 'Advocate Referral One Pages', designID: 11422, contentID: 45960, recommendedQty: 50, isInventory: false },
+        { name: 'Advocate Referral Stickers', designID: 11423, contentID: 45961, recommendedQty: 12, isInventory: false },
+        { name: 'Advocate Referral Yard Sign', designID: 11421, contentID: 45959, recommendedQty: 1, isInventory: false },
       ],
       enforceRecommendedQty: false,
     },
