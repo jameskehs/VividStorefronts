@@ -22,6 +22,8 @@ export function main() {
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTREVIEW) {
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTSHIPPING) {
+    $('#continueTbl .smallbody').eq(1).html(`<span class="red">*</span> Delivery Time listed includes 1 to 2 days to process order plus shipping.
+      Please note we do not process orders on weekends or holidays`);
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CREATEEDITACCOUNT) {
   }
