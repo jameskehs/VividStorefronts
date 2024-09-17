@@ -7,7 +7,7 @@ export function runSharedScript(options: OptionsParameter) {
   // Wrap nav elements
   $('.tableSiteBanner, #navWrapper').wrapAll(`<div id="logoLinks"></div>`);
   $('#logoLinks').wrapAll(`<div id="headWrapper"></div>`);
-  $('.tableLogin').wrapAll("<div id='loginWrapper'></div>");
+  // $('.tableLogin').wrapAll("<div id='loginWrapper'></div>");
 
   options.hideHomeLink && $('.linkH').remove();
   options.hideAddressBook && $('button#saveAddressBook, table#addressBook').remove();
