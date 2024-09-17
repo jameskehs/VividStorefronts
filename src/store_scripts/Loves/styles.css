@@ -1,0 +1,13 @@
+.tableSiteBanner img {
+  height: 50px;
+  margin: 0;
+}
+
+table.tableSiteBanner {
+  position: initial;
+  height: auto;
+}
+
+#headWrapper {
+  padding: 16px;
+}
