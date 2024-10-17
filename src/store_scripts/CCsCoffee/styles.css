@@ -2,3 +2,7 @@
 #shipping_method_table tbody tr td:nth-of-type(3) {
   display: none;
 }
+
+.tableSiteBanner img {
+  height: 100px;
+}
