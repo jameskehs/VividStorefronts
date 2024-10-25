@@ -11,3 +11,9 @@ table.tableSiteBanner {
 #headWrapper {
   padding: 16px;
 }
+
+tr.memoRow button#save-for-later,
+button#view-pdf-proof,
+button#copy-item {
+  display: none;
+}
