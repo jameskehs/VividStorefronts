@@ -39,7 +39,7 @@ export function main() {
 }
 if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTPAYMENT) {
   $("#CCInstructions").attr(
-    "placeholder",
-    "Your credit card will be authorized once the order is placed. This may put a hold on funds with your banking institution. Please note that we do not charge your credit card until the order has shipped. Most times the shipping cost is less than estimated shipping cost shown.><br>Enter the information below to complete the payment options for your order."
+    "text",
+    "Your credit card will be authorized once the order is placed. This may put a hold on funds with your banking institution. Please note that we do not charge your credit card until the order has shipped. Most times the shipping cost is less than estimated shipping cost shown."
   );
 }
