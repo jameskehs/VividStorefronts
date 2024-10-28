@@ -38,8 +38,7 @@ export function main() {
   }
 }
 if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTPAYMENT) {
-  $("#CCInstructions").attr(
-    "string",
+  $("#CCInstructions").val(
     "Your credit card will be authorized once the order is placed. This may put a hold on funds with your banking institution. Please note that we do not charge your credit card until the order has shipped. Most times the shipping cost is less than estimated shipping cost shown."
   );
 }
