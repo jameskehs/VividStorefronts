@@ -1,3 +1,3 @@
-#TCtable {
-  width: 275px;
+ul.TreeControl li.TCbullet {
+  border-left: 5px solid transparent;
 }
