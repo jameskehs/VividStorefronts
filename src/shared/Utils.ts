@@ -18,6 +18,8 @@ export class Utils {
         return StorefrontPage.ADDTOCART;
       case '/cart/index.php':
         return StorefrontPage.CART;
+      case '/cart/':
+        return StorefrontPage.CART;
       case '/checkout/5-shipping.php':
         return StorefrontPage.CHECKOUTADDRESS;
       case '/checkout/51-method.php':
