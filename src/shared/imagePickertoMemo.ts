@@ -12,12 +12,21 @@ export function AddImagePickerSelectionToMemo() {
 
   if (GLOBALVARS.currentPage === StorefrontPage.CART) {
     const selectedImage = localStorage.getItem('imagePickerSelection');
-    console.log({ selectedImage });
+    const currentlyEditingID = localStorage.getItem('editingItemID');
+    console.log({ selectedImage, currentlyEditingID });
+
     if (!selectedImage) return;
 
-    const newMemoFieldValue = selectedImage + $('.memoRow input').last().val()?.toString().replace('Your job name/memo here', '');
-    $('#shoppingCartTbl .memoRow input').last().val(newMemoFieldValue).trigger('blur');
+    if (currentlyEditingID) {
+      const memoFieldElement = $(`input[name="memo${currentlyEditingID}"]`);
+      const newMemoFieldValue = selectedImage + memoFieldElement.val()?.toString().replace('Your job name/memo here', '');
+      memoFieldElement.val(newMemoFieldValue).trigger('blur');
+    } else {
+      const newMemoFieldValue = selectedImage + $('.memoRow input').last().val()?.toString().replace('Your job name/memo here', '');
+      $('#shoppingCartTbl .memoRow input').last().val(newMemoFieldValue).trigger('blur');
+    }
 
     localStorage.removeItem('imagePickerSelection');
+    localStorage.removeItem('editingItemID');
   }
 }
