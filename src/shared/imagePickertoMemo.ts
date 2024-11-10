@@ -24,10 +24,10 @@ export function AddImagePickerSelectionToMemo() {
 
     if (currentlyEditingID) {
       const memoFieldElement = $(`input[name="memo${currentlyEditingID}"]`);
-      const newMemoFieldValue = selectedImage + memoFieldElement.val()?.toString().replace('Your job name/memo here', '');
+      const newMemoFieldValue = memoFieldElement.val()?.toString().replace('| * |', `| ${selectedImage} |`) ?? '';
       memoFieldElement.val(newMemoFieldValue).trigger('blur');
     } else {
-      const newMemoFieldValue = selectedImage + $('.memoRow input').last().val()?.toString().replace('Your job name/memo here', '');
+      const newMemoFieldValue = `| ${selectedImage} | ${$('.memoRow input').last().val()?.toString().replace('Your job name/memo here', '')}`;
       $('#shoppingCartTbl .memoRow input').last().val(newMemoFieldValue).trigger('blur');
     }
 
