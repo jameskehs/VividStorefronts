@@ -24,7 +24,7 @@ export function AddImagePickerSelectionToMemo() {
 
     if (currentlyEditingID) {
       const memoFieldElement = $(`input[name="memo${currentlyEditingID}"]`);
-      const newMemoFieldValue = memoFieldElement.val()?.toString().replace('| * |', `| ${selectedImage} |`) ?? '';
+      const newMemoFieldValue = memoFieldElement.val()?.toString().replace('/|.*?|/g', `| ${selectedImage} |`) ?? '';
       memoFieldElement.val(newMemoFieldValue).trigger('blur');
     } else {
       const newMemoFieldValue = `| ${selectedImage} | ${$('.memoRow input').last().val()?.toString().replace('Your job name/memo here', '')}`;
