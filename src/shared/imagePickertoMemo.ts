@@ -11,7 +11,7 @@ export function AddImagePickerSelectionToMemo() {
   }
 
   if (GLOBALVARS.currentPage === StorefrontPage.CART) {
-    $('#item_table button:nth-of-type(2)').on('click', (event) => {
+    $('.item_table button:nth-of-type(2)').on('click', (event) => {
       const itemID = $(event.target).attr('name')!.replace('edit', '');
       localStorage.setItem('editingItemID', itemID);
     });
