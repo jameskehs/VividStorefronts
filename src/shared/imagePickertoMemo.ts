@@ -17,5 +17,7 @@ export function AddImagePickerSelectionToMemo() {
 
     const newMemoFieldValue = selectedImage + $('.memoRow input').last().val()?.toString().replace('Your job name/memo here', '');
     $('#shoppingCartTbl .memoRow input').last().val(newMemoFieldValue).trigger('blur');
+
+    localStorage.removeItem('imagePickerSelection');
   }
 }
