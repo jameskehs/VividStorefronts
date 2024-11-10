@@ -11,6 +11,11 @@ export function AddImagePickerSelectionToMemo() {
   }
 
   if (GLOBALVARS.currentPage === StorefrontPage.CART) {
+    $('#change-options').on('click', (event) => {
+      const itemID = $(event.target).attr('name')!.replace('edit', '');
+      localStorage.setItem('editingItemID', itemID);
+    });
+
     const selectedImage = localStorage.getItem('imagePickerSelection');
     const currentlyEditingID = localStorage.getItem('editingItemID');
     console.log({ selectedImage, currentlyEditingID });
