@@ -30,6 +30,16 @@ export function main() {
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTCONFIRMATION) {
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTPAYMENT) {
+    window.resolveRequired($('#customerPO').get(0)!);
+
+    $('#customerPO').on('blur', (event) => {
+      //ensure the field has a four digit number
+      const poNumber = $(event.target).val() as string;
+      if (poNumber && !/^\d{4}$/.test(poNumber)) {
+        alert('Please enter a valid 4 digit PO number');
+        $(event.target).val('');
+      }
+    });
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTREVIEW) {
   }
