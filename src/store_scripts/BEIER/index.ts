@@ -1,8 +1,8 @@
 // <script src="https://main--vividstorefronts.netlify.app/main.js"></script>
 // <script>loadStorefrontScript(brandingProfile)</script>
 
-import { StorefrontPage } from '../../enums/StorefrontPage.enum';
-import { GLOBALVARS } from '../../index';
+import { StorefrontPage } from "../../enums/StorefrontPage.enum";
+import { GLOBALVARS } from "../../index";
 
 export function main() {
   console.log(GLOBALVARS.currentPage);
@@ -12,6 +12,11 @@ export function main() {
   if (GLOBALVARS.currentPage === StorefrontPage.CART) {
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CATALOG) {
+    $("p.ui-state-error").each((index, element) => {
+      if ($(element).text() === "ON BACKORDER") {
+        $(element).hide();
+      }
+    });
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTADDRESS) {
   }
