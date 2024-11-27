@@ -19,7 +19,7 @@ export function main() {
       replaceAttrText('SIZE', 'PRICE');
     }
 
-    if (productName.includes('TF Server Labels')) {
+    if (productName.includes('TF Server Label')) {
       console.log('Server Label');
       localStorage.setItem('redirect', '/catalog/?g=3544&y=8333');
       $('#addToCartButton').text('Add to Cart & Return to Label Page');
