@@ -12,11 +12,6 @@ export function main() {
   if (GLOBALVARS.currentPage === StorefrontPage.CART) {
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CATALOG) {
-    $("p.ui-state-error").each((index, element) => {
-      if ($(element).text() === "ON BACKORDER") {
-        $(element).hide();
-      }
-    });
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTADDRESS) {
   }
