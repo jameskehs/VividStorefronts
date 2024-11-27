@@ -19,9 +19,25 @@ export function main() {
       replaceAttrText('SIZE', 'PRICE');
     }
 
+    if (productName.includes('TF Server Labels')) {
+      console.log('Server Label');
+      localStorage.setItem('redirect', '/catalog/?g=3544&y=8333');
+      $('#addToCartButton').text('Add to Cart & Return to Label Page');
+    }
+
+    if (productName.includes('RTD Pricing Sticker')) {
+      localStorage.setItem('redirect', '/catalog/?g=3545&y=8236');
+      $('#addToCartButton').text('Add to Cart & Return to Sticker Page');
+    }
+
     $('#qtyAvailableDisplay, input#qtyAvailable').closest('tr').hide();
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CART) {
+    const redirect = localStorage.getItem('redirect');
+    if (redirect) {
+      localStorage.removeItem('redirect');
+      window.location.href = redirect;
+    }
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CATALOG) {
   }
