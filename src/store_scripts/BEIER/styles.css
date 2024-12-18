@@ -1,3 +1,6 @@
 .tableSiteBanner img {
   height: 150px;
 }
+.turnAroundTbl {
+  display: none;
+}
