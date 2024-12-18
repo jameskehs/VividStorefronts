@@ -4,3 +4,6 @@
 .turnAroundTbl {
   display: none;
 }
+.ui-box header {
+  color: #fff;
+}
