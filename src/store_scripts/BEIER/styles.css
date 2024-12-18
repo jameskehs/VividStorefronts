@@ -1,9 +1,6 @@
 .tableSiteBanner img {
   height: 150px;
 }
-.turnAroundTbl {
+#turnAroundTbl {
   display: none;
-}
-.ui-box header {
-  color: #fff;
 }
