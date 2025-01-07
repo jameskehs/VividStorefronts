@@ -1,13 +1,11 @@
 // <script src="https://main--vividstorefronts.netlify.app/main.js"></script>
 // <script>loadStorefrontScript(brandingProfile)</script>
 
-import { StorefrontPage } from '../../enums/StorefrontPage.enum';
-import { GLOBALVARS } from '../../index';
+import { StorefrontPage } from "../../enums/StorefrontPage.enum";
+import { GLOBALVARS } from "../../index";
 
 export function main() {
   console.log(GLOBALVARS.currentPage);
-
-  $('.linkC a').attr('href', '/catalog/?g=3502&y=8178');
 
   if (GLOBALVARS.currentPage === StorefrontPage.ADDTOCART) {
   }
