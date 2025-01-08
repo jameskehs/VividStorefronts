@@ -12,9 +12,9 @@
 #pricing-table {
   margin: 0 auto;
   border-collapse: collapse;
-  width: 200px;
+  width: auto;
 }
 #pricing-table th {
-  background-color: #4098cb;
+  background-color: #3bbfb4;
   color: white;
 }
