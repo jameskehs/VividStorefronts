@@ -1,0 +1,20 @@
+#pricing-table,
+#pricing-table tr,
+#pricing-table th,
+#pricing-table td {
+  border: 1px solid black;
+}
+
+#pricing-table th,
+#pricing-table td {
+  padding: 4px;
+}
+#pricing-table {
+  margin: 0 auto;
+  border-collapse: collapse;
+  width: 200px;
+}
+#pricing-table th {
+  background-color: #4098cb;
+  color: white;
+}
