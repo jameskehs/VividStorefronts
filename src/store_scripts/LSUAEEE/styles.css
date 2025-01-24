@@ -6,5 +6,5 @@ table.tableMain {
   background-repeat: no-repeat;
   margin: 0px;
   max-width: auto;
-  height: 300px;
+  min-height: 490px;
 }
