@@ -83,7 +83,7 @@ export function main() {
   if (GLOBALVARS.currentPage === StorefrontPage.MYACCOUNT) {
     $("#contactSalesInfo header").text(`Customer Service Representative`);
     $("#custServices").text(
-      `For customer service, please email your Sales Representative listed above`
+      `For customer service, please email your Customer Service Representative listed above`
     );
   }
 
