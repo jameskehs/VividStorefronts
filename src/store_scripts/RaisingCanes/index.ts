@@ -1,33 +1,33 @@
 // <script src="https://main--vividstorefronts.netlify.app/dist/main.js"></script>
 // <script>loadStorefrontScript(brandingProfile)</script>
 
-import { StorefrontPage } from '../../enums/StorefrontPage.enum';
-import { GLOBALVARS } from '../../index';
-import { limitPOField } from '../../shared/limitPOField';
-import { replaceSizeText } from '../../shared/replaceSizeText';
+import { StorefrontPage } from "../../enums/StorefrontPage.enum";
+import { GLOBALVARS } from "../../index";
+import { limitPOField } from "../../shared/limitPOField";
+import { replaceSizeText } from "../../shared/replaceSizeText";
 
 const pricingTiers: { name: string; boxPricing: number }[] = [
-  { name: 'Value', boxPricing: 9.89 },
-  { name: 'Boston', boxPricing: 10.39 },
-  { name: 'Value +', boxPricing: 10.49 },
-  { name: 'Portland', boxPricing: 10.79 },
-  { name: 'Base', boxPricing: 10.99 },
-  { name: 'Base [High Tax]', boxPricing: 10.99 },
-  { name: 'Base+', boxPricing: 11.09 },
-  { name: 'Mid', boxPricing: 11.59 },
-  { name: 'Mid - AZ.NV', boxPricing: 11.59 },
-  { name: 'Mid+', boxPricing: 11.69 },
-  { name: 'High', boxPricing: 11.79 },
-  { name: 'High+', boxPricing: 11.99 },
-  { name: 'Las Vegas Strip', boxPricing: 12.69 },
-  { name: 'CA High', boxPricing: 12.69 },
-  { name: 'Base +20%', boxPricing: 12.99 },
-  { name: 'Broadway - Nashville', boxPricing: 12.99 },
-  { name: 'CA High+', boxPricing: 12.99 },
-  { name: 'Potential Base +20%', boxPricing: 13.19 },
-  { name: 'Bay Area, CA', boxPricing: 13.99 },
-  { name: 'NYC', boxPricing: 14.69 },
-  { name: 'Time Square', boxPricing: 14.99 },
+  { name: "Value", boxPricing: 9.89 },
+  { name: "Boston", boxPricing: 10.39 },
+  { name: "Value +", boxPricing: 10.49 },
+  { name: "Portland", boxPricing: 10.79 },
+  { name: "Base", boxPricing: 10.99 },
+  { name: "Base [High Tax]", boxPricing: 10.99 },
+  { name: "Base+", boxPricing: 11.09 },
+  { name: "Mid", boxPricing: 11.59 },
+  { name: "Mid - AZ.NV", boxPricing: 11.59 },
+  { name: "Mid+", boxPricing: 11.69 },
+  { name: "High", boxPricing: 11.79 },
+  { name: "High+", boxPricing: 11.99 },
+  { name: "Las Vegas Strip", boxPricing: 12.69 },
+  { name: "CA High", boxPricing: 12.69 },
+  { name: "Base +20%", boxPricing: 12.99 },
+  { name: "Broadway - Nashville", boxPricing: 12.99 },
+  { name: "CA High+", boxPricing: 12.99 },
+  { name: "Potential Base +20%", boxPricing: 13.19 },
+  { name: "Bay Area, CA", boxPricing: 13.99 },
+  { name: "NYC", boxPricing: 14.69 },
+  { name: "Time Square", boxPricing: 14.99 },
 ];
 
 const pricingTierTable: string = `
@@ -48,7 +48,7 @@ const pricingTierTable: string = `
                 </tr>
                 `;
           })
-          .join('')}
+          .join("")}
         </tbody>
     </table>
 `;
@@ -73,45 +73,51 @@ const costCenters: string[] = [
   `Restaurant Supplies_Not Applicable`,
 ];
 
-const inactiveBillTos: string[] = ['0050', '0138'];
+const inactiveBillTos: string[] = ["0050", "0138"];
 
 export function main() {
   console.log(GLOBALVARS.currentPage);
 
-  $('.linkC').html('<a href="/catalog/?g=2710&y=6234">CATALOG</a>');
+  $(".linkC").html('<a href="/catalog/?g=2710&y=6234">CATALOG</a>');
 
   if (GLOBALVARS.currentPage === StorefrontPage.MYACCOUNT) {
-    $('#contactSalesInfo header').text(`Customer Service Representative`);
+    $("#contactSalesInfo header").text(`Customer Service Representative`);
+    $("#custServices").text(
+      `For customer service, please email your Sales Representative listed above`
+    );
   }
 
   if (GLOBALVARS.currentPage === StorefrontPage.CATALOG) {
-    $('.counter').text() === 'No products to show.' && $('.counter').css('display', 'none');
+    $(".counter").text() === "No products to show." &&
+      $(".counter").css("display", "none");
   }
 
   if (GLOBALVARS.currentPage === StorefrontPage.CART) {
-    $('.memoRow th').text('MEMO (PLEASE DO NOT CHANGE AUTOFILLED INFO):');
+    $(".memoRow th").text("MEMO (PLEASE DO NOT CHANGE AUTOFILLED INFO):");
   }
 
   if (GLOBALVARS.currentPage === StorefrontPage.ADDTOCART) {
-    const productName = $('.tablesorter tbody tr td').eq(1).text().trim();
+    const productName = $(".tablesorter tbody tr td").eq(1).text().trim();
 
-    $('#paperLabel').html('<strong>MATERIAL<strong>');
+    $("#paperLabel").html("<strong>MATERIAL<strong>");
 
     // Replace "Size" text for specific items
     const replaceSizeTextItems = [
-      { sku: 'MENU3759', newText: 'PRICING TIER' },
-      { sku: 'DIN3591', newText: 'PRICING TIER' },
+      { sku: "MENU3759", newText: "PRICING TIER" },
+      { sku: "DIN3591", newText: "PRICING TIER" },
     ];
-    const item = replaceSizeTextItems.find((item) => productName.toLowerCase().includes(item.sku.toLowerCase()));
+    const item = replaceSizeTextItems.find((item) =>
+      productName.toLowerCase().includes(item.sku.toLowerCase())
+    );
     item !== undefined && replaceSizeText(item.newText);
 
     //Add Pricing Tiers to Laminated Tablet Menus
-    if (productName === 'Laminated Tablet Menus - MENU3759') {
-      $('.tablesorter').append(pricingTierTable);
+    if (productName === "Laminated Tablet Menus - MENU3759") {
+      $(".tablesorter").append(pricingTierTable);
     }
 
-    if (productName.startsWith('FB')) {
-      $('.tablesorter').append(`
+    if (productName.startsWith("FB")) {
+      $(".tablesorter").append(`
         <h1>Football Team Key</h1>
           <div style="overflow-y: auto; height: 400px; border: 1px solid #ddd; width: 100%;">
               <table style="width: 100%; border-collapse: collapse;">
@@ -183,52 +189,54 @@ export function main() {
   }
 
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTADDRESS) {
-    $(`button[rel="Ship to my address"]`).text('Ship to this address');
-    $(`button[rel="Ship to company"]`).text('Ship to DRSO');
+    $(`button[rel="Ship to my address"]`).text("Ship to this address");
+    $(`button[rel="Ship to company"]`).text("Ship to DRSO");
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTPAYMENT) {
     limitPOField(costCenters);
 
-    $('#CCInstructions').html(
-      'Enter the information below to complete the payment options for your order.<br><strong>These fields are not required for Franchises</strong>'
+    $("#CCInstructions").html(
+      "Enter the information below to complete the payment options for your order.<br><strong>These fields are not required for Franchises</strong>"
     );
 
-    $('#quoteNameBox section').append(
+    $("#quoteNameBox section").append(
       `<div class="bill-instructions"><p>Include your <strong>FOUR DIGIT RESTAURANT NUMBER WITH LEADING ZEROES</strong> (ex: 0001, 0010, 0100) Area, Division or Department Name.</p></div>`
     );
-    $('#quoteName').prop('maxLength', '4');
-    $('#quoteName').on('change', (e) => {
+    $("#quoteName").prop("maxLength", "4");
+    $("#quoteName").on("change", (e) => {
       const inputValue = (e.target as HTMLInputElement).value;
       if (inactiveBillTos.includes(inputValue)) {
         alert(`${inputValue} is an Inactive Cost Center`);
-        $('#quoteName').val('');
+        $("#quoteName").val("");
       } else if (inputValue.length !== 4) {
         alert(`Cost Center must be 4 digits!`);
-        $('#quoteName').val('');
+        $("#quoteName").val("");
       }
     });
   }
 
   if (GLOBALVARS.currentPage === StorefrontPage.CUSTOMIZETEMPLATE) {
-    const activeTemplate = $('.templateName a').text();
+    const activeTemplate = $(".templateName a").text();
 
-    if (activeTemplate.includes('Logo Banner')) {
-      $('button#N101').text('Select a color');
+    if (activeTemplate.includes("Logo Banner")) {
+      $("button#N101").text("Select a color");
     }
 
-    if (activeTemplate.includes('Achievement Award')) {
-      $('#customizeTbl').prepend(
+    if (activeTemplate.includes("Achievement Award")) {
+      $("#customizeTbl").prepend(
         `<p style="color:red; font-weight:bold; text-align:center; font-size:16px">IF CUSTOMIZATION IS NOT NEEDED PLEASE VISIT <a href="/catalog/?g=2710&y=6245">"ACHIEVEMENT AWARDS - STANDARD" CATEGORY</a> FOR BLANK ONES</p>`
       );
     }
-    if (activeTemplate.includes('MENU')) {
-      $('#show_userform').append(pricingTierTable);
+    if (activeTemplate.includes("MENU")) {
+      $("#show_userform").append(pricingTierTable);
     }
   }
 
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTSHIPPING) {
-    $('span.smallbody:contains("We will contact you about shipping options after the order is reviewed by our staff.")').text(
-      'For estimated shipping cost, please contact your customer service rep.'
+    $(
+      'span.smallbody:contains("We will contact you about shipping options after the order is reviewed by our staff.")'
+    ).text(
+      "For estimated shipping cost, please contact your customer service rep."
     );
   }
 }
