@@ -19,7 +19,7 @@ export function runSharedScript(options: OptionsParameter) {
     $('button[title="Import address book"], button#saveAddressBook').remove();
 
   ChangeCustomerServiceMessage(
-    "For customer service please email your Sales Representative listed above."
+    "For customer service, please email your Sales Representative listed above."
   );
 
   AddImagePickerSelectionToMemo();
