@@ -5,7 +5,7 @@
   width: 100%;
   background-color: var(--loginbar-bg);
   padding: 0px 32px;
-  /*box-shadow: 0px 5px 9px rgb(0 0 0 / 34%);*/
+  box-shadow: 0px rgb(255, 255, 255) !important;
 }
 table.tableMain {
   top: auto !important; /* Ensure no top value is applied */
