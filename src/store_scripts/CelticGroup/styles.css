@@ -11,4 +11,5 @@ table.tableMain {
   top: auto !important; /* Ensure no top value is applied */
   max-width: 1600px;
   margin: auto !important;
+  padding: 0px !important;
 }
