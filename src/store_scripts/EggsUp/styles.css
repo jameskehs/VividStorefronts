@@ -18,6 +18,6 @@
   background-color: #3bbfb4;
   color: white;
 }
-.anchorCategory[alt="New Items"] {
-  color: #ff0000;
+.TCbullet a[alt="New Items"] {
+  color: #ff0000 !important;
 }
