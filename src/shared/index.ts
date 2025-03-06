@@ -2,7 +2,6 @@ import { StorefrontPage } from "../enums/StorefrontPage.enum";
 import { GLOBALVARS, OptionsParameter } from "../index";
 import { AddImagePickerSelectionToMemo } from "./imagePickertoMemo";
 import { ChangeCustomerServiceMessage } from "./customerServiceMessage";
-import { changeSupportText } from "./changeSupportText";
 
 export function runSharedScript(options: OptionsParameter) {
   console.log("Hello from the shared script!");
@@ -21,12 +20,6 @@ export function runSharedScript(options: OptionsParameter) {
 
   ChangeCustomerServiceMessage(
     "For customer service, please email your Sales Representative listed above."
-  );
-
-  changeSupportText(
-    "If you are having issues accessing your account, please contact our support team:",
-    "225-751-7297",
-    '<a herf="mailto:loginrequest@vividink.com">loginrequest@vividink.com</a>'
   );
 
   AddImagePickerSelectionToMemo();
