@@ -1,8 +1,9 @@
 // <script src="https://main--vividstorefronts.netlify.app/main.js"></script>
 // <script>loadStorefrontScript(brandingProfile)</script>
 
-import { StorefrontPage } from '../../enums/StorefrontPage.enum';
-import { GLOBALVARS } from '../../index';
+import { StorefrontPage } from "../../enums/StorefrontPage.enum";
+import { GLOBALVARS } from "../../index";
+import { ChangeInventoryCountNotice } from "../../shared/inventoryCountNotice";
 
 export function main() {
   console.log(GLOBALVARS.currentPage);
@@ -32,3 +33,7 @@ export function main() {
   if (GLOBALVARS.currentPage === StorefrontPage.VIEWORDERS) {
   }
 }
+
+ChangeInventoryCountNotice(
+  "Inventory not available for the desired order quantity. Please contact your account manager at 225-751-7297, or email us at angela@vividink.com"
+);
