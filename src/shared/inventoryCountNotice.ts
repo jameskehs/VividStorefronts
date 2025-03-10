@@ -6,10 +6,19 @@ export function ChangeInventoryCountNotice(newMessage: string) {
     // Get the element with the id 'inventoryCountNotice'
     var element = document.getElementById("inventoryCountNotice");
 
-    // Check if the element exists to avoid errors
+    // Create the mailto link for the email address
+    var email = "angela@vividink.com";
+    var emailLink = `<a href="mailto:${email}">${email}</a>`;
+
+    // Insert a line break after the word "quantity"
+    var updatedMessage = newMessage.replace("quantity.", "quantity.<br>");
+
+    // Replace the email address in the updated message with the mailto link
+    updatedMessage = updatedMessage.replace("angela@vividink.com", emailLink);
+
+    // Set the updated message to the innerHTML of the element
     if (element) {
-      // Change the content of the element
-      element.innerHTML = newMessage;
+      element.innerHTML = updatedMessage;
     } else {
       console.log("Element with id 'inventoryCountNotice' not found.");
     }
