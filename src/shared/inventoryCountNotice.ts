@@ -1,13 +1,12 @@
 import { StorefrontPage } from "../enums/StorefrontPage.enum";
 import { GLOBALVARS } from "../index";
 
-export function ChangeInventoryCountNotice(newMessage: string) {
+export function ChangeInventoryCountNotice(newMessage: string, email: string) {
   if (GLOBALVARS.currentPage === StorefrontPage.ADDTOCART) {
     // Get the element with the id 'inventoryCountNotice'
     var element = document.getElementById("inventoryCountNotice");
 
-    // Create the mailto link for the email address
-    var email = "angela@vividink.com";
+    // Create the mailto link for the provided email address
     var emailLink = `<a href="mailto:${email}">${email}</a>`;
 
     // Insert a line break after the word "quantity"
