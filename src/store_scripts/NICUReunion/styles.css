@@ -4,3 +4,6 @@
 #headWrapper {
   padding: 0px;
 }
+#turnAroundTbl {
+  display: none;
+}
