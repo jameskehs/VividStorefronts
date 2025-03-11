@@ -1,8 +1,8 @@
 // <script src="https://main--vividstorefronts.netlify.app/main.js"></script>
 // <script>loadStorefrontScript(brandingProfile)</script>
 
-import { StorefrontPage } from '../../enums/StorefrontPage.enum';
-import { GLOBALVARS } from '../../index';
+import { StorefrontPage } from "../../enums/StorefrontPage.enum";
+import { GLOBALVARS } from "../../index";
 
 export function main() {
   console.log(GLOBALVARS.currentPage);
@@ -32,3 +32,12 @@ export function main() {
   if (GLOBALVARS.currentPage === StorefrontPage.VIEWORDERS) {
   }
 }
+document.addEventListener("DOMContentLoaded", function () {
+  if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTSHIPPING) {
+    var smallBodyElement = document.querySelector(".smallbody");
+    if (smallBodyElement) {
+      smallBodyElement.innerHTML =
+        '<span class="red">*</span> Estimate shown from the order\'s end date. Actual shipping time may vary depending on distance.';
+    }
+  }
+});
