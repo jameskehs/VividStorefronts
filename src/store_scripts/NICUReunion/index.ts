@@ -3,6 +3,7 @@
 
 import { StorefrontPage } from "../../enums/StorefrontPage.enum";
 import { GLOBALVARS } from "../../index";
+import { updateEstimateMessage } from "../../shared/updateEstimateMessage";
 
 export function main() {
   console.log(GLOBALVARS.currentPage);
@@ -32,3 +33,6 @@ export function main() {
   if (GLOBALVARS.currentPage === StorefrontPage.VIEWORDERS) {
   }
 }
+updateEstimateMessage(
+  "Estimate shown from ending order date listed above. Actual shipping transit time may depend on distance."
+);
