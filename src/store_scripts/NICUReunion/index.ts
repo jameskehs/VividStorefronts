@@ -32,12 +32,3 @@ export function main() {
   if (GLOBALVARS.currentPage === StorefrontPage.VIEWORDERS) {
   }
 }
-document.addEventListener("DOMContentLoaded", function () {
-  if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTSHIPPING) {
-    var smallBodyElement = document.querySelector(".smallbody");
-    if (smallBodyElement) {
-      smallBodyElement.innerHTML =
-        '<span class="red">*</span> Estimate shown from the order\'s end date. Actual shipping time may vary depending on distance.';
-    }
-  }
-});
