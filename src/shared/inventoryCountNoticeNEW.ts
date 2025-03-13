@@ -7,11 +7,11 @@ export function ChangeInventoryCountNoticeNEW(newMessage: string) {
     var element = document.getElementById("inventoryCountNotice");
 
     // Retrieve the salesEmail from StorefrontPage.MYACCOUNT
-    var salesEmail =
-      StorefrontPage.MYACCOUNT?.salesEmail || "sales@vividink.com";
+    var salesEmailTxt =
+      StorefrontPage.MYACCOUNT?.salesEmailTxt || "sales@vividink.com";
 
     // Create the mailto link for the provided email address
-    var emailLink = `<a href="mailto:${salesEmail}">${salesEmail}</a>`;
+    var emailLink = `<a href="mailto:${salesEmailTxt}">${salesEmailTxt}</a>`;
 
     // Insert a line break after the word "quantity."
     var updatedMessage = newMessage.replace("quantity.", "quantity.<br>");
