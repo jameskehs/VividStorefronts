@@ -38,4 +38,8 @@ export function main() {
   if (GLOBALVARS.currentPage === StorefrontPage.VIEWORDERS) {
   }
 }
-(window as any).ChangeInventoryCountNotice = ChangeInventoryCountNotice;
+// Example call with a dynamic email
+ChangeInventoryCountNotice(
+  "Inventory not available for the desired order quantity. Please contact your account manager at 225-751-7297, or by email at angela@vividink.com",
+  "angela@vividink.com" // Dynamically changing the email address
+);
