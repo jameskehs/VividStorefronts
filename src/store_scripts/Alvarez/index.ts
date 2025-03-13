@@ -1,13 +1,14 @@
 // <script src="https://main--vividstorefronts.netlify.app/main.js"></script>
 // <script>loadStorefrontScript(brandingProfile)</script>
 
-import { StorefrontPage } from '../../enums/StorefrontPage.enum';
-import { GLOBALVARS } from '../../index';
-import { replaceAttrText } from '../../shared/replaceSizeText';
+import { StorefrontPage } from "../../enums/StorefrontPage.enum";
+import { GLOBALVARS } from "../../index";
+import { ChangeInventoryCountNotice } from "../../shared/inventoryCountNoticeNEW";
+import { replaceAttrText } from "../../shared/replaceSizeText";
 
 export function main() {
   console.log(GLOBALVARS.currentPage);
-  $('body').prepend(`
+  $("body").prepend(`
     <div class="site-banner">
       <p>Turn Times On All Embroidered Items Will Take 2-3 Weeks</p>
     </div>`);
@@ -37,3 +38,4 @@ export function main() {
   if (GLOBALVARS.currentPage === StorefrontPage.VIEWORDERS) {
   }
 }
+(window as any).ChangeInventoryCountNotice = ChangeInventoryCountNotice;
