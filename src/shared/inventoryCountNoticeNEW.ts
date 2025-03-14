@@ -31,11 +31,14 @@ export async function ChangeInventoryCountNoticeNEW(
       }
     }
 
+    // Create a mailto link for the email
+    var mailtoLink = `<a href="mailto:${salesEmailTxt}">${salesEmailTxt}</a>`;
+
     // Insert a line break after the word "quantity"
     var updatedMessage = newMessage.replace("quantity.", "quantity.<br>");
 
-    // Replace the email address in the updated message with the dynamically retrieved salesEmailTxt
-    updatedMessage = updatedMessage.replace(emailPlaceholder, salesEmailTxt);
+    // Replace the email address in the updated message with the mailto link
+    updatedMessage = updatedMessage.replace(emailPlaceholder, mailtoLink);
 
     // Set the updated message to the innerHTML of the element
     if (element) {
