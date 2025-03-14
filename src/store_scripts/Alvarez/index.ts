@@ -3,7 +3,7 @@
 
 import { StorefrontPage } from "../../enums/StorefrontPage.enum";
 import { GLOBALVARS } from "../../index";
-import { ChangeInventoryCountNotice } from "../../shared/inventoryCountNotice";
+import { ChangeInventoryCountNoticeNEW } from "../../shared/inventoryCountNoticeNEW";
 import { replaceAttrText } from "../../shared/replaceSizeText";
 
 export function main() {
@@ -39,7 +39,7 @@ export function main() {
   }
 }
 // Example call with a dynamic email
-ChangeInventoryCountNotice(
+ChangeInventoryCountNoticeNEW(
   "Inventory not available for the desired order quantity. Please contact your account manager at 225-751-7297, or by email at angela@vividink.com",
-  "wallgood@vividink.com" // Dynamically changing the email address
+  StorefrontPage.MYACCOUNT // Using the salesEmailTxt span from MYACCOUNT
 );
