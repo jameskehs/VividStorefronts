@@ -40,6 +40,6 @@ export function main() {
 }
 // Call the updated function with the correct sales email text
 ChangeInventoryCountNoticeNEW(
-  "Inventory not available for the desired order quantity. Please contact your account manager at 225-751-7297, or by email at angela@vividink.com",
+  "Inventory not available for the desired order quantity. Please contact your account manager at 225-751-7297, or by email at sales@vividink.com",
   StorefrontPage.SALESEMAILTXT // Using the updated salesEmailTxt from enum
 );
