@@ -11,6 +11,6 @@ export enum StorefrontPage {
   CREATEEDITACCOUNT = "Account Form Page",
   CUSTOMIZETEMPLATE = "Customize Page",
   LOGIN = "Login Page",
-  MYACCOUNT = "My Account Page",
+  MYACCOUNT = "<span id='salesEmailTxt'>My Account Page</span>",
   VIEWORDERS = "View Orders Page",
 }
