@@ -1,19 +1,23 @@
 // <script src="https://main--vividstorefronts.netlify.app/main.js"></script>
 // <script>loadStorefrontScript(brandingProfile)</script>
 
-import { StorefrontPage } from '../../enums/StorefrontPage.enum';
-import { GLOBALVARS } from '../../index';
-import { replaceAttrText } from '../../shared/replaceSizeText';
+import { StorefrontPage } from "../../enums/StorefrontPage.enum";
+import { GLOBALVARS } from "../../index";
+import { replaceAttrText } from "../../shared/replaceSizeText";
+import { ChangeInventoryCountNotice } from "../../shared/inventoryCountNotice";
 
 export function main() {
   console.log(GLOBALVARS.currentPage);
 
   if (GLOBALVARS.currentPage === StorefrontPage.ADDTOCART) {
-    const productName = $('.tablesorter tbody tr td').eq(1).text().trim();
+    const productName = $(".tablesorter tbody tr td").eq(1).text().trim();
 
-    if (productName.includes('SLTML0075') || productName.includes('SLTML0074')) {
-      replaceAttrText('SIZE', 'Version');
-      replaceAttrText('COLOR', 'Location');
+    if (
+      productName.includes("SLTML0075") ||
+      productName.includes("SLTML0074")
+    ) {
+      replaceAttrText("SIZE", "Version");
+      replaceAttrText("COLOR", "Location");
     }
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CART) {
@@ -36,8 +40,13 @@ export function main() {
   }
   if (GLOBALVARS.currentPage === StorefrontPage.MYACCOUNT) {
     // Hide CSR Phone Number
-    $('#contactCSRInfo .repInfo table tbody tr').eq(0).hide();
+    $("#contactCSRInfo .repInfo table tbody tr").eq(0).hide();
   }
   if (GLOBALVARS.currentPage === StorefrontPage.VIEWORDERS) {
   }
 }
+// Example call with a dynamic email
+ChangeInventoryCountNotice(
+  "Inventory not available for the desired order quantity. Please contact your account manager at 225-751-7297, or by email at angela@vividink.com",
+  "karna@vividink.com" // Dynamically changing the email address
+);
