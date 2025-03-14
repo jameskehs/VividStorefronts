@@ -3,20 +3,22 @@ import { GLOBALVARS } from "../index";
 
 export function ChangeInventoryCountNoticeNEW(
   newMessage: string,
-  email: string
+  emailPlaceholder: string
 ) {
   if (GLOBALVARS.currentPage === StorefrontPage.ADDTOCART) {
     // Get the element with the id 'inventoryCountNotice'
     var element = document.getElementById("inventoryCountNotice");
 
-    // Get the sales email text from the SALESEMAILTXT enum
-    var salesEmailTxt = StorefrontPage.SALESEMAILTXT;
+    // Dynamically extract the sales email from the element with id 'salesEmailTxt' on /account/index.php
+    var salesEmailElement = document.getElementById("salesEmailTxt");
+    var salesEmailTxt =
+      salesEmailElement?.textContent?.trim() || "sales@vividink.com";
 
     // Insert a line break after the word "quantity"
     var updatedMessage = newMessage.replace("quantity.", "quantity.<br>");
 
-    // Replace the email address in the updated message with the salesEmailTxt
-    updatedMessage = updatedMessage.replace(email, salesEmailTxt);
+    // Replace the email address in the updated message with the dynamically retrieved salesEmailTxt
+    updatedMessage = updatedMessage.replace(emailPlaceholder, salesEmailTxt);
 
     // Set the updated message to the innerHTML of the element
     if (element) {

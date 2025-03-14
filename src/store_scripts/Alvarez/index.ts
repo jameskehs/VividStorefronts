@@ -38,8 +38,8 @@ export function main() {
   if (GLOBALVARS.currentPage === StorefrontPage.VIEWORDERS) {
   }
 }
-// Call the updated function with the correct sales email text
+// Call the updated function with a placeholder email to be replaced dynamically
 ChangeInventoryCountNoticeNEW(
   "Inventory not available for the desired order quantity. Please contact your account manager at 225-751-7297, or by email at sales@vividink.com",
-  StorefrontPage.SALESEMAILTXT // Using the updated salesEmailTxt from enum
+  "sales@vividink.com" // Placeholder email to be replaced dynamically
 );

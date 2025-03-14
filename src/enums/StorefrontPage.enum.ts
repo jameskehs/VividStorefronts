@@ -13,5 +13,4 @@ export enum StorefrontPage {
   LOGIN = "Login Page",
   MYACCOUNT = "My Account Page",
   VIEWORDERS = "View Orders Page",
-  SALESEMAILTXT = "Sales Email Text Info",
 }
