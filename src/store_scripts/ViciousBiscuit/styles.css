@@ -13,3 +13,6 @@
 .buttonContainer .newItemBadge {
   display: none;
 }
+.tableSiteBanner img {
+  height: 150px;
+}
