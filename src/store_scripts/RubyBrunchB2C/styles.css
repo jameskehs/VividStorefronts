@@ -29,11 +29,3 @@
   height: 2px;
   /* transition: all 0.2s ease; */
 }
-#menu li a,
-#menu li.menuG a,
-#menu li:last-child a {
-  color: var(--navbar-text) !important;
-  padding: 10px 14px 10px 15px;
-  font-weight: 700;
-  transition: all 0.2s ease;
-}
