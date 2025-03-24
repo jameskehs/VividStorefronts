@@ -1,0 +1,14 @@
+.tableSiteBanner img {
+  height: 150px;
+}
+#loginWrapper {
+  width: 100%;
+  background-color: var(--loginbar-bg);
+  padding: 0px 32px;
+  box-shadow: 0px 0px 0px rgb(255, 255, 255) !important;
+}
+table.tableMain {
+  top: auto !important; /* Ensure no top value is applied */
+  max-width: 1600px;
+  margin: auto !important;
+}
