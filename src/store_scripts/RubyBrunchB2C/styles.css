@@ -12,3 +12,7 @@ table.tableMain {
   max-width: 1600px;
   margin: auto !important;
 }
+.catalogTbl {
+  background-color: #ffe9ac;
+  padding: 0 !important;
+}
