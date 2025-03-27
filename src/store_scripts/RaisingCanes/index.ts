@@ -15,7 +15,7 @@ const pricingTiers: { name: string; boxPricing: number }[] = [
   //  { name: "Base [High Tax]", boxPricing: 10.99 },
   { name: "Base+", boxPricing: 11.59 },
   { name: "Mid", boxPricing: 11.99 },
-  { name: "Mid - AZ.NV", boxPricing: 11.89 },
+  { name: "Mid - AZ.NV", boxPricing: 11.99 },
   //  { name: "Mid+", boxPricing: 11.69 },
   { name: "High", boxPricing: 12.29 },
   { name: "High+", boxPricing: 12.49 },
