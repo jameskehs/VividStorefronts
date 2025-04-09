@@ -1,6 +1,3 @@
-import { StorefrontPage } from "../enums/StorefrontPage.enum";
-import { GLOBALVARS } from "../index";
-
 export function ChangeCheckoutBody(newMessage: string, email: string) {
   // Get the element with the id 'checkoutBody'
   var element = document.getElementById("checkoutBody");
