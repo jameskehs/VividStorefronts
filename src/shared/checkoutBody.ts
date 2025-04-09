@@ -2,7 +2,7 @@ import { StorefrontPage } from "../enums/StorefrontPage.enum";
 import { GLOBALVARS } from "../index";
 
 export function ChangeCheckoutBody(newMessage: string, email: string) {
-  if (GLOBALVARS.currentPage === StorefrontPage.CREATEEDITACCOUNT) {
+  if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTADDRESS) {
     // Get the element with the id 'checkoutBody'
     var element = document.getElementById("checkoutBody");
 
