@@ -2,8 +2,3 @@
 a.anchorCategory[alt="Discounts"] {
   display: none;
 }
-
-/* Hide the <div> with class "subcategoryName" containing "Discounts" */
-div.browseBtn {
-  display: none;
-}

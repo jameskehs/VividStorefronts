@@ -1,8 +1,8 @@
 // <script src="https://main--vividstorefronts.netlify.app/main.js"></script>
 // <script>loadStorefrontScript(brandingProfile)</script>
 
-import { StorefrontPage } from '../../enums/StorefrontPage.enum';
-import { GLOBALVARS } from '../../index';
+import { StorefrontPage } from "../../enums/StorefrontPage.enum";
+import { GLOBALVARS } from "../../index";
 
 export function main() {
   console.log(GLOBALVARS.currentPage);
@@ -32,3 +32,16 @@ export function main() {
   if (GLOBALVARS.currentPage === StorefrontPage.VIEWORDERS) {
   }
 }
+// Wait until the DOM is loaded
+document.addEventListener("DOMContentLoaded", () => {
+  const subcategoryCells = document.querySelectorAll<HTMLDivElement>(
+    "div.prodCell.parentSubcategoryCell"
+  );
+
+  subcategoryCells.forEach((cell) => {
+    const subcategory = cell.querySelector("div.subcategoryName");
+    if (subcategory && subcategory.textContent?.trim() === "Discounts") {
+      cell.style.display = "none";
+    }
+  });
+});
