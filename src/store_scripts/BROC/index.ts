@@ -32,16 +32,3 @@ export function main() {
   if (GLOBALVARS.currentPage === StorefrontPage.VIEWORDERS) {
   }
 }
-// Wait until the DOM is loaded
-document.addEventListener("DOMContentLoaded", () => {
-  const subcategoryCells = document.querySelectorAll<HTMLDivElement>(
-    "div.prodCell.parentSubcategoryCell"
-  );
-
-  subcategoryCells.forEach((cell) => {
-    const subcategory = cell.querySelector("div.subcategoryName");
-    if (subcategory && subcategory.textContent?.trim() === "Discounts") {
-      cell.style.display = "none";
-    }
-  });
-});
