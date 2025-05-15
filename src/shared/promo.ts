@@ -5,76 +5,64 @@ export function setupPromoCodeDiscount(): void {
   if (GLOBALVARS.currentPage !== StorefrontPage.CHECKOUTPAYMENT) return;
 
   document.addEventListener("DOMContentLoaded", () => {
-    const promoCodeInput = document.getElementById(
-      "customerPO"
-    ) as HTMLInputElement | null;
-    const subPriceSpan = document.getElementById("subPrice");
-    const taxPriceSpan = document.getElementById("taxPrice");
-    const rushPriceSpan = document.getElementById("rushPrice");
-    const shipPriceSpan = document.getElementById("shipPrice");
-    const grandPriceSpan = document.getElementById("grandPrice");
+    const promoInput = document.getElementById("customerPO");
+    const subPriceEl = document.getElementById("subPrice");
+    const taxEl = document.getElementById("taxPrice");
+    const rushEl = document.getElementById("rushPrice");
+    const shipEl = document.getElementById("shipPrice");
+    const grandTotalEl = document.getElementById("grandPrice");
 
     if (
-      !promoCodeInput ||
-      !subPriceSpan ||
-      !taxPriceSpan ||
-      !rushPriceSpan ||
-      !shipPriceSpan ||
-      !grandPriceSpan
+      !promoInput ||
+      !subPriceEl ||
+      !taxEl ||
+      !rushEl ||
+      !shipEl ||
+      !grandTotalEl
     ) {
-      console.warn("Required elements for promo code discount not found.");
+      console.warn(
+        "Promo code setup failed: missing one or more DOM elements."
+      );
       return;
     }
 
-    const validPromoCodes: Record<string, number> = {
+    // Define promo codes and their discount amounts
+    const promoCodes = {
       SAVE10: 10.0,
       FREESHIP: 14.98,
       VIP25: 25.0,
     };
 
-    function parseCurrency(value: string): number {
-      return parseFloat(value.replace(/[^0-9.-]+/g, "")) || 0;
+    function parseAmount(el) {
+      return parseFloat(el.textContent?.replace(/[^\d.-]/g, "") || "0");
     }
 
-    function formatCurrency(value: number): string {
-      return value.toFixed(2);
+    function formatAmount(amount) {
+      return amount.toFixed(2);
     }
 
-    function recalculateTotals(): void {
-      const promoCode = promoCodeInput!.value.trim().toUpperCase();
-      const discount = validPromoCodes[promoCode] || 0;
+    function recalculateWithPromo() {
+      const code = promoInput.value.trim().toUpperCase();
+      const discount = promoCodes[code] || 0;
 
-      const subPrice = parseCurrency(subPriceSpan!.textContent || "0");
-      const taxPrice = parseCurrency(taxPriceSpan!.textContent || "0");
-      const rushPrice = parseCurrency(rushPriceSpan!.textContent || "0");
-      const shipPrice = parseCurrency(shipPriceSpan!.textContent || "0");
+      // Get current values
+      const originalSub = parseAmount(subPriceEl);
+      const tax = parseAmount(taxEl);
+      const rush = parseAmount(rushEl);
+      const ship = parseAmount(shipEl);
 
-      let discountedSubtotal = subPrice - discount;
-      if (discountedSubtotal < 0) discountedSubtotal = 0;
+      // Prevent subtotal going negative
+      const newSub = Math.max(originalSub - discount, 0);
+      const newGrand = newSub + tax + rush + ship;
 
-      const newGrandTotal =
-        discountedSubtotal + taxPrice + rushPrice + shipPrice;
+      // Update UI
+      subPriceEl.textContent = formatAmount(newSub);
+      grandTotalEl.textContent = formatAmount(newGrand);
 
-      // Update the displayed totals
-      subPriceSpan!.textContent = formatCurrency(discountedSubtotal);
-      grandPriceSpan!.textContent = formatCurrency(newGrandTotal);
-
-      // Optional visual feedback
-      promoCodeInput!.style.borderColor = discount > 0 ? "green" : "initial";
+      promoInput.style.border =
+        discount > 0 ? "2px solid green" : "2px solid red";
     }
 
-    promoCodeInput.addEventListener("blur", recalculateTotals);
-    promoCodeInput.addEventListener("keyup", () => {
-      // Live feedback
-      const promoCode = promoCodeInput.value.trim().toUpperCase();
-      promoCodeInput.style.borderColor = validPromoCodes[promoCode]
-        ? "green"
-        : "red";
-    });
-
-    // Optional: trigger initial calculation if value pre-filled
-    if (promoCodeInput.value.trim()) {
-      recalculateTotals();
-    }
+    promoInput.addEventListener("blur", recalculateWithPromo);
   });
 }
