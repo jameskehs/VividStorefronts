@@ -38,7 +38,12 @@ export function setupCustomerPORequirement(): void {
     }
 
     function validateForm(event: Event): void {
-      if (purchaseOrder.checked && customerPO.value.trim() === "") {
+      toggleCustomerPO(); // optional but helpful
+
+      const isPurchaseOrder = purchaseOrder.checked;
+      const customerPOValue = customerPO.value.trim();
+
+      if (isPurchaseOrder && customerPOValue === "") {
         event.preventDefault();
         alert("Customer PO is required for Purchase Order payment.");
         customerPO.focus();
