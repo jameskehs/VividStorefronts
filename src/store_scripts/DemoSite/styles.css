@@ -6,8 +6,19 @@
   display: block;
   float: none;
 }
-#paywithnewcard {
+/* Center the entire table horizontally */
+table {
   margin: 0 auto;
-  display: block;
-  width: fit-content; /* or a specific width if needed */
+}
+
+/* Center content inside all table cells */
+tbody#paywithnewcard td {
+  text-align: center;
+}
+
+/* Center the .ui-box div inside the td with max width */
+tbody#paywithnewcard td > .ui-box {
+  max-width: 1000px;
+  margin: 0 auto; /* horizontally center */
+  text-align: center; /* center text inside */
 }
