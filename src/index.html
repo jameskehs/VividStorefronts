@@ -75,68 +75,139 @@
     <section>
       <h2>Function Overview</h2>
       <p>
-        The <code>loadStorefrontScript</code> function is designed to dynamically load and execute specific storefront scripts and styles based on a
-        given group ID. It also allows us to update all storefronts at once when new features are added or existing ones are updated. Options that are
-        frequently requested can be set using the options parameter.
+        The <code>loadStorefrontScript</code> function is designed to
+        dynamically load and execute specific storefront scripts and styles
+        based on a given group ID. It also allows us to update all storefronts
+        at once when new features are added or existing ones are updated.
+        Options that are frequently requested can be set using the options
+        parameter.
       </p>
     </section>
     <section>
       <h2>Parameters</h2>
       <h3>groupID (number)</h3>
-      <p>The identifier for the specific script group to be loaded. This determines which module and styles to import.</p>
+      <p>
+        The identifier for the specific script group to be loaded. This
+        determines which module and styles to import.
+      </p>
       <h3>styling (StylingParameter) <em>(optional)</em></h3>
-      <p>An optional object to customize the CSS variables used for styling different parts of the storefront. The properties include:</p>
+      <p>
+        An optional object to customize the CSS variables used for styling
+        different parts of the storefront. The properties include:
+      </p>
       <ul>
-        <li><code>navbarBackground?: string</code> - Background color of the navbar</li>
-        <li><code>navbarTextColor?: string</code> - Text color in the navbar</li>
-        <li><code>navbarHoverColor?: string</code> - Text hover color in the navbar</li>
+        <li>
+          <code>navbarBackground?: string</code> - Background color of the
+          navbar
+        </li>
+        <li>
+          <code>navbarTextColor?: string</code> - Text color in the navbar
+        </li>
+        <li>
+          <code>navbarHoverColor?: string</code> - Text hover color in the
+          navbar
+        </li>
 
-        <li><code>loginbarBackground?: string</code> - Background color of the login bar</li>
-        <li><code>loginbarTextColor?: string</code> - Text color in login bar</li>
-        <li><code>loginbarHoverColor?: string</code> - Text hover color of the login bar</li>
+        <li>
+          <code>loginbarBackground?: string</code> - Background color of the
+          login bar
+        </li>
+        <li>
+          <code>loginbarTextColor?: string</code> - Text color in login bar
+        </li>
+        <li>
+          <code>loginbarHoverColor?: string</code> - Text hover color of the
+          login bar
+        </li>
 
-        <li><code>primaryBackground?: string</code> - Primary background color</li>
+        <li>
+          <code>primaryBackground?: string</code> - Primary background color
+        </li>
         <li><code>primaryTextColor?: string</code> - Primary text color</li>
-        <li><code>primaryHoverColor?: string</code> - Primary text hover color</li>
+        <li>
+          <code>primaryHoverColor?: string</code> - Primary text hover color
+        </li>
 
-        <li><code>secondaryBackground?: string</code> - Secondary background color</li>
+        <li>
+          <code>secondaryBackground?: string</code> - Secondary background color
+        </li>
         <li><code>secondaryTextColor?: string</code> - Secondary text color</li>
-        <li><code>secondaryHoverColor?: string</code> - Secondary text hover color</li>
+        <li>
+          <code>secondaryHoverColor?: string</code> - Secondary text hover color
+        </li>
 
-        <li><code>tagBrandBackground?: string</code> - Brand tag background color</li>
+        <li>
+          <code>tagBrandBackground?: string</code> - Brand tag background color
+        </li>
         <li><code>tagBrandText?: string</code> - Brand tag text color</li>
 
-        <li><code>tagDecorationBackground?: string</code> - Decoration tag background color</li>
-        <li><code>tagDecorationText?: string</code> - Decoration tag text color</li>
+        <li>
+          <code>tagDecorationBackground?: string</code> - Decoration tag
+          background color
+        </li>
+        <li>
+          <code>tagDecorationText?: string</code> - Decoration tag text color
+        </li>
 
-        <li><code>tagDimensionsBackground?: string</code> - Dimensions tag background color</li>
-        <li><code>tagDimensionsText?: string</code> - Dimensions tag text color</li>
+        <li>
+          <code>tagDimensionsBackground?: string</code> - Dimensions tag
+          background color
+        </li>
+        <li>
+          <code>tagDimensionsText?: string</code> - Dimensions tag text color
+        </li>
 
-        <li><code>tagPackSizeBackground?: string</code> - Pack size tag background color</li>
-        <li><code>tagPackSizeText?: string</code> - Pack size tag text color</li>
+        <li>
+          <code>tagPackSizeBackground?: string</code> - Pack size tag background
+          color
+        </li>
+        <li>
+          <code>tagPackSizeText?: string</code> - Pack size tag text color
+        </li>
 
-        <li><code>tagSkuBackground?: string</code> - SKU tag background color</li>
+        <li>
+          <code>tagSkuBackground?: string</code> - SKU tag background color
+        </li>
         <li><code>tagSkuText?: string</code> - SKU tag text color</li>
       </ul>
       <h3>options (OptionsParameter) <em>(optional)</em></h3>
-      <p>An optional object to customize various display options for the storefront. The properties include:</p>
+      <p>
+        An optional object to customize various display options for the
+        storefront. The properties include:
+      </p>
       <ul>
-        <li><code>hideHomeLink?: boolean</code> - Hides "Home" link in the navbar (default: false)</li>
-        <li><code>hideCompanyShipTo?: boolean</code> - Hides "Ship To Company" section on Shipping Address page (default: false)</li>
         <li>
-          <code>hideAddressBook?: boolean</code> - Hides Address Book and "Add to Address Book" button on Shipping Address page (default: false)
+          <code>hideHomeLink?: boolean</code> - Hides "Home" link in the navbar
+          (default: false)
         </li>
-        <li><code>lockAddressBook?: boolean</code> - Makes Address Book read-only. Users cannot add their own addresses. (default: false)</li>
-        <li><code>enableDropdown?: boolean</code> - When true, makes subcategories collapsable. (default: false)</li>
+        <li>
+          <code>hideCompanyShipTo?: boolean</code> - Hides "Ship To Company"
+          section on Shipping Address page (default: false)
+        </li>
+        <li>
+          <code>hideAddressBook?: boolean</code> - Hides Address Book and "Add
+          to Address Book" button on Shipping Address page (default: false)
+        </li>
+        <li>
+          <code>lockAddressBook?: boolean</code> - Makes Address Book read-only.
+          Users cannot add their own addresses. (default: false)
+        </li>
+        <li>
+          <code>enableDropdown?: boolean</code> - When true, makes subcategories
+          collapsable. (default: false)
+        </li>
       </ul>
     </section>
     <section>
       <h2>Usage</h2>
-      <p>Here is an example of how to use the <code>loadStorefrontScript</code> function:</p>
+      <p>
+        Here is an example of how to use the
+        <code>loadStorefrontScript</code> function:
+      </p>
       <pre>
           <code>
           &lt;!-- You should include this script tag in the head of your HTML file. You can set this in the branding profile. --&gt;
-          &lt;script src="https://main--vividstorefronts.netlify.app/dist/main.js"&gt;&lt;/script&gt;
+          &lt;script src="build/main.js"&gt;&lt;/script&gt;
 
           const groupID = 66;
 
