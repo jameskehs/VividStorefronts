@@ -1,11 +1,3 @@
-#quoteNameBox {
-  display: none;
-}
-#custPOBox {
-  margin: 0 auto;
-  display: block;
-  float: none;
-}
 /* Center the entire table horizontally */
 table {
   margin: 0 auto;
@@ -21,4 +13,7 @@ tbody#paywithnewcard td > .ui-box {
   max-width: 1000px;
   margin: 0 auto; /* horizontally center */
   text-align: center; /* center text inside */
+}
+#quoteNameBox {
+  display: none;
 }
