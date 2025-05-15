@@ -30,9 +30,11 @@ export function setupCustomerPORequirement(): void {
     function toggleCustomerPO(): void {
       if (purchaseOrder.checked) {
         customerPO.classList.add("required");
+        customerPO.setAttribute("required", "true");
         customerPO.placeholder = "required";
       } else {
         customerPO.classList.remove("required");
+        customerPO.removeAttribute("required");
         customerPO.placeholder = "";
       }
     }
