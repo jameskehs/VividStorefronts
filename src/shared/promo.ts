@@ -5,7 +5,9 @@ export function setupPromoCodeDiscount(): void {
   if (GLOBALVARS.currentPage !== StorefrontPage.CHECKOUTPAYMENT) return;
 
   document.addEventListener("DOMContentLoaded", () => {
-    const promoInput = document.getElementById("customerPO");
+    const promoInput = document.getElementById(
+      "customerPO"
+    ) as HTMLInputElement;
     const subPriceEl = document.getElementById("subPrice");
     const taxEl = document.getElementById("taxPrice");
     const rushEl = document.getElementById("rushPrice");
@@ -26,38 +28,35 @@ export function setupPromoCodeDiscount(): void {
       return;
     }
 
-    // Define promo codes and their discount amounts
     const promoCodes = {
       SAVE10: 10.0,
       FREESHIP: 14.98,
       VIP25: 25.0,
     };
 
-    function parseAmount(el) {
-      return parseFloat(el.textContent?.replace(/[^\d.-]/g, "") || "0");
+    function parseAmount(el: HTMLElement | null) {
+      return parseFloat(el!.textContent?.replace(/[^\d.-]/g, "") || "0");
     }
 
-    function formatAmount(amount) {
+    function formatAmount(amount: number) {
       return amount.toFixed(2);
     }
 
     function recalculateWithPromo() {
       const code = promoInput.value.trim().toUpperCase();
-      const discount = promoCodes[code] || 0;
+      const discount =
+        code in promoCodes ? promoCodes[code as keyof typeof promoCodes] : 0;
 
-      // Get current values
       const originalSub = parseAmount(subPriceEl);
       const tax = parseAmount(taxEl);
       const rush = parseAmount(rushEl);
       const ship = parseAmount(shipEl);
 
-      // Prevent subtotal going negative
       const newSub = Math.max(originalSub - discount, 0);
       const newGrand = newSub + tax + rush + ship;
 
-      // Update UI
-      subPriceEl.textContent = formatAmount(newSub);
-      grandTotalEl.textContent = formatAmount(newGrand);
+      subPriceEl!.textContent = formatAmount(newSub);
+      grandTotalEl!.textContent = formatAmount(newGrand);
 
       promoInput.style.border =
         discount > 0 ? "2px solid green" : "2px solid red";
