@@ -16,12 +16,12 @@ export function setupCustomerPORequirement(): void {
     ) as HTMLInputElement | null;
     const form = document.querySelector("form") as HTMLFormElement | null;
 
+    // Abort if any elements are missing
     if (!purchaseOrderRadio || !payWithCardRadio || !customerPOInput || !form) {
       console.warn("Required elements not found.");
       return;
     }
 
-    // Disable native HTML5 validation
     form.setAttribute("novalidate", "true");
 
     function toggleCustomerPO(): void {
@@ -37,7 +37,7 @@ export function setupCustomerPORequirement(): void {
     }
 
     function validateForm(event: Event): void {
-      toggleCustomerPO(); // Ensure attributes are current
+      toggleCustomerPO();
 
       if (purchaseOrderRadio!.checked && customerPOInput!.value.trim() === "") {
         event.preventDefault();
@@ -46,10 +46,10 @@ export function setupCustomerPORequirement(): void {
       }
     }
 
-    // Force-correct attributes on load (especially if HTML includes required)
+    // Initialize
     toggleCustomerPO();
 
-    // Add listeners
+    // Event listeners
     purchaseOrderRadio.addEventListener("change", toggleCustomerPO);
     payWithCardRadio.addEventListener("change", toggleCustomerPO);
     form.addEventListener("submit", validateForm);
