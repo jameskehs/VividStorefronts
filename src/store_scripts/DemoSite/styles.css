@@ -1,67 +1,13 @@
-.payment-wrapper {
-  width: 100%;
-  text-align: center;
-  margin: 0 auto;
-}
-
-.message-board {
-  width: 85%;
-  margin: 0 auto;
+#quoteNameBox {
   display: none;
 }
-
-.payment-method {
-  max-width: 1000px;
+#custPOBox {
   margin: 0 auto;
-  text-align: center;
-}
-
-.instructions {
-  width: 100%;
-  padding: 15px;
-  text-align: center;
-}
-
-.form-section {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-.input-box {
-  width: 48%;
-  padding: 4px;
-  text-align: center;
-}
-
-.input-box input[type="text"],
-.input-box input[type="hidden"],
-.input-box input[type="email"],
-.input-box input[type="tel"] {
-  width: 99%;
-}
-
-.clear {
-  clear: both;
-}
-
-.pay-card-box {
-  width: 100%;
-  margin-top: 20px;
-  text-align: center;
-}
-
-.pay-card-box .ui-box {
-  width: 100%;
-  max-width: 1000px;
-  margin: 0 auto;
-  text-align: center;
-}
-
-#load_payment {
-  width: 100%;
-  height: 859px;
   display: block;
+  float: none;
+}
+#paywithnewcard {
+  margin: 0 auto;
+  display: block;
+  width: fit-content; /* or a specific width if needed */
 }
