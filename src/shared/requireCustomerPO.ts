@@ -17,27 +17,29 @@ export function setupCustomerPORequirement(): void {
     const form = document.querySelector("form") as HTMLFormElement | null;
 
     if (!purchaseOrderRadio || !payWithCardRadio || !customerPOInput || !form) {
-      console.warn("Required elements not found.");
+      console.warn("Missing required elements.");
       return;
     }
 
-    // Disable native validation
+    // Disable native HTML5 validation to handle manually
     form.setAttribute("novalidate", "true");
 
-    function toggleCustomerPO(): void {
-      if (purchaseOrderRadio!.checked) {
-        customerPOInput!.classList.add("required");
+    function toggleCustomerPO() {
+      const isPO = purchaseOrderRadio!.checked;
+
+      if (isPO) {
         customerPOInput!.setAttribute("required", "true");
+        customerPOInput!.classList.add("required");
         customerPOInput!.placeholder = "required";
       } else {
-        customerPOInput!.classList.remove("required");
         customerPOInput!.removeAttribute("required");
+        customerPOInput!.classList.remove("required");
         customerPOInput!.placeholder = "";
       }
     }
 
-    function validateForm(event: Event): void {
-      toggleCustomerPO(); // ensure state is up to date
+    function validateForm(event: Event) {
+      toggleCustomerPO();
 
       if (purchaseOrderRadio!.checked && customerPOInput!.value.trim() === "") {
         event.preventDefault();
@@ -46,10 +48,10 @@ export function setupCustomerPORequirement(): void {
       }
     }
 
-    // Set up initial state
+    // Initial state on page load
     toggleCustomerPO();
 
-    // Listen for changes
+    // Add event listeners
     purchaseOrderRadio.addEventListener("change", toggleCustomerPO);
     payWithCardRadio.addEventListener("change", toggleCustomerPO);
     form.addEventListener("submit", validateForm);
