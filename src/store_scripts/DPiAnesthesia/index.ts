@@ -1,5 +1,6 @@
-import { StorefrontPage } from '../../enums/StorefrontPage.enum';
-import { GLOBALVARS } from '../../index';
+import { StorefrontPage } from "../../enums/StorefrontPage.enum";
+import { GLOBALVARS } from "../../index";
+import { setupCustomerPORequirement } from "../../shared/requireCustomerPO";
 
 export function main() {
   console.log(GLOBALVARS.currentPage);
@@ -15,6 +16,7 @@ export function main() {
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTCONFIRMATION) {
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTPAYMENT) {
+    setupCustomerPORequirement();
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTREVIEW) {
   }
