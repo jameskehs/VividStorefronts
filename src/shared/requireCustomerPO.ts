@@ -24,12 +24,14 @@ export function setupCustomerPORequirement(): void {
     // Disable native HTML5 validation
     form.setAttribute("novalidate", "true");
 
-    // ✅ Make "Pay with Card" selected by default
+    // ✅ Set "Pay with Card" as default
     payWithCardRadio.checked = true;
     purchaseOrderRadio.checked = false;
 
     function toggleCustomerPO() {
-      if (purchaseOrderRadio!.checked) {
+      const isPO = purchaseOrderRadio!.checked;
+
+      if (isPO) {
         customerPOInput!.setAttribute("required", "true");
         customerPOInput!.classList.add("required");
         customerPOInput!.placeholder = "required";
@@ -50,10 +52,21 @@ export function setupCustomerPORequirement(): void {
       }
     }
 
+    // Initial state
     toggleCustomerPO();
 
-    purchaseOrderRadio.addEventListener("change", toggleCustomerPO);
-    payWithCardRadio.addEventListener("change", toggleCustomerPO);
+    // ✅ Watch clicks on both radio *labels* instead (jQuery UI updates on label click)
+    const poLabel = document.querySelector("label[for='purchaseOrder']");
+    const ccLabel = document.querySelector("label[for='newCC']");
+
+    poLabel?.addEventListener("click", () => {
+      setTimeout(toggleCustomerPO, 0); // Delay to let jQuery update radio state
+    });
+
+    ccLabel?.addEventListener("click", () => {
+      setTimeout(toggleCustomerPO, 0);
+    });
+
     form.addEventListener("submit", validateForm);
   });
 }
