@@ -17,48 +17,41 @@ export function setupCustomerPORequirement(): void {
     const form = document.querySelector("form") as HTMLFormElement | null;
 
     if (!purchaseOrderRadio || !payWithCardRadio || !customerPOInput || !form) {
-      console.warn("Required payment form elements not found");
+      console.warn("Required elements not found.");
       return;
     }
 
-    const purchaseOrder = purchaseOrderRadio!;
-    const payWithCard = payWithCardRadio!;
-    const customerPO = customerPOInput!;
-    const paymentForm = form!;
-
     // Disable native HTML5 validation
-    paymentForm.setAttribute("novalidate", "true");
+    form.setAttribute("novalidate", "true");
 
     function toggleCustomerPO(): void {
-      if (purchaseOrder.checked) {
-        customerPO.classList.add("required");
-        customerPO.setAttribute("required", "true");
-        customerPO.placeholder = "required";
+      if (purchaseOrderRadio!.checked) {
+        customerPOInput!.classList.add("required");
+        customerPOInput!.setAttribute("required", "true");
+        customerPOInput!.placeholder = "required";
       } else {
-        customerPO.classList.remove("required");
-        customerPO.removeAttribute("required");
-        customerPO.placeholder = "";
+        customerPOInput!.classList.remove("required");
+        customerPOInput!.removeAttribute("required");
+        customerPOInput!.placeholder = "";
       }
     }
 
     function validateForm(event: Event): void {
-      toggleCustomerPO(); // ensure latest state
+      toggleCustomerPO(); // Ensure attributes are current
 
-      const isPurchaseOrder = purchaseOrder.checked;
-      const customerPOValue = customerPO.value.trim();
-
-      if (isPurchaseOrder && customerPOValue === "") {
-        event.preventDefault(); // stop form submission
+      if (purchaseOrderRadio!.checked && customerPOInput!.value.trim() === "") {
+        event.preventDefault();
         alert("Customer PO is required for Purchase Order payment.");
-        customerPO.focus();
+        customerPOInput!.focus();
       }
-      // No need to return anything
     }
 
-    purchaseOrder.addEventListener("change", toggleCustomerPO);
-    payWithCard.addEventListener("change", toggleCustomerPO);
-    paymentForm.addEventListener("submit", validateForm);
+    // Force-correct attributes on load (especially if HTML includes required)
+    toggleCustomerPO();
 
-    toggleCustomerPO(); // run once on page load
+    // Add listeners
+    purchaseOrderRadio.addEventListener("change", toggleCustomerPO);
+    payWithCardRadio.addEventListener("change", toggleCustomerPO);
+    form.addEventListener("submit", validateForm);
   });
 }
