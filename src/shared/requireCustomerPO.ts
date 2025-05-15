@@ -16,12 +16,16 @@ export function setupCustomerPORequirement(): void {
     ) as HTMLInputElement | null;
     const form = document.querySelector("form") as HTMLFormElement | null;
 
-    // Abort if any elements are missing
     if (!purchaseOrderRadio || !payWithCardRadio || !customerPOInput || !form) {
       console.warn("Required elements not found.");
       return;
     }
 
+    // Make "Pay with Card" selected by default
+    payWithCardRadio.checked = true;
+    purchaseOrderRadio.checked = false;
+
+    // Disable native HTML5 validation
     form.setAttribute("novalidate", "true");
 
     function toggleCustomerPO(): void {
@@ -46,10 +50,10 @@ export function setupCustomerPORequirement(): void {
       }
     }
 
-    // Initialize
+    // Set the correct initial state
     toggleCustomerPO();
 
-    // Event listeners
+    // Add event listeners
     purchaseOrderRadio.addEventListener("change", toggleCustomerPO);
     payWithCardRadio.addEventListener("change", toggleCustomerPO);
     form.addEventListener("submit", validateForm);
