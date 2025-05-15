@@ -21,13 +21,15 @@ export function setupCustomerPORequirement(): void {
       return;
     }
 
-    // Disable native HTML5 validation to handle manually
+    // Disable native HTML5 validation
     form.setAttribute("novalidate", "true");
 
-    function toggleCustomerPO() {
-      const isPO = purchaseOrderRadio!.checked;
+    // ✅ Make "Pay with Card" selected by default
+    payWithCardRadio.checked = true;
+    purchaseOrderRadio.checked = false;
 
-      if (isPO) {
+    function toggleCustomerPO() {
+      if (purchaseOrderRadio!.checked) {
         customerPOInput!.setAttribute("required", "true");
         customerPOInput!.classList.add("required");
         customerPOInput!.placeholder = "required";
@@ -48,10 +50,8 @@ export function setupCustomerPORequirement(): void {
       }
     }
 
-    // Initial state on page load
     toggleCustomerPO();
 
-    // Add event listeners
     purchaseOrderRadio.addEventListener("change", toggleCustomerPO);
     payWithCardRadio.addEventListener("change", toggleCustomerPO);
     form.addEventListener("submit", validateForm);
