@@ -23,8 +23,8 @@ module.exports = {
     extensions: [".tsx", ".ts", ".js"],
   },
   output: {
-    filename: "main.js", // the bundle output file
-    path: path.resolve(__dirname, "build"), // output folder
+    chunkFilename: "[name].bundle.js",
+    path: path.resolve(__dirname, "build"),
   },
 
   optimization: {
