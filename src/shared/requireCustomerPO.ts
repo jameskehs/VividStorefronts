@@ -21,12 +21,12 @@ export function setupCustomerPORequirement(): void {
       return;
     }
 
-    // ✅ Non-null assertions because TypeScript doesn't track safety across inner functions
     const purchaseOrder = purchaseOrderRadio!;
     const payWithCard = payWithCardRadio!;
     const customerPO = customerPOInput!;
     const paymentForm = form!;
 
+    // Disable native HTML5 validation
     paymentForm.setAttribute("novalidate", "true");
 
     function toggleCustomerPO(): void {
@@ -42,22 +42,23 @@ export function setupCustomerPORequirement(): void {
     }
 
     function validateForm(event: Event): void {
-      toggleCustomerPO(); // Optional sync
+      toggleCustomerPO(); // ensure latest state
 
       const isPurchaseOrder = purchaseOrder.checked;
       const customerPOValue = customerPO.value.trim();
 
       if (isPurchaseOrder && customerPOValue === "") {
-        event.preventDefault();
+        event.preventDefault(); // stop form submission
         alert("Customer PO is required for Purchase Order payment.");
         customerPO.focus();
       }
+      // No need to return anything
     }
 
     purchaseOrder.addEventListener("change", toggleCustomerPO);
     payWithCard.addEventListener("change", toggleCustomerPO);
     paymentForm.addEventListener("submit", validateForm);
 
-    toggleCustomerPO();
+    toggleCustomerPO(); // run once on page load
   });
 }
