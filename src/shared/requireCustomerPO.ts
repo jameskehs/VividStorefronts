@@ -14,24 +14,21 @@ export function setupCustomerPORequirement(): void {
     const customerPOInput = document.getElementById(
       "customerPO"
     ) as HTMLInputElement | null;
-    const form = document.querySelector("form") as HTMLFormElement | null;
+    const form = document.getElementById(
+      "authorizeIFrameForm"
+    ) as HTMLFormElement | null;
 
     if (!purchaseOrderRadio || !payWithCardRadio || !customerPOInput || !form) {
       console.warn("Missing required elements.");
       return;
     }
 
-    // Disable native HTML5 validation
-    form.setAttribute("novalidate", "true");
-
-    // ✅ Set "Pay with Card" as default
+    // ✅ Force "Pay with Card" to be the default on load
     payWithCardRadio.checked = true;
     purchaseOrderRadio.checked = false;
 
-    function toggleCustomerPO() {
-      const isPO = purchaseOrderRadio!.checked;
-
-      if (isPO) {
+    function toggleCustomerPO(): void {
+      if (purchaseOrderRadio!.checked) {
         customerPOInput!.setAttribute("required", "true");
         customerPOInput!.classList.add("required");
         customerPOInput!.placeholder = "required";
@@ -42,7 +39,7 @@ export function setupCustomerPORequirement(): void {
       }
     }
 
-    function validateForm(event: Event) {
+    function validateForm(event: Event): void {
       toggleCustomerPO();
 
       if (purchaseOrderRadio!.checked && customerPOInput!.value.trim() === "") {
@@ -52,21 +49,17 @@ export function setupCustomerPORequirement(): void {
       }
     }
 
-    // Initial state
+    // Initial setup
     toggleCustomerPO();
 
-    // ✅ Watch clicks on both radio *labels* instead (jQuery UI updates on label click)
+    // ✅ Use label clicks for jQuery UI radio button updates
     const poLabel = document.querySelector("label[for='purchaseOrder']");
     const ccLabel = document.querySelector("label[for='newCC']");
 
-    poLabel?.addEventListener("click", () => {
-      setTimeout(toggleCustomerPO, 0); // Delay to let jQuery update radio state
-    });
+    poLabel?.addEventListener("click", () => setTimeout(toggleCustomerPO, 10));
+    ccLabel?.addEventListener("click", () => setTimeout(toggleCustomerPO, 10));
 
-    ccLabel?.addEventListener("click", () => {
-      setTimeout(toggleCustomerPO, 0);
-    });
-
+    // Validate before form submission
     form.addEventListener("submit", validateForm);
   });
 }
