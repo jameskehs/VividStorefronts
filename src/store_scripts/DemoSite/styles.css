@@ -1,18 +1,33 @@
-/* Center the entire table horizontally */
-table {
+/* Center the main container inside the td */
+td[valign="top"] > div {
+  width: 100%;
+  max-width: 1000px;
   margin: 0 auto;
-}
-
-/* Center content inside all table cells */
-tbody#paywithnewcard td {
   text-align: center;
 }
 
-/* Center the .ui-box div inside the td with max width */
-tbody#paywithnewcard td > .ui-box {
+/* Clear floats and use flexbox instead for promo/project boxes */
+#dispCustomerPO {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* Make both boxes the same size and centered */
+#custPOBox,
+#quoteNameBox {
+  width: 45%;
+  float: none; /* remove float */
+  margin: 0;
+}
+
+/* Ensure iframe container is centered */
+#paywithnewcard .ui-box {
+  margin: 0 auto;
+  text-align: center;
   max-width: 1000px;
-  margin: 0 auto; /* horizontally center */
-  text-align: center; /* center text inside */
+  width: 100%;
 }
 #quoteNameBox {
   display: none;
