@@ -1,0 +1,13 @@
+#quoteNameBox {
+  display: none;
+}
+#custPOBox {
+  margin: 0 auto;
+  display: block;
+  width: fit-content; /* or set a specific width */
+}
+#paywithnewcard {
+  margin: 0 auto;
+  display: block;
+  width: fit-content; /* or a specific width if needed */
+}
