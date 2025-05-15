@@ -21,11 +21,13 @@ export function setupCustomerPORequirement(): void {
       return;
     }
 
-    // Safe non-null assertions after null check
+    // ✅ Non-null assertions because TypeScript doesn't track safety across inner functions
     const purchaseOrder = purchaseOrderRadio!;
     const payWithCard = payWithCardRadio!;
     const customerPO = customerPOInput!;
     const paymentForm = form!;
+
+    paymentForm.setAttribute("novalidate", "true");
 
     function toggleCustomerPO(): void {
       if (purchaseOrder.checked) {
@@ -40,7 +42,7 @@ export function setupCustomerPORequirement(): void {
     }
 
     function validateForm(event: Event): void {
-      toggleCustomerPO(); // optional but helpful
+      toggleCustomerPO(); // Optional sync
 
       const isPurchaseOrder = purchaseOrder.checked;
       const customerPOValue = customerPO.value.trim();
@@ -52,12 +54,10 @@ export function setupCustomerPORequirement(): void {
       }
     }
 
-    // Attach listeners
     purchaseOrder.addEventListener("change", toggleCustomerPO);
     payWithCard.addEventListener("change", toggleCustomerPO);
     paymentForm.addEventListener("submit", validateForm);
 
-    // Initialize on page load
     toggleCustomerPO();
   });
 }
