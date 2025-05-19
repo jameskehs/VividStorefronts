@@ -10,8 +10,17 @@ export function setupCustomerPORequirement() {
       "customerPO"
     ) as HTMLInputElement | null;
     const poLabel = document.querySelector("label[for='purchaseOrder']");
+    const checkoutButton = document.getElementById(
+      "checkoutProceedButton"
+    ) as HTMLButtonElement | null;
 
-    if (promoOrderRadio && cardRadio && customerPO && poLabel) {
+    if (
+      promoOrderRadio &&
+      cardRadio &&
+      customerPO &&
+      poLabel &&
+      checkoutButton
+    ) {
       clearInterval(interval);
 
       // Rename the radio label from "Purchase Order" to "Promo Order"
@@ -19,19 +28,27 @@ export function setupCustomerPORequirement() {
 
       const updateRequirement = () => {
         const isPromoOrder = promoOrderRadio.checked;
+        const hasPO = customerPO.value.trim().length > 0;
 
         customerPO.required = isPromoOrder;
         customerPO.placeholder = isPromoOrder ? "required" : "optional";
-
-        // Optionally toggle a class
         customerPO.classList.toggle("required", isPromoOrder);
+
+        // Show/hide the checkout button
+        if (isPromoOrder && !hasPO) {
+          checkoutButton.style.display = "none";
+        } else {
+          checkoutButton.style.display = "";
+        }
       };
 
-      // Attach listeners
+      // Event listeners
       promoOrderRadio.addEventListener("change", updateRequirement);
       cardRadio.addEventListener("change", updateRequirement);
+      customerPO.addEventListener("input", updateRequirement);
+      customerPO.addEventListener("blur", updateRequirement);
 
-      // Initial run
+      // Initial check
       updateRequirement();
     }
   }, 250);
