@@ -1,31 +1,65 @@
 import { StorefrontPage } from "../../enums/StorefrontPage.enum";
 import { GLOBALVARS } from "../../index";
+import { setupCustomerPORequirement } from "../../shared/requireCustomerPO";
 
 export function main() {
   console.log(GLOBALVARS.currentPage);
 
-  if (GLOBALVARS.currentPage === StorefrontPage.ADDTOCART) {
+  switch (GLOBALVARS.currentPage) {
+    case StorefrontPage.ADDTOCART:
+    case StorefrontPage.CART:
+    case StorefrontPage.CATALOG:
+    case StorefrontPage.CHECKOUTADDRESS:
+    case StorefrontPage.CHECKOUTCONFIRMATION:
+    case StorefrontPage.CHECKOUTREVIEW:
+    case StorefrontPage.CHECKOUTSHIPPING:
+    case StorefrontPage.CREATEEDITACCOUNT:
+    case StorefrontPage.CUSTOMIZETEMPLATE:
+    case StorefrontPage.MYACCOUNT:
+    case StorefrontPage.VIEWORDERS:
+      break;
+
+    case StorefrontPage.CHECKOUTPAYMENT:
+      setupCustomerPORequirement(); // Existing logic
+      customizePaymentMethod(); // Custom logic for button + input field
+      break;
   }
-  if (GLOBALVARS.currentPage === StorefrontPage.CART) {
-  }
-  if (GLOBALVARS.currentPage === StorefrontPage.CATALOG) {
-  }
-  if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTADDRESS) {
-  }
-  if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTCONFIRMATION) {
-  }
-  if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTPAYMENT) {
-  }
-  if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTREVIEW) {
-  }
-  if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTSHIPPING) {
-  }
-  if (GLOBALVARS.currentPage === StorefrontPage.CREATEEDITACCOUNT) {
-  }
-  if (GLOBALVARS.currentPage === StorefrontPage.CUSTOMIZETEMPLATE) {
-  }
-  if (GLOBALVARS.currentPage === StorefrontPage.MYACCOUNT) {
-  }
-  if (GLOBALVARS.currentPage === StorefrontPage.VIEWORDERS) {
-  }
+}
+
+function customizePaymentMethod() {
+  const interval = setInterval(() => {
+    const poRadio = document.querySelector("label[for='purchaseOrder']");
+    const customerPO = document.getElementById(
+      "customerPO"
+    ) as HTMLInputElement | null;
+
+    if (poRadio && customerPO) {
+      clearInterval(interval);
+
+      // Rename the label text to "Promo Order"
+      poRadio.textContent = "Promo Order";
+
+      // Handle required field dynamically
+      const promoOrderRadio = document.getElementById(
+        "purchaseOrder"
+      ) as HTMLInputElement;
+      const cardRadio = document.getElementById("newCC") as HTMLInputElement;
+
+      const updateRequired = () => {
+        if (promoOrderRadio?.checked) {
+          customerPO.required = true;
+          customerPO.placeholder = "required";
+        } else {
+          customerPO.required = false;
+          customerPO.placeholder = "optional";
+        }
+      };
+
+      promoOrderRadio?.addEventListener("change", updateRequired);
+      cardRadio?.addEventListener("change", updateRequired);
+
+      // Initialize once on load
+      updateRequired();
+    }
+  }, 250);
 }
