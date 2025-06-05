@@ -6,42 +6,36 @@ export async function ChangeInventoryCountNoticeNEW(
   emailPlaceholder: string
 ) {
   if (GLOBALVARS.currentPage === StorefrontPage.ADDTOCART) {
-    // Get the element with the id 'inventoryCountNotice'
-    var element = document.getElementById("inventoryCountNotice");
+    const element = document.getElementById("inventoryCountNotice");
 
-    // Try to get sales email from localStorage first
-    // var salesEmailTxt =
-    //   localStorage.getItem("salesEmailTxt") || "sales@vividink.com";
-    var salesEmailTxt = "sales@vividink.com";
+    let salesEmailTxt = "sales@vividink.com";
 
-    // If not in localStorage, fetch from /account/index.php
-    if (!localStorage.getItem("salesEmailTxt")) {
-      try {
-        let response = await fetch("/account/index.php");
-        let text = await response.text();
-        let parser = new DOMParser();
-        let doc = parser.parseFromString(text, "text/html");
-        let salesEmailElement = doc.getElementById("salesEmailTxt");
-        salesEmailTxt =
-          salesEmailElement?.textContent?.trim() || "sales@vividink.com";
+    // Always try to fetch fresh first
+    try {
+      const response = await fetch("/account/index.php");
+      const text = await response.text();
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(text, "text/html");
+      const salesEmailElement = doc.querySelector("#salesEmailTxt a");
 
-        // Store in localStorage for future use
+      if (salesEmailElement?.textContent?.trim()) {
+        salesEmailTxt = salesEmailElement.textContent.trim();
         localStorage.setItem("salesEmailTxt", salesEmailTxt);
-      } catch (error) {
-        console.error("Failed to fetch sales email:", error);
+      } else {
+        // Fallback to localStorage
+        salesEmailTxt = localStorage.getItem("salesEmailTxt") || salesEmailTxt;
       }
+    } catch (e) {
+      console.error("Error fetching sales email:", e);
+      salesEmailTxt = localStorage.getItem("salesEmailTxt") || salesEmailTxt;
     }
 
-    // Create a mailto link for the email
-    var mailtoLink = `<a href="mailto:${salesEmailTxt}">${salesEmailTxt}</a>`;
+    const mailtoLink = `<a href="mailto:${salesEmailTxt}">${salesEmailTxt}</a>`;
 
-    // Insert a line break after the word "quantity"
-    var updatedMessage = newMessage.replace("quantity.", "quantity.<br>");
+    const updatedMessage = newMessage
+      .replace("quantity.", "quantity.<br>")
+      .replace(emailPlaceholder, mailtoLink); // ← this is key
 
-    // Replace the email address in the updated message with the mailto link
-    updatedMessage = updatedMessage.replace(emailPlaceholder, mailtoLink);
-
-    // Set the updated message to the innerHTML of the element
     if (element) {
       element.innerHTML = updatedMessage;
     } else {
