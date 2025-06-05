@@ -14,15 +14,13 @@ table.tableMain {
 }
 .specsheet-button {
   display: inline-block;
-  padding: 10px 16px;
-  background-color: #007bff; /* Bootstrap blue */
+  padding: 8px 16px;
+  background-color: #007bff;
   color: white;
   text-decoration: none;
   border-radius: 6px;
   font-weight: bold;
-  transition: background-color 0.3s ease;
-}
-
-.specsheet-button:hover {
-  background-color: #0056b3;
+  max-height: 38px;
+  line-height: 22px;
+  overflow: hidden;
 }
