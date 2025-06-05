@@ -13,7 +13,10 @@ export function ChangeInventoryCountNotice(newMessage: string, email: string) {
     var updatedMessage = newMessage.replace("quantity.", "quantity.<br>");
 
     // Replace the email address in the updated message with the mailto link
-    updatedMessage = updatedMessage.replace("angela@vividink.com", emailLink);
+    updatedMessage = updatedMessage.replace(
+      "atripp@poweredbyprisma.com",
+      emailLink
+    );
 
     // Set the updated message to the innerHTML of the element
     if (element) {
