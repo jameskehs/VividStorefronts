@@ -17,6 +17,7 @@ table.tableMain {
   padding: 0 !important;
   margin: 0 !important;
   line-height: 1;
+  box-align: left;
 }
 
 .size_chart a.specsheet-link {
@@ -26,4 +27,5 @@ table.tableMain {
   display: inline;
   line-height: 1;
   background: transparent !important;
+  color: blue;
 }
