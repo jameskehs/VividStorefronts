@@ -10,8 +10,9 @@ export async function ChangeInventoryCountNoticeNEW(
     var element = document.getElementById("inventoryCountNotice");
 
     // Try to get sales email from localStorage first
-    var salesEmailTxt =
-      localStorage.getItem("salesEmailTxt") || "sales@vividink.com";
+    // var salesEmailTxt =
+    //   localStorage.getItem("salesEmailTxt") || "sales@vividink.com";
+    var salesEmailTxt = "sales@vividink.com";
 
     // If not in localStorage, fetch from /account/index.php
     if (!localStorage.getItem("salesEmailTxt")) {
