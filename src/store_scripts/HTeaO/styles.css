@@ -13,11 +13,10 @@
   padding: 4px;
 }
 #pricing-table {
-  margin: 0 auto;
   border-collapse: collapse;
-  width: auto;
+  width: 100%;
 }
 #pricing-table th {
-  background-color: #4e6e60 !important;
+  background-color: #0f3554 !important;
   color: white;
 }
