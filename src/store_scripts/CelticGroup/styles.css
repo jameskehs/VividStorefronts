@@ -14,7 +14,7 @@ table.tableMain {
 }
 .size_chart {
   background: transparent !important;
-  padding: 0 !important;
+  padding: 4px !important;
   margin: 0 !important;
   line-height: 1;
   box-align: left;
