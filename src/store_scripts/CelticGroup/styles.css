@@ -12,14 +12,9 @@ table.tableMain {
   max-width: 1600px;
   margin: auto !important;
 }
-.specsheet-link {
-  background: none;
+.prodCaption .size_chart a.specsheet-link {
+  all: unset;
+  cursor: pointer;
   color: inherit;
-  text-decoration: none;
-  font-weight: normal;
-  padding: 0;
-  margin: 0;
-  border: none;
   display: inline;
-  max-height: none;
 }
