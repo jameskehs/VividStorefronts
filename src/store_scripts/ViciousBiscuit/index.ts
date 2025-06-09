@@ -3,7 +3,7 @@
 
 import { StorefrontPage } from "../../enums/StorefrontPage.enum";
 import { GLOBALVARS } from "../../index";
-import { ChangeInventoryCountNotice } from "../../shared/inventoryCountNotice";
+import { ChangeInventoryCountNoticeNEW } from "../../shared/inventoryCountNoticeNEW";
 
 export function main() {
   console.log(GLOBALVARS.currentPage);
@@ -33,9 +33,8 @@ export function main() {
   if (GLOBALVARS.currentPage === StorefrontPage.VIEWORDERS) {
   }
 }
-
-// Example call with a dynamic email
-ChangeInventoryCountNotice(
-  "Inventory not available for the desired order quantity. Please contact your account manager at 225-751-7297, or by email at angela@vividink.com",
-  "kgreen@poweredbyprisma.com" // Dynamically changing the email address
+// Call the updated function with a placeholder email to be replaced dynamically
+ChangeInventoryCountNoticeNEW(
+  "Inventory not available for the desired order quantity. Please contact your account manager at 225-751-7297, or by email at sales@vividink.com",
+  "sales@vividink.com" // Placeholder email to be replaced dynamically
 );
