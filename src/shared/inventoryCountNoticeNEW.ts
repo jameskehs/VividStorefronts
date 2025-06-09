@@ -8,7 +8,7 @@ export async function ChangeInventoryCountNoticeNEW(
   if (GLOBALVARS.currentPage === StorefrontPage.ADDTOCART) {
     const element = document.getElementById("inventoryCountNotice");
 
-    let salesEmailTxt = "sales@vividink.com";
+    let salesEmailTxt = "sales@poweredbyprisma.com";
 
     // Always try to fetch fresh first
     try {
