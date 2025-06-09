@@ -3,6 +3,7 @@ import { GLOBALVARS, OptionsParameter } from "../index";
 import { AddImagePickerSelectionToMemo } from "./imagePickertoMemo";
 import { ChangeCustomerServiceMessage } from "./customerServiceMessage";
 import { changeSupportText } from "./changeSupportText";
+import { ChangeInventoryCountNoticeNEW } from "./inventoryCountNoticeNEW";
 
 export function runSharedScript(options: OptionsParameter) {
   console.log("Hello from the shared script!");
@@ -18,6 +19,12 @@ export function runSharedScript(options: OptionsParameter) {
   options.hideCompanyShipTo && $("div#shipToCompany").remove();
   options.lockAddressBook &&
     $('button[title="Import address book"], button#saveAddressBook').remove();
+
+  // Call the updated function with a placeholder email to be replaced dynamically
+  ChangeInventoryCountNoticeNEW(
+    "Inventory not available for the desired order quantity. Please contact your account manager at 225-751-7297, or by email at sales@poweredbyprisma.com",
+    "sales@poweredbyprisma.com" // Placeholder email to be replaced dynamically
+  );
 
   ChangeCustomerServiceMessage(
     "For customer service, please email your Sales Representative listed above."
