@@ -1,5 +1,5 @@
 * {
-  font-family: 'program', 'Poppins', sans-serif;
+  font-family: "program", "Poppins", sans-serif;
   font-size: 1.2rem;
 }
 
@@ -32,4 +32,7 @@ ul.TreeControl {
 img.finishedGoodThmb,
 .prodCell .left a {
   height: auto;
+}
+.tableSiteBanner img {
+  height: 120px;
 }
