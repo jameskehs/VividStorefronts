@@ -1,3 +1,6 @@
 .tableSiteBanner img {
   height: 100px;
 }
+#turnAroundBox header table {
+  color: #fff;
+}
