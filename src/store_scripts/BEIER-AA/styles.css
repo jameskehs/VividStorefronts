@@ -11,7 +11,7 @@ button.btnContinueShop {
   display: none;
 }
 .cart-warning {
-  color: red;
+  color: orange;
   font-weight: bold;
   margin-top: 10px;
   font-size: 14px;
