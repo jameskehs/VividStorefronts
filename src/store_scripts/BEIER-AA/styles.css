@@ -10,3 +10,9 @@
 button.btnContinueShop {
   display: none;
 }
+.cart-warning {
+  color: red;
+  font-weight: bold;
+  margin-top: 10px;
+  font-size: 14px;
+}

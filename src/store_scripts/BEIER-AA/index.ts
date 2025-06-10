@@ -3,6 +3,8 @@
 
 import { StorefrontPage } from "../../enums/StorefrontPage.enum";
 import { GLOBALVARS } from "../../index";
+import { ShowCartWarningIfMultipleItems } from "../../shared/ShowCartWarningIfMultipleItems";
+import { HideCheckoutButtonIfMultipleItems } from "../../shared/HideCheckoutButtonIfMultipleItems";
 
 export function main() {
   console.log(GLOBALVARS.currentPage);
@@ -32,3 +34,5 @@ export function main() {
   if (GLOBALVARS.currentPage === StorefrontPage.VIEWORDERS) {
   }
 }
+ShowCartWarningIfMultipleItems();
+HideCheckoutButtonIfMultipleItems();
