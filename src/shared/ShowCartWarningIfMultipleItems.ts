@@ -8,7 +8,7 @@ export function ShowCartWarningIfMultipleItems() {
     if (cartTotalSpan) {
       const match = cartTotalSpan.textContent?.match(/^(\d+)/);
       const count = match ? parseInt(match[1], 10) : 0;
-
+      // Adjust count as needed
       if (count > 1) {
         // Check if warning already exists to avoid duplicates
         if (!document.getElementById("cartItemWarning")) {
