@@ -29,3 +29,12 @@ table.tableMain {
   margin-bottom: 16px;
   margin-left: auto;
 }
+#searchbar input[type="text"] {
+  width: 27px;
+  margin-right: 10px;
+}
+#catalogWrap {
+  border-radius: 0px;
+  padding: 12px;
+  margin: 12px;
+}
