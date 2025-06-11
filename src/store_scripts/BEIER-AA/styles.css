@@ -39,3 +39,7 @@ table.tableMain {
   padding: 12px;
   margin: 12px;
 }
+.ui-box header {
+  background-color: #143d8d !important;
+  color: #fff !important;
+}
