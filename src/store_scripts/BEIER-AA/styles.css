@@ -40,6 +40,6 @@ table.tableMain {
   margin: 12px;
 }
 .ui-box header {
-  background-color: #143d8d !important;
-  color: #fff !important;
+  background-color: #efefef !important;
+  color: #000 !important;
 }
