@@ -28,6 +28,7 @@ table.tableMain {
   margin-right: auto;
   margin-bottom: 16px;
   margin-left: auto;
+  z-index: 1;
 }
 #searchbar input[type="text"] {
   width: 27px;
@@ -37,4 +38,11 @@ table.tableMain {
   border-radius: 0px;
   padding: 12px;
   margin: 12px;
+}
+#loginWrapper {
+  width: 100%;
+  background-color: var(--loginbar-bg);
+  padding: 0px 32px;
+  box-shadow: 0px 5px 9px rgb(0 0 0 / 34%);
+  z-index: 2;
 }
