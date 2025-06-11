@@ -16,3 +16,8 @@ button.btnContinueShop {
   margin-top: 10px;
   font-size: 14px;
 }
+.catalogTbl {
+  background-color: #fff;
+  border-radius: 0px;
+  padding: 12px;
+}
