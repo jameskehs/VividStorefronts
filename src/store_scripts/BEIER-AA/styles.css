@@ -21,3 +21,11 @@ button.btnContinueShop {
   border-radius: 0px;
   padding: 12px;
 }
+table.tableMain {
+  top: 0px;
+  max-width: 1600px;
+  margin-top: 0 !important;
+  margin-right: auto;
+  margin-bottom: 16px;
+  margin-left: auto;
+}
