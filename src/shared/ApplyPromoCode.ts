@@ -1,5 +1,3 @@
-console.log("applyPromoCode() running");
-
 export function applyPromoCode(): void {
   function init(): void {
     const promoInput = document.getElementById(
@@ -40,9 +38,13 @@ export function applyPromoCode(): void {
 
       if (!discount) {
         alert("Invalid promo code.");
+        localStorage.removeItem("promoCode");
+        localStorage.removeItem("discountedSubtotal");
+        localStorage.removeItem("discountedTotal");
         return;
       }
 
+      // ✅ Calculate and store discounted values
       const newSubtotal = +(originalSubtotal * (1 - discount)).toFixed(2);
       const tax = parseFloat(
         document.getElementById("taxPrice")?.textContent || "0"
@@ -53,15 +55,19 @@ export function applyPromoCode(): void {
       const rush = parseFloat(
         document.getElementById("rushPrice")?.textContent || "0"
       );
-
       const newTotal = +(newSubtotal + tax + ship + rush).toFixed(2);
 
+      // ✅ Update display
       subPriceSpan.textContent = newSubtotal.toFixed(2);
       grandPriceSpan.textContent = newTotal.toFixed(2);
+
+      // ✅ Persist to localStorage
+      localStorage.setItem("promoCode", code);
+      localStorage.setItem("discountedSubtotal", newSubtotal.toFixed(2));
+      localStorage.setItem("discountedTotal", newTotal.toFixed(2));
     });
   }
 
-  // ✅ If DOM is already loaded, run immediately; otherwise wait
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", init);
   } else {
