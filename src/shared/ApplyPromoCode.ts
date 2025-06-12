@@ -1,11 +1,9 @@
 console.log("applyPromoCode() running");
 
 export function applyPromoCode(): void {
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initPromoCode);
-  } else {
+  document.addEventListener("DOMContentLoaded", () => {
     initPromoCode();
-  }
+  });
 }
 
 function initPromoCode(): void {
@@ -24,13 +22,18 @@ function initPromoCode(): void {
     return;
   }
 
+  // ✅ Avoid adding the button twice
+  const existingButton =
+    promoInput.parentElement?.querySelector("#applyPromoButton");
+  if (existingButton) return;
+
   // ✅ Create the "Apply Promo Code" button
   const applyButton = document.createElement("button");
   applyButton.innerText = "Apply Promo Code";
+  applyButton.id = "applyPromoButton";
   applyButton.style.marginTop = "8px";
   applyButton.style.display = "block";
 
-  // ✅ Inject the button right below the promo input field
   promoInput.parentElement?.appendChild(applyButton);
 
   applyButton.addEventListener("click", () => {
