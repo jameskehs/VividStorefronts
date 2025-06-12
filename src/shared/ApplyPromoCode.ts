@@ -1,7 +1,7 @@
+console.log("applyPromoCode() running");
+
 export function applyPromoCode(): void {
   document.addEventListener("DOMContentLoaded", () => {
-    console.log("applyPromoCode() running");
-
     const promoInput = document.getElementById(
       "customerPO"
     ) as HTMLInputElement | null;
@@ -17,21 +17,20 @@ export function applyPromoCode(): void {
       return;
     }
 
-    // Prevent duplicate buttons
-    const existingButton = document.getElementById("applyPromoButton");
-    if (existingButton) return;
+    // ✅ Prevent duplicate buttons
+    if (document.getElementById("applyPromoBtn")) return;
 
-    // ✅ Create and style the button
+    // ✅ Create button
     const applyButton = document.createElement("button");
+    applyButton.id = "applyPromoBtn";
     applyButton.innerText = "Apply Promo Code";
-    applyButton.id = "applyPromoButton";
     applyButton.style.marginTop = "8px";
     applyButton.style.display = "block";
 
-    // ✅ Insert button after promoInput
+    // ✅ Inject after the promo input
     promoInput.parentElement?.appendChild(applyButton);
 
-    // ✅ On click, apply discount
+    // ✅ On click, apply discount if code matches
     applyButton.addEventListener("click", () => {
       const code = promoInput.value.trim().toUpperCase();
       const validCodes: Record<string, number> = {
@@ -41,12 +40,13 @@ export function applyPromoCode(): void {
       };
 
       const discount = validCodes[code];
+      const originalSubtotal = parseFloat(subPriceSpan.textContent || "0");
+
       if (!discount) {
         alert("Invalid promo code.");
         return;
       }
 
-      const originalSubtotal = parseFloat(subPriceSpan.textContent || "0");
       const newSubtotal = +(originalSubtotal * (1 - discount)).toFixed(2);
       const tax = parseFloat(
         document.getElementById("taxPrice")?.textContent || "0"
@@ -62,10 +62,6 @@ export function applyPromoCode(): void {
 
       subPriceSpan.textContent = newSubtotal.toFixed(2);
       grandPriceSpan.textContent = newTotal.toFixed(2);
-
-      console.log(
-        `Applied ${code}: new subtotal $${newSubtotal}, new total $${newTotal}`
-      );
     });
   });
 }
