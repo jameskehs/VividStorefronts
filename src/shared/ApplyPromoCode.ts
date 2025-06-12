@@ -1,84 +1,60 @@
-export function applyPromoCode(): void {
+export function applyPromoCode() {
   document.addEventListener("DOMContentLoaded", () => {
     const promoInput = document.getElementById(
       "customerPO"
     ) as HTMLInputElement | null;
+    const subPriceSpan = document.getElementById(
+      "subPrice"
+    ) as HTMLElement | null;
+    const grandPriceSpan = document.getElementById(
+      "grandPrice"
+    ) as HTMLElement | null;
 
-    if (!promoInput) {
-      console.warn("Promo code input not found.");
+    if (!promoInput || !subPriceSpan || !grandPriceSpan) {
+      console.warn("Promo code elements not found");
       return;
     }
 
-    // Patch into existing update function
-    const originalUpdate = (window as any).update_order_summary_ui;
-
-    (window as any).update_order_summary_ui = function (
-      shipCost: number,
-      rushCost: number,
-      handlingCost: number
-    ) {
-      // Call the original function first
-      originalUpdate(shipCost, rushCost, handlingCost);
-
-      // Now apply promo after cart totals are updated
-      applyDiscount();
-    };
-
-    function applyDiscount(): void {
-      const subPriceSpan = document.getElementById(
-        "subPrice"
-      ) as HTMLSpanElement | null;
-      const grandPriceSpan = document.getElementById(
-        "grandPrice"
-      ) as HTMLSpanElement | null;
-      const taxPriceSpan = document.getElementById(
-        "taxPrice"
-      ) as HTMLSpanElement | null;
-      const rushPriceSpan = document.getElementById(
-        "rushPrice"
-      ) as HTMLSpanElement | null;
-      const shipPriceSpan = document.getElementById(
-        "shipPrice"
-      ) as HTMLSpanElement | null;
-
-      if (
-        !subPriceSpan ||
-        !grandPriceSpan ||
-        !taxPriceSpan ||
-        !rushPriceSpan ||
-        !shipPriceSpan
-      )
-        return;
-
-      const originalSubtotal = parseFloat(
-        subPriceSpan.textContent?.replace(/[$,]/g, "") || "0"
-      );
-      const tax = parseFloat(
-        taxPriceSpan.textContent?.replace(/[$,]/g, "") || "0"
-      );
-      const rush = parseFloat(
-        rushPriceSpan.textContent?.replace(/[$,]/g, "") || "0"
-      );
-      const shipping = parseFloat(
-        shipPriceSpan.textContent?.replace(/[$,]/g, "") || "0"
-      );
-
-      let discount = 0;
-      const code = promoInput!.value.trim().toUpperCase();
-
-      if (code === "SAVE10") discount = 10;
-      else if (code === "SAVE20") discount = 20;
-
-      const newSubtotal = Math.max(0, originalSubtotal - discount);
-      const newGrandTotal = newSubtotal + tax + rush + shipping;
-
-      subPriceSpan.textContent = newSubtotal.toFixed(2);
-      grandPriceSpan.textContent = newGrandTotal.toFixed(2);
+    function parseCurrency(value: string): number {
+      return parseFloat(value.replace(/[^0-9.-]+/g, ""));
     }
 
-    // Also run when user leaves the promo field
-    promoInput.addEventListener("blur", () => {
-      applyDiscount();
-    });
+    function formatCurrency(value: number): string {
+      return value.toFixed(2);
+    }
+
+    function applyDiscount(): void {
+      const promoCode = promoInput!.value.trim().toUpperCase();
+      const validCodes: Record<string, number> = {
+        SAVE10: 10,
+        SAVE20: 20,
+        SAVE30: 30,
+      };
+
+      const discountPercent = validCodes[promoCode] ?? 0;
+      const originalSubtotal = parseCurrency(subPriceSpan!.textContent ?? "0");
+
+      const discountedSubtotal = originalSubtotal * (1 - discountPercent / 100);
+      subPriceSpan!.textContent = formatCurrency(discountedSubtotal);
+
+      const tax = parseCurrency(
+        document.getElementById("taxPrice")?.textContent ?? "0"
+      );
+      const shipping = parseCurrency(
+        document.getElementById("shipPrice")?.textContent ?? "0"
+      );
+      const rush = parseCurrency(
+        document.getElementById("rushPrice")?.textContent ?? "0"
+      );
+      const specialFee = parseCurrency(
+        document.getElementById("specialFeeAmount")?.textContent ?? "0"
+      );
+
+      const grandTotal =
+        discountedSubtotal + tax + shipping + rush + specialFee;
+      grandPriceSpan!.textContent = formatCurrency(grandTotal);
+    }
+
+    promoInput.addEventListener("blur", applyDiscount);
   });
 }

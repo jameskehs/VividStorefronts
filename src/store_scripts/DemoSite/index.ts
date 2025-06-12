@@ -1,6 +1,3 @@
-// <script src="https://main--vividstorefronts.netlify.app/main.js"></script>
-// <script>loadStorefrontScript(brandingProfile)</script>
-
 import { StorefrontPage } from "../../enums/StorefrontPage.enum";
 import { GLOBALVARS } from "../../index";
 import { applyPromoCode } from "../../shared/ApplyPromoCode";
@@ -19,6 +16,7 @@ export function main() {
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTCONFIRMATION) {
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTPAYMENT) {
+    applyPromoCode(); // ✅ Only apply promo code logic on payment page
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTREVIEW) {
   }
@@ -33,4 +31,3 @@ export function main() {
   if (GLOBALVARS.currentPage === StorefrontPage.VIEWORDERS) {
   }
 }
-applyPromoCode();
