@@ -36,3 +36,4 @@ export function main() {
 }
 ShowCartWarningIfMultipleItems();
 HideCheckoutButtonIfMultipleItems();
+updateSupportEmail("loginrequest@vividink.com");
