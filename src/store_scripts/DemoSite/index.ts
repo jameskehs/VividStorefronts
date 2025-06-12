@@ -31,3 +31,4 @@ export function main() {
   if (GLOBALVARS.currentPage === StorefrontPage.VIEWORDERS) {
   }
 }
+main(); // <-- Make sure this is at the bottom of index.ts
