@@ -1,7 +1,7 @@
 console.log("applyPromoCode() running");
 
 export function applyPromoCode(): void {
-  document.addEventListener("DOMContentLoaded", () => {
+  function init(): void {
     const promoInput = document.getElementById(
       "customerPO"
     ) as HTMLInputElement | null;
@@ -17,20 +17,16 @@ export function applyPromoCode(): void {
       return;
     }
 
-    // ✅ Prevent duplicate buttons
     if (document.getElementById("applyPromoBtn")) return;
 
-    // ✅ Create button
     const applyButton = document.createElement("button");
     applyButton.id = "applyPromoBtn";
     applyButton.innerText = "Apply Promo Code";
     applyButton.style.marginTop = "8px";
     applyButton.style.display = "block";
 
-    // ✅ Inject after the promo input
     promoInput.parentElement?.appendChild(applyButton);
 
-    // ✅ On click, apply discount if code matches
     applyButton.addEventListener("click", () => {
       const code = promoInput.value.trim().toUpperCase();
       const validCodes: Record<string, number> = {
@@ -63,5 +59,12 @@ export function applyPromoCode(): void {
       subPriceSpan.textContent = newSubtotal.toFixed(2);
       grandPriceSpan.textContent = newTotal.toFixed(2);
     });
-  });
+  }
+
+  // ✅ If DOM is already loaded, run immediately; otherwise wait
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
 }
