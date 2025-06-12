@@ -5,6 +5,7 @@ import { StorefrontPage } from "../../enums/StorefrontPage.enum";
 import { GLOBALVARS } from "../../index";
 import { ShowCartWarningIfMultipleItems } from "../../shared/ShowCartWarningIfMultipleItems";
 import { HideCheckoutButtonIfMultipleItems } from "../../shared/HideCheckoutButtonIfMultipleItems";
+import { updateSupportEmail } from "../../shared/updateSupportEmail";
 
 export function main() {
   console.log(GLOBALVARS.currentPage);

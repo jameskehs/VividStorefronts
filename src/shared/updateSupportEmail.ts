@@ -1,4 +1,4 @@
-function updateSupportEmail(newEmail: string): void {
+export function updateSupportEmail(newEmail: string): void {
   const emailLink = document.querySelector(
     'a[href^="mailto:artdepartment@poweredbyprisma.com"]'
   ) as HTMLAnchorElement;
