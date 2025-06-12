@@ -1,3 +1,4 @@
+console.log("applyPromoCode() running");
 export function applyPromoCode(): void {
   document.addEventListener("DOMContentLoaded", () => {
     const promoInput = document.getElementById(
