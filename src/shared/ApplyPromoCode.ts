@@ -1,4 +1,9 @@
-export function applyPromoCode() {
+import { StorefrontPage } from "../enums/StorefrontPage.enum";
+import { GLOBALVARS } from "../index";
+
+export function applyPromoCode(): void {
+  if (GLOBALVARS.currentPage !== StorefrontPage.CHECKOUTPAYMENT) return;
+
   document.addEventListener("DOMContentLoaded", () => {
     const promoInput = document.getElementById(
       "customerPO"
@@ -9,52 +14,50 @@ export function applyPromoCode() {
     const grandPriceSpan = document.getElementById(
       "grandPrice"
     ) as HTMLElement | null;
+    const taxPriceSpan = document.getElementById(
+      "taxPrice"
+    ) as HTMLElement | null;
+    const shipPriceSpan = document.getElementById(
+      "shipPrice"
+    ) as HTMLElement | null;
+    const rushPriceSpan = document.getElementById(
+      "rushPrice"
+    ) as HTMLElement | null;
 
     if (!promoInput || !subPriceSpan || !grandPriceSpan) {
-      console.warn("Promo code elements not found");
+      console.warn("Promo code or price spans not found.");
       return;
     }
 
-    function parseCurrency(value: string): number {
-      return parseFloat(value.replace(/[^0-9.-]+/g, ""));
-    }
+    // ✅ Create and inject Apply button
+    const applyBtn = document.createElement("button");
+    applyBtn.id = "applyPromoBtn";
+    applyBtn.type = "button";
+    applyBtn.textContent = "Apply Promo Code";
+    applyBtn.style.marginTop = "8px";
+    promoInput.parentElement?.appendChild(applyBtn);
 
-    function formatCurrency(value: number): string {
-      return value.toFixed(2);
-    }
+    const parsePrice = (el: HTMLElement | null): number =>
+      el ? parseFloat(el.textContent?.replace(/[^\d.]/g, "") || "0") : 0;
 
-    function applyDiscount(): void {
-      const promoCode = promoInput!.value.trim().toUpperCase();
-      const validCodes: Record<string, number> = {
-        SAVE10: 10,
-        SAVE20: 20,
-        SAVE30: 30,
-      };
+    const originalSubtotal = parsePrice(subPriceSpan);
 
-      const discountPercent = validCodes[promoCode] ?? 0;
-      const originalSubtotal = parseCurrency(subPriceSpan!.textContent ?? "0");
+    applyBtn.addEventListener("click", () => {
+      const code = promoInput.value.trim().toUpperCase();
+      let discount = 0;
 
-      const discountedSubtotal = originalSubtotal * (1 - discountPercent / 100);
-      subPriceSpan!.textContent = formatCurrency(discountedSubtotal);
+      if (code === "SAVE10") discount = originalSubtotal * 0.1;
+      else if (code === "SAVE20") discount = originalSubtotal * 0.2;
+      else if (code === "FREESHIP") discount = 5;
 
-      const tax = parseCurrency(
-        document.getElementById("taxPrice")?.textContent ?? "0"
-      );
-      const shipping = parseCurrency(
-        document.getElementById("shipPrice")?.textContent ?? "0"
-      );
-      const rush = parseCurrency(
-        document.getElementById("rushPrice")?.textContent ?? "0"
-      );
-      const specialFee = parseCurrency(
-        document.getElementById("specialFeeAmount")?.textContent ?? "0"
-      );
+      const newSubtotal = Math.max(originalSubtotal - discount, 0);
+      const tax = parsePrice(taxPriceSpan);
+      const ship = parsePrice(shipPriceSpan);
+      const rush = parsePrice(rushPriceSpan);
+      const newGrand = (newSubtotal + tax + ship + rush).toFixed(2);
 
-      const grandTotal =
-        discountedSubtotal + tax + shipping + rush + specialFee;
-      grandPriceSpan!.textContent = formatCurrency(grandTotal);
-    }
-
-    promoInput.addEventListener("blur", applyDiscount);
+      subPriceSpan.textContent = newSubtotal.toFixed(2);
+      grandPriceSpan.textContent = newGrand;
+    });
   });
 }
