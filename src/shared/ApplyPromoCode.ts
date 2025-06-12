@@ -3,38 +3,66 @@ export function applyPromoCode(): void {
     const promoInput = document.getElementById(
       "customerPO"
     ) as HTMLInputElement | null;
-    const subPriceSpan = document.getElementById(
-      "subPrice"
-    ) as HTMLSpanElement | null;
-    const grandPriceSpan = document.getElementById(
-      "grandPrice"
-    ) as HTMLSpanElement | null;
 
-    if (!promoInput || !subPriceSpan || !grandPriceSpan) {
-      console.warn("Promo code elements not found.");
+    if (!promoInput) {
+      console.warn("Promo code input not found.");
       return;
     }
 
-    const originalSubtotal = parseFloat(
-      subPriceSpan.textContent?.replace(/[$,]/g, "") || "0"
-    );
-    const tax = parseFloat(
-      (
-        document.getElementById("taxPrice") as HTMLSpanElement
-      )?.textContent?.replace(/[$,]/g, "") || "0"
-    );
-    const rush = parseFloat(
-      (
-        document.getElementById("rushPrice") as HTMLSpanElement
-      )?.textContent?.replace(/[$,]/g, "") || "0"
-    );
-    const shipping = parseFloat(
-      (
-        document.getElementById("shipPrice") as HTMLSpanElement
-      )?.textContent?.replace(/[$,]/g, "") || "0"
-    );
+    // Patch into existing update function
+    const originalUpdate = (window as any).update_order_summary_ui;
 
-    function recalculateTotal(): void {
+    (window as any).update_order_summary_ui = function (
+      shipCost: number,
+      rushCost: number,
+      handlingCost: number
+    ) {
+      // Call the original function first
+      originalUpdate(shipCost, rushCost, handlingCost);
+
+      // Now apply promo after cart totals are updated
+      applyDiscount();
+    };
+
+    function applyDiscount(): void {
+      const subPriceSpan = document.getElementById(
+        "subPrice"
+      ) as HTMLSpanElement | null;
+      const grandPriceSpan = document.getElementById(
+        "grandPrice"
+      ) as HTMLSpanElement | null;
+      const taxPriceSpan = document.getElementById(
+        "taxPrice"
+      ) as HTMLSpanElement | null;
+      const rushPriceSpan = document.getElementById(
+        "rushPrice"
+      ) as HTMLSpanElement | null;
+      const shipPriceSpan = document.getElementById(
+        "shipPrice"
+      ) as HTMLSpanElement | null;
+
+      if (
+        !subPriceSpan ||
+        !grandPriceSpan ||
+        !taxPriceSpan ||
+        !rushPriceSpan ||
+        !shipPriceSpan
+      )
+        return;
+
+      const originalSubtotal = parseFloat(
+        subPriceSpan.textContent?.replace(/[$,]/g, "") || "0"
+      );
+      const tax = parseFloat(
+        taxPriceSpan.textContent?.replace(/[$,]/g, "") || "0"
+      );
+      const rush = parseFloat(
+        rushPriceSpan.textContent?.replace(/[$,]/g, "") || "0"
+      );
+      const shipping = parseFloat(
+        shipPriceSpan.textContent?.replace(/[$,]/g, "") || "0"
+      );
+
       let discount = 0;
       const code = promoInput!.value.trim().toUpperCase();
 
@@ -44,10 +72,13 @@ export function applyPromoCode(): void {
       const newSubtotal = Math.max(0, originalSubtotal - discount);
       const newGrandTotal = newSubtotal + tax + rush + shipping;
 
-      subPriceSpan!.textContent = newSubtotal.toFixed(2);
-      grandPriceSpan!.textContent = newGrandTotal.toFixed(2);
+      subPriceSpan.textContent = newSubtotal.toFixed(2);
+      grandPriceSpan.textContent = newGrandTotal.toFixed(2);
     }
 
-    promoInput.addEventListener("blur", recalculateTotal);
+    // Also run when user leaves the promo field
+    promoInput.addEventListener("blur", () => {
+      applyDiscount();
+    });
   });
 }
