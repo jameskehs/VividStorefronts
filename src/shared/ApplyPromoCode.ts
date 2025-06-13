@@ -80,7 +80,7 @@ export function applyPromoCode(): void {
         discountRow.id = "discountRow";
         discountRow.innerHTML = `
           <td align="left" nowrap="">Promo Discount:</td>
-          <td align="right" nowrap="">$<span id="promoDiscount">0.00</span></td>
+          <td align="right" nowrap="">$<span id="promoDiscount">-0.00</span></td>
         `;
         const grandRow = table.querySelector("#grandTotal");
         table.insertBefore(discountRow, grandRow);
@@ -127,7 +127,7 @@ export function applyPromoCode(): void {
       taxPriceSpan.textContent = newTax.toFixed(2);
       grandPriceSpan.textContent = newTotal.toFixed(2);
       if (promoDiscountSpan)
-        promoDiscountSpan.textContent = discountAmount.toFixed(2);
+        promoDiscountSpan.textContent = `-${discountAmount.toFixed(2)}`;
 
       // Set form fields
       promoHidden.value = code;
