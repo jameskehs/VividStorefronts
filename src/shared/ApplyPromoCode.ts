@@ -74,21 +74,16 @@ export function applyPromoCode(): void {
 
     let discountRow = document.getElementById("discountRow");
     if (!discountRow) {
-      const lineItemsTable = document.querySelector("#lineItems table");
-      if (lineItemsTable) {
+      const table = shipPriceSpan.closest("table");
+      if (table) {
         discountRow = document.createElement("tr");
         discountRow.id = "discountRow";
         discountRow.innerHTML = `
           <td align="left" nowrap="">Promo Discount:</td>
           <td align="right" nowrap="">$<span id="promoDiscount">-0.00</span></td>
         `;
-
-        const rows = lineItemsTable.querySelectorAll("tr");
-        if (rows.length >= 3) {
-          lineItemsTable.insertBefore(discountRow, rows[3]); // Insert under item subtotal row
-        } else {
-          lineItemsTable.appendChild(discountRow);
-        }
+        const grandRow = table.querySelector("#grandTotal");
+        table.insertBefore(discountRow, grandRow);
       }
     }
 
@@ -117,8 +112,7 @@ export function applyPromoCode(): void {
 
       // Recalculate tax based on discounted subtotal
       const originalTax = parseFloat(taxPriceSpan.textContent || "0");
-      const taxRate =
-        originalSubtotal === 0 ? 0 : originalTax / originalSubtotal;
+      const taxRate = originalTax / originalSubtotal;
       const newTax = +(discountedSubtotal * taxRate).toFixed(2);
 
       const rush = parseFloat(rushPriceSpan.textContent || "0");
