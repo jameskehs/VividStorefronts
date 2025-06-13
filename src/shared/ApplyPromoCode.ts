@@ -6,11 +6,27 @@ export function applyPromoCode(): void {
     const subPriceSpan = document.getElementById(
       "subPrice"
     ) as HTMLSpanElement | null;
+    const taxPriceSpan = document.getElementById(
+      "taxPrice"
+    ) as HTMLSpanElement | null;
     const grandPriceSpan = document.getElementById(
       "grandPrice"
     ) as HTMLSpanElement | null;
+    const rushPriceSpan = document.getElementById(
+      "rushPrice"
+    ) as HTMLSpanElement | null;
+    const shipPriceSpan = document.getElementById(
+      "shipPrice"
+    ) as HTMLSpanElement | null;
 
-    if (!promoInput || !subPriceSpan || !grandPriceSpan) {
+    if (
+      !promoInput ||
+      !subPriceSpan ||
+      !taxPriceSpan ||
+      !grandPriceSpan ||
+      !rushPriceSpan ||
+      !shipPriceSpan
+    ) {
       console.warn("Promo code injection failed. Missing elements.");
       return;
     }
@@ -21,10 +37,8 @@ export function applyPromoCode(): void {
       return;
     }
 
-    // Prevent duplicate buttons
     if (document.getElementById("applyPromoCodeBtn")) return;
 
-    // ✅ Create and append button
     const applyButton = document.createElement("button");
     applyButton.innerText = "Apply Promo Code";
     applyButton.type = "button";
@@ -33,7 +47,6 @@ export function applyPromoCode(): void {
     applyButton.style.display = "block";
     parentSection.appendChild(applyButton);
 
-    // ✅ Prepare hidden inputs
     const form = promoInput.form;
     if (!form) return;
 
@@ -59,7 +72,25 @@ export function applyPromoCode(): void {
       form.appendChild(discountTotalInput);
     }
 
-    // ✅ Click event to apply promo code
+    let discountRow = document.getElementById("discountRow");
+    if (!discountRow) {
+      const table = shipPriceSpan.closest("table");
+      if (table) {
+        discountRow = document.createElement("tr");
+        discountRow.id = "discountRow";
+        discountRow.innerHTML = `
+          <td align="left" nowrap="">Promo Discount:</td>
+          <td align="right" nowrap="">$<span id="promoDiscount">0.00</span></td>
+        `;
+        const grandRow = table.querySelector("#grandTotal");
+        table.insertBefore(discountRow, grandRow);
+      }
+    }
+
+    const promoDiscountSpan = document.getElementById(
+      "promoDiscount"
+    ) as HTMLSpanElement | null;
+
     applyButton.addEventListener("click", () => {
       const code = promoInput.value.trim().toUpperCase();
       const validCodes: Record<string, number> = {
@@ -75,24 +106,30 @@ export function applyPromoCode(): void {
       }
 
       const originalSubtotal = parseFloat(subPriceSpan.textContent || "0");
-      const newSubtotal = +(originalSubtotal * (1 - discount)).toFixed(2);
-
-      const tax = parseFloat(
-        document.getElementById("taxPrice")?.textContent || "0"
-      );
-      const ship = parseFloat(
-        document.getElementById("shipPrice")?.textContent || "0"
-      );
-      const rush = parseFloat(
-        document.getElementById("rushPrice")?.textContent || "0"
+      const discountedSubtotal = +(originalSubtotal * (1 - discount)).toFixed(
+        2
       );
 
-      const newTotal = +(newSubtotal + tax + ship + rush).toFixed(2);
+      // Recalculate tax based on discounted subtotal
+      const originalTax = parseFloat(taxPriceSpan.textContent || "0");
+      const taxRate = originalTax / originalSubtotal;
+      const newTax = +(discountedSubtotal * taxRate).toFixed(2);
 
-      subPriceSpan.textContent = newSubtotal.toFixed(2);
+      const rush = parseFloat(rushPriceSpan.textContent || "0");
+      const ship = parseFloat(shipPriceSpan.textContent || "0");
+      const newTotal = +(discountedSubtotal + newTax + rush + ship).toFixed(2);
+      const discountAmount = +(originalSubtotal - discountedSubtotal).toFixed(
+        2
+      );
+
+      // Update UI
+      subPriceSpan.textContent = discountedSubtotal.toFixed(2);
+      taxPriceSpan.textContent = newTax.toFixed(2);
       grandPriceSpan.textContent = newTotal.toFixed(2);
+      if (promoDiscountSpan)
+        promoDiscountSpan.textContent = discountAmount.toFixed(2);
 
-      // ✅ Set form hidden inputs
+      // Set form fields
       promoHidden.value = code;
       discountTotalInput.value = newTotal.toFixed(2);
 
