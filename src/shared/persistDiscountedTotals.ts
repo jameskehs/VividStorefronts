@@ -1,87 +1,66 @@
 export function persistDiscountedTotals(): void {
-  const subPriceSpan = document.getElementById(
-    "subPrice"
-  ) as HTMLSpanElement | null;
-  const taxPriceSpan = document.getElementById(
-    "taxPrice"
-  ) as HTMLSpanElement | null;
-  const grandPriceSpan = document.getElementById(
-    "grandPrice"
-  ) as HTMLSpanElement | null;
-  const rushPriceSpan = document.getElementById(
-    "rushPrice"
-  ) as HTMLSpanElement | null;
-  const shipPriceSpan = document.getElementById(
-    "shipPrice"
-  ) as HTMLSpanElement | null;
+  window.addEventListener("DOMContentLoaded", () => {
+    const subPriceSpan = document.getElementById(
+      "subPrice"
+    ) as HTMLSpanElement | null;
+    const taxPriceSpan = document.getElementById(
+      "taxPrice"
+    ) as HTMLSpanElement | null;
+    const grandPriceSpan = document.getElementById(
+      "grandPrice"
+    ) as HTMLSpanElement | null;
+    const promoInput = document.getElementById(
+      "customerPO"
+    ) as HTMLInputElement | null;
+    const discountRowId = "discountRow";
 
-  const promoDiscountSpan = document.getElementById(
-    "promoDiscount"
-  ) as HTMLSpanElement | null;
-  let discountRow = document.getElementById("discountRow");
+    const storedSubtotal = localStorage.getItem("discountedSubtotal");
+    const storedTax = localStorage.getItem("discountedTax");
+    const storedTotal = localStorage.getItem("discountedTotal");
+    const storedDiscount = localStorage.getItem("promoDiscount");
+    const storedPromoCode = localStorage.getItem("promoCode");
 
-  const storedSubtotal = localStorage.getItem("discountedSubtotal");
-  const storedTotal = localStorage.getItem("discountedTotal");
-  const storedTax = localStorage.getItem("discountedTax");
-  const storedDiscount = localStorage.getItem("promoDiscount");
+    // Only continue if values are found
+    if (!storedSubtotal || !storedTax || !storedTotal || !storedDiscount)
+      return;
 
-  if (
-    !subPriceSpan ||
-    !taxPriceSpan ||
-    !grandPriceSpan ||
-    !rushPriceSpan ||
-    !shipPriceSpan
-  ) {
-    console.warn("persistDiscountedTotals: Missing required elements.");
-    return;
-  }
-
-  const rush = parseFloat(rushPriceSpan.textContent || "0");
-  const ship = parseFloat(shipPriceSpan.textContent || "0");
-
-  const discountedSubtotal = storedSubtotal
-    ? parseFloat(storedSubtotal)
-    : parseFloat(subPriceSpan.textContent || "0");
-  const discountedTax = storedTax
-    ? parseFloat(storedTax)
-    : parseFloat(taxPriceSpan.textContent || "0");
-  const promoDiscount = storedDiscount ? parseFloat(storedDiscount) : 0;
-
-  const calculatedGrandTotal = +(
-    discountedSubtotal +
-    discountedTax +
-    rush +
-    ship
-  ).toFixed(2);
-
-  // Apply stored values
-  subPriceSpan.textContent = discountedSubtotal.toFixed(2);
-  taxPriceSpan.textContent = discountedTax.toFixed(2);
-  grandPriceSpan.textContent = (
-    storedTotal ? parseFloat(storedTotal) : calculatedGrandTotal
-  ).toFixed(2);
-
-  // Add promo discount row if not already present
-  if (!discountRow) {
-    const lineItemsTable = document.querySelector("#lineItems table");
-    if (lineItemsTable) {
-      discountRow = document.createElement("tr");
-      discountRow.id = "discountRow";
-      discountRow.innerHTML = `
-        <td align="left" nowrap="">Promo Discount:</td>
-        <td align="right" nowrap="">$<span id="promoDiscount">-${promoDiscount.toFixed(
-          2
-        )}</span></td>
-      `;
-
-      const rows = lineItemsTable.querySelectorAll("tr");
-      if (rows.length >= 3) {
-        lineItemsTable.insertBefore(discountRow, rows[2]); // insert before subtotal row
-      } else {
-        lineItemsTable.appendChild(discountRow);
-      }
+    if (subPriceSpan) {
+      subPriceSpan.dataset.original ??= subPriceSpan.textContent || "0";
+      subPriceSpan.textContent = storedSubtotal;
     }
-  } else if (promoDiscountSpan) {
-    promoDiscountSpan.textContent = `-${promoDiscount.toFixed(2)}`;
-  }
+
+    if (taxPriceSpan) {
+      taxPriceSpan.dataset.original ??= taxPriceSpan.textContent || "0";
+      taxPriceSpan.textContent = storedTax;
+    }
+
+    if (grandPriceSpan) {
+      grandPriceSpan.dataset.original ??= grandPriceSpan.textContent || "0";
+      grandPriceSpan.textContent = storedTotal;
+    }
+
+    if (promoInput && storedPromoCode) {
+      promoInput.value = storedPromoCode;
+    }
+
+    // Add discount row if not already there
+    const lineItemsTable = document.querySelector(
+      "#lineItems table"
+    ) as HTMLTableElement | null;
+    if (lineItemsTable && !document.getElementById(discountRowId)) {
+      const rows = lineItemsTable.rows;
+      const discountRow = lineItemsTable.insertRow(Math.min(3, rows.length)); // Usually above subtotal
+
+      discountRow.id = discountRowId;
+
+      const cell1 = discountRow.insertCell(0);
+      cell1.textContent = "Promo Discount:";
+
+      const cell2 = discountRow.insertCell(1);
+      cell2.innerHTML = `$<span id="promoDiscount">-${parseFloat(
+        storedDiscount
+      ).toFixed(2)}</span>`;
+      cell2.style.textAlign = "right";
+    }
+  });
 }
