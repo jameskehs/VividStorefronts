@@ -41,12 +41,21 @@ export function applyPromoCode(): void {
       buttonWrapper.appendChild(clearBtn);
       section.appendChild(buttonWrapper);
 
-      // ✅ Wire up apply button
-      applyBtn.addEventListener("click", () => {
-        const code = promoInput.value.trim();
-        if (!code) return;
+      const discountMap: Record<string, number> = {
+        SAVE10: 0.1,
+        SAVE20: 0.2,
+        SAVE30: 0.3,
+      };
 
-        const discountAmount = 7.43;
+      applyBtn.addEventListener("click", () => {
+        const code = promoInput.value.trim().toUpperCase();
+        const discountRate = discountMap[code];
+
+        if (!discountRate) {
+          alert("Invalid promo code.");
+          return;
+        }
+
         const subPrice = document.getElementById("subPrice");
         const taxPrice = document.getElementById("taxPrice");
         const grandPrice = document.getElementById("grandPrice");
@@ -58,10 +67,13 @@ export function applyPromoCode(): void {
             subPrice.textContent?.replace("$", "") ||
             "0"
         );
-        const newSubtotal = originalSubtotal - discountAmount;
+        subPrice.dataset.original ||= originalSubtotal.toFixed(2);
+
+        const newSubtotal = +(originalSubtotal * (1 - discountRate)).toFixed(2);
         const taxRate = 0.105;
         const newTax = +(newSubtotal * taxRate).toFixed(2);
         const newTotal = +(newSubtotal + newTax).toFixed(2);
+        const discountAmount = +(originalSubtotal - newSubtotal).toFixed(2);
 
         subPrice.textContent = newSubtotal.toFixed(2);
         taxPrice.textContent = newTax.toFixed(2);
@@ -87,10 +99,14 @@ export function applyPromoCode(): void {
             2
           )}</span>`;
           cell2.style.textAlign = "right";
+        } else {
+          const promoSpan = document.getElementById("promoDiscount");
+          if (promoSpan) {
+            promoSpan.textContent = `-${discountAmount.toFixed(2)}`;
+          }
         }
       });
 
-      // ✅ Wire up clear button
       clearBtn.addEventListener("click", () => {
         localStorage.removeItem("discountedSubtotal");
         localStorage.removeItem("discountedTax");
