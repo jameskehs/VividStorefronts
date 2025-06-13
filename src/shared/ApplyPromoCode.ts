@@ -1,31 +1,50 @@
 export function applyPromoCode(): void {
-  document.addEventListener("DOMContentLoaded", () => {
-    const applyBtn = document.getElementById(
-      "applyPromoCodeBtn"
-    ) as HTMLButtonElement | null;
-    const clearBtn = document.getElementById(
-      "clearPromoCodeBtn"
-    ) as HTMLButtonElement | null;
+  window.addEventListener("DOMContentLoaded", () => {
     const promoInput = document.getElementById(
       "customerPO"
     ) as HTMLInputElement | null;
+    if (!promoInput) return;
+
+    const parentSection = promoInput.closest("section");
+    if (!parentSection) return;
+
+    // Recreate buttons if missing
+    let applyBtn = document.getElementById(
+      "applyPromoCodeBtn"
+    ) as HTMLButtonElement | null;
+    let clearBtn = document.getElementById(
+      "clearPromoCodeBtn"
+    ) as HTMLButtonElement | null;
+
+    if (!applyBtn || !clearBtn) {
+      const buttonContainer = document.createElement("div");
+      buttonContainer.style.marginTop = "8px";
+      buttonContainer.style.display = "flex";
+      buttonContainer.style.gap = "8px";
+      buttonContainer.style.justifyContent = "center";
+
+      applyBtn = document.createElement("button");
+      applyBtn.id = "applyPromoCodeBtn";
+      applyBtn.type = "button";
+      applyBtn.textContent = "Apply Promo Code";
+
+      clearBtn = document.createElement("button");
+      clearBtn.id = "clearPromoCodeBtn";
+      clearBtn.type = "button";
+      clearBtn.textContent = "Clear";
+
+      buttonContainer.appendChild(applyBtn);
+      buttonContainer.appendChild(clearBtn);
+      parentSection.appendChild(buttonContainer);
+    }
 
     if (!applyBtn || !clearBtn || !promoInput) return;
-
-    const getElementValue = (id: string): number => {
-      const el = document.getElementById(id) as HTMLElement | null;
-      if (!el) return 0;
-      const value = el.textContent?.replace("$", "").trim();
-      return parseFloat(value || "0");
-    };
-
-    const formatCurrency = (amount: number): string => amount.toFixed(2);
 
     applyBtn.addEventListener("click", () => {
       const code = promoInput.value.trim();
       if (!code) return;
 
-      const discountAmount = 7.43; // Replace with dynamic logic as needed
+      const discountAmount = 7.43; // Replace with actual logic
       const subPrice = document.getElementById(
         "subPrice"
       ) as HTMLElement | null;
@@ -43,33 +62,21 @@ export function applyPromoCode(): void {
           subPrice.textContent?.replace("$", "") ||
           "0"
       );
-      if (!subPrice.dataset.original) {
-        subPrice.dataset.original = originalSubtotal.toFixed(2);
-      }
+      const newSubtotal = originalSubtotal - discountAmount;
+      const taxRate = 0.105; // Example
+      const newTax = parseFloat((newSubtotal * taxRate).toFixed(2));
+      const newTotal = parseFloat((newSubtotal + newTax).toFixed(2));
 
-      const newSubtotal = +(originalSubtotal - discountAmount).toFixed(2);
-      const taxRate = 0.105;
-      const newTax = +(newSubtotal * taxRate).toFixed(2);
-      const newTotal = +(
-        newSubtotal +
-        newTax +
-        getElementValue("rushPrice") +
-        getElementValue("shipPrice")
-      ).toFixed(2);
+      subPrice.textContent = newSubtotal.toFixed(2);
+      taxPrice.textContent = newTax.toFixed(2);
+      grandPrice.textContent = newTotal.toFixed(2);
 
-      // Update DOM
-      subPrice.textContent = formatCurrency(newSubtotal);
-      taxPrice.textContent = formatCurrency(newTax);
-      grandPrice.textContent = formatCurrency(newTotal);
-
-      // Store values
       localStorage.setItem("discountedSubtotal", newSubtotal.toFixed(2));
       localStorage.setItem("discountedTax", newTax.toFixed(2));
       localStorage.setItem("discountedTotal", newTotal.toFixed(2));
       localStorage.setItem("promoDiscount", discountAmount.toFixed(2));
       localStorage.setItem("promoCode", code);
 
-      // Add discount row if it doesn't exist
       const lineItemsTable = document.querySelector(
         "#lineItems table"
       ) as HTMLTableElement | null;
@@ -79,26 +86,26 @@ export function applyPromoCode(): void {
 
         const cell1 = row.insertCell(0);
         cell1.textContent = "Promo Discount:";
-
         const cell2 = row.insertCell(1);
-        cell2.innerHTML = `$<span id="promoDiscount">-${formatCurrency(
-          discountAmount
+        cell2.innerHTML = `$<span id="promoDiscount">-${discountAmount.toFixed(
+          2
         )}</span>`;
         cell2.style.textAlign = "right";
       }
     });
 
     clearBtn.addEventListener("click", () => {
-      // Clear stored promo data
       localStorage.removeItem("discountedSubtotal");
       localStorage.removeItem("discountedTax");
       localStorage.removeItem("discountedTotal");
       localStorage.removeItem("promoDiscount");
       localStorage.removeItem("promoCode");
 
-      // Remove discount row if it exists
+      const promoDiscount = document.getElementById("promoDiscount");
       const row = document.getElementById("discountRow");
-      if (row) row.remove();
+      if (promoDiscount && row) {
+        row.remove();
+      }
 
       const subPrice = document.getElementById(
         "subPrice"
@@ -110,11 +117,11 @@ export function applyPromoCode(): void {
         "grandPrice"
       ) as HTMLElement | null;
 
-      if (subPrice?.dataset.original)
+      if (subPrice && subPrice.dataset.original)
         subPrice.textContent = subPrice.dataset.original;
-      if (taxPrice?.dataset.original)
+      if (taxPrice && taxPrice.dataset.original)
         taxPrice.textContent = taxPrice.dataset.original;
-      if (grandPrice?.dataset.original)
+      if (grandPrice && grandPrice.dataset.original)
         grandPrice.textContent = grandPrice.dataset.original;
 
       promoInput.value = "";
