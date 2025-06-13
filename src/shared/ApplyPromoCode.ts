@@ -1,15 +1,13 @@
 export function applyPromoCode(): void {
-  window.addEventListener("DOMContentLoaded", () => {
+  document.addEventListener("DOMContentLoaded", () => {
+    const custPOBox = document.getElementById("custPOBox");
     const promoInput = document.getElementById(
       "customerPO"
     ) as HTMLInputElement | null;
-    if (!promoInput) return;
 
-    // Use the closest box instead of section
-    const promoContainer =
-      promoInput.parentElement || promoInput.closest("div") || document.body;
+    if (!custPOBox || !promoInput) return;
 
-    // Ensure buttons exist
+    // Check if buttons already exist before adding
     let applyBtn = document.getElementById(
       "applyPromoCodeBtn"
     ) as HTMLButtonElement | null;
@@ -21,40 +19,37 @@ export function applyPromoCode(): void {
       const buttonWrapper = document.createElement("div");
       buttonWrapper.style.marginTop = "8px";
       buttonWrapper.style.display = "flex";
-      buttonWrapper.style.gap = "8px";
       buttonWrapper.style.justifyContent = "center";
+      buttonWrapper.style.gap = "8px";
 
       applyBtn = document.createElement("button");
-      applyBtn.id = "applyPromoCodeBtn";
       applyBtn.type = "button";
+      applyBtn.id = "applyPromoCodeBtn";
       applyBtn.textContent = "Apply Promo Code";
 
       clearBtn = document.createElement("button");
-      clearBtn.id = "clearPromoCodeBtn";
       clearBtn.type = "button";
+      clearBtn.id = "clearPromoCodeBtn";
       clearBtn.textContent = "Clear";
 
       buttonWrapper.appendChild(applyBtn);
       buttonWrapper.appendChild(clearBtn);
 
-      promoContainer.appendChild(buttonWrapper);
+      const section = custPOBox.querySelector("section");
+      if (section) {
+        section.appendChild(buttonWrapper);
+      }
     }
 
-    // Add listeners
-    applyBtn?.addEventListener("click", () => {
+    // Promo code logic
+    applyBtn.addEventListener("click", () => {
       const code = promoInput.value.trim();
       if (!code) return;
 
-      const discountAmount = 7.43; // Replace this with your logic
-      const subPrice = document.getElementById(
-        "subPrice"
-      ) as HTMLElement | null;
-      const taxPrice = document.getElementById(
-        "taxPrice"
-      ) as HTMLElement | null;
-      const grandPrice = document.getElementById(
-        "grandPrice"
-      ) as HTMLElement | null;
+      const discountAmount = 7.43;
+      const subPrice = document.getElementById("subPrice");
+      const taxPrice = document.getElementById("taxPrice");
+      const grandPrice = document.getElementById("grandPrice");
 
       if (!subPrice || !taxPrice || !grandPrice) return;
 
@@ -63,13 +58,10 @@ export function applyPromoCode(): void {
           subPrice.textContent?.replace("$", "") ||
           "0"
       );
-      if (!subPrice.dataset.original)
-        subPrice.dataset.original = originalSubtotal.toFixed(2);
-
-      const newSubtotal = +(originalSubtotal - discountAmount).toFixed(2);
+      const newSubtotal = originalSubtotal - discountAmount;
       const taxRate = 0.105;
-      const newTax = +(newSubtotal * taxRate).toFixed(2);
-      const newTotal = +(newSubtotal + newTax).toFixed(2);
+      const newTax = parseFloat((newSubtotal * taxRate).toFixed(2));
+      const newTotal = parseFloat((newSubtotal + newTax).toFixed(2));
 
       subPrice.textContent = newSubtotal.toFixed(2);
       taxPrice.textContent = newTax.toFixed(2);
@@ -90,7 +82,6 @@ export function applyPromoCode(): void {
 
         const cell1 = row.insertCell(0);
         cell1.textContent = "Promo Discount:";
-
         const cell2 = row.insertCell(1);
         cell2.innerHTML = `$<span id="promoDiscount">-${discountAmount.toFixed(
           2
@@ -99,34 +90,28 @@ export function applyPromoCode(): void {
       }
     });
 
-    clearBtn?.addEventListener("click", () => {
+    clearBtn.addEventListener("click", () => {
       localStorage.removeItem("discountedSubtotal");
       localStorage.removeItem("discountedTax");
       localStorage.removeItem("discountedTotal");
       localStorage.removeItem("promoDiscount");
       localStorage.removeItem("promoCode");
 
-      const subPrice = document.getElementById(
-        "subPrice"
-      ) as HTMLElement | null;
-      const taxPrice = document.getElementById(
-        "taxPrice"
-      ) as HTMLElement | null;
-      const grandPrice = document.getElementById(
-        "grandPrice"
-      ) as HTMLElement | null;
+      const row = document.getElementById("discountRow");
+      if (row) row.remove();
 
-      if (subPrice?.dataset.original)
+      const subPrice = document.getElementById("subPrice");
+      const taxPrice = document.getElementById("taxPrice");
+      const grandPrice = document.getElementById("grandPrice");
+
+      if (subPrice && subPrice.dataset.original)
         subPrice.textContent = subPrice.dataset.original;
-      if (taxPrice?.dataset.original)
+      if (taxPrice && taxPrice.dataset.original)
         taxPrice.textContent = taxPrice.dataset.original;
-      if (grandPrice?.dataset.original)
+      if (grandPrice && grandPrice.dataset.original)
         grandPrice.textContent = grandPrice.dataset.original;
 
       promoInput.value = "";
-
-      const row = document.getElementById("discountRow");
-      if (row) row.remove();
     });
   });
 }
