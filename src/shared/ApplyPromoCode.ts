@@ -107,6 +107,12 @@ export function applyPromoCode(): void {
       const discount = validCodes[code];
       if (!discount) {
         alert("Invalid promo code.");
+
+        // Clear stored promo info
+        localStorage.removeItem("promoCode");
+        localStorage.removeItem("promoDiscountAmount");
+        localStorage.removeItem("discountedSubtotal");
+        localStorage.removeItem("discountedTotal");
         return;
       }
 
@@ -138,6 +144,12 @@ export function applyPromoCode(): void {
       // Set form fields
       promoHidden.value = code;
       discountTotalInput.value = newTotal.toFixed(2);
+
+      // Store in localStorage
+      localStorage.setItem("promoCode", code);
+      localStorage.setItem("promoDiscountAmount", discountAmount.toFixed(2));
+      localStorage.setItem("discountedSubtotal", discountedSubtotal.toFixed(2));
+      localStorage.setItem("discountedTotal", newTotal.toFixed(2));
 
       console.log("Promo applied:", code, "New Total:", newTotal);
     });
