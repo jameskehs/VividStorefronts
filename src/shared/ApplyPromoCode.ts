@@ -153,6 +153,8 @@ export function applyPromoCode(): void {
         );
         localStorage.setItem("discountedTotal", newTotal.toFixed(2));
         localStorage.setItem("appliedPromoCode", code);
+        localStorage.setItem("discountedTax", newTax.toFixed(2));
+        localStorage.setItem("promoDiscount", discountAmount.toFixed(2));
 
         console.log("Promo applied:", code, "New Total:", newTotal);
       });
