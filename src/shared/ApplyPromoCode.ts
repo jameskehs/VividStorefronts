@@ -37,148 +37,178 @@ export function applyPromoCode(): void {
       return;
     }
 
-    if (!document.getElementById("applyPromoCodeBtn")) {
-      const buttonContainer = document.createElement("div");
-      buttonContainer.style.marginTop = "8px";
-      buttonContainer.style.display = "flex";
-      buttonContainer.style.gap = "8px";
-      buttonContainer.style.justifyContent = "center";
+    if (document.getElementById("applyPromoCodeBtn")) return;
 
-      // Apply Button
-      const applyButton = document.createElement("button");
-      applyButton.innerText = "Apply Promo Code";
-      applyButton.type = "button";
-      applyButton.id = "applyPromoCodeBtn";
+    // Button container
+    const buttonContainer = document.createElement("div");
+    buttonContainer.style.marginTop = "8px";
+    buttonContainer.style.display = "flex";
+    buttonContainer.style.gap = "8px";
+    buttonContainer.style.justifyContent = "center";
 
-      // Clear Button
-      const clearButton = document.createElement("button");
-      clearButton.innerText = "Clear";
-      clearButton.type = "button";
-      clearButton.id = "clearPromoCodeBtn";
+    // Apply Button
+    const applyButton = document.createElement("button");
+    applyButton.innerText = "Apply Promo Code";
+    applyButton.type = "button";
+    applyButton.id = "applyPromoCodeBtn";
 
-      buttonContainer.appendChild(applyButton);
-      buttonContainer.appendChild(clearButton);
-      parentSection.appendChild(buttonContainer);
+    // Clear Button
+    const clearButton = document.createElement("button");
+    clearButton.innerText = "Clear";
+    clearButton.type = "button";
+    clearButton.id = "clearPromoCodeBtn";
 
-      const form = promoInput.form;
-      if (!form) return;
+    buttonContainer.appendChild(applyButton);
+    buttonContainer.appendChild(clearButton);
+    parentSection.appendChild(buttonContainer);
 
-      let promoHidden = document.getElementById(
-        "appliedPromoCode"
-      ) as HTMLInputElement;
-      if (!promoHidden) {
-        promoHidden = document.createElement("input");
-        promoHidden.type = "hidden";
-        promoHidden.name = "appliedPromoCode";
-        promoHidden.id = "appliedPromoCode";
-        form.appendChild(promoHidden);
-      }
+    const form = promoInput.form;
+    if (!form) return;
 
-      let discountTotalInput = document.getElementById(
-        "discountedTotal"
-      ) as HTMLInputElement;
-      if (!discountTotalInput) {
-        discountTotalInput = document.createElement("input");
-        discountTotalInput.type = "hidden";
-        discountTotalInput.name = "discountedTotal";
-        discountTotalInput.id = "discountedTotal";
-        form.appendChild(discountTotalInput);
-      }
+    let promoHidden = document.getElementById(
+      "appliedPromoCode"
+    ) as HTMLInputElement;
+    if (!promoHidden) {
+      promoHidden = document.createElement("input");
+      promoHidden.type = "hidden";
+      promoHidden.name = "appliedPromoCode";
+      promoHidden.id = "appliedPromoCode";
+      form.appendChild(promoHidden);
+    }
 
-      applyButton.addEventListener("click", () => {
-        const code = promoInput.value.trim().toUpperCase();
-        const validCodes: Record<string, number> = {
-          SAVE10: 0.1,
-          SAVE20: 0.2,
-          WELCOME5: 0.05,
-        };
+    let discountTotalInput = document.getElementById(
+      "discountedTotal"
+    ) as HTMLInputElement;
+    if (!discountTotalInput) {
+      discountTotalInput = document.createElement("input");
+      discountTotalInput.type = "hidden";
+      discountTotalInput.name = "discountedTotal";
+      discountTotalInput.id = "discountedTotal";
+      form.appendChild(discountTotalInput);
+    }
 
-        const discount = validCodes[code];
-        if (!discount) {
-          alert("Invalid promo code.");
-          promoHidden.value = "";
-          discountTotalInput.value = "";
-          localStorage.removeItem("discountedSubtotal");
-          localStorage.removeItem("discountedTotal");
-          localStorage.removeItem("appliedPromoCode");
-          const promoDiscountSpan = document.getElementById("promoDiscount");
-          if (promoDiscountSpan) promoDiscountSpan.textContent = "-0.00";
-          return;
-        }
-
-        const originalSubtotal = parseFloat(
-          subPriceSpan.dataset.original || subPriceSpan.textContent || "0"
-        );
-        if (!subPriceSpan.dataset.original)
-          subPriceSpan.dataset.original = originalSubtotal.toString();
-
-        const discountedSubtotal = +(originalSubtotal * (1 - discount)).toFixed(
-          2
-        );
-        const originalTax = parseFloat(
-          taxPriceSpan.dataset.original || taxPriceSpan.textContent || "0"
-        );
-        if (!taxPriceSpan.dataset.original)
-          taxPriceSpan.dataset.original = originalTax.toString();
-
-        const taxRate =
-          originalSubtotal === 0 ? 0 : originalTax / originalSubtotal;
-        const newTax = +(discountedSubtotal * taxRate).toFixed(2);
-        const rush = parseFloat(rushPriceSpan.textContent || "0");
-        const ship = parseFloat(shipPriceSpan.textContent || "0");
-        const newTotal = +(discountedSubtotal + newTax + rush + ship).toFixed(
-          2
-        );
-        const discountAmount = +(originalSubtotal - discountedSubtotal).toFixed(
-          2
-        );
-
-        subPriceSpan.textContent = discountedSubtotal.toFixed(2);
-        taxPriceSpan.textContent = newTax.toFixed(2);
-        grandPriceSpan.textContent = newTotal.toFixed(2);
-
-        // Inject promo discount row above subtotal
-        let discountRow = document.getElementById("discountRow");
-        if (!discountRow) {
-          const subTotalRow = subPriceSpan.closest("tr");
-          if (subTotalRow) {
-            discountRow = document.createElement("tr");
-            discountRow.id = "discountRow";
-            discountRow.innerHTML = `
-              <td align="left" nowrap="">Promo Discount:</td>
-              <td align="right" nowrap="">$<span id="promoDiscount">-${discountAmount.toFixed(
-                2
-              )}</span></td>
-            `;
-            subTotalRow.parentElement?.insertBefore(discountRow, subTotalRow);
-          }
+    let discountRow = document.getElementById("discountRow");
+    if (!discountRow) {
+      const lineItemsTable = document.querySelector("#lineItems table");
+      if (lineItemsTable) {
+        discountRow = document.createElement("tr");
+        discountRow.id = "discountRow";
+        discountRow.innerHTML = `
+          <td align="left" nowrap="">Promo Discount:</td>
+          <td align="right" nowrap="">$<span id="promoDiscount">-0.00</span></td>
+        `;
+        const rows = lineItemsTable.querySelectorAll("tr");
+        if (rows.length >= 3) {
+          lineItemsTable.insertBefore(discountRow, rows[2]);
         } else {
-          const promoDiscountSpan = document.getElementById("promoDiscount");
-          if (promoDiscountSpan)
-            promoDiscountSpan.textContent = `-${discountAmount.toFixed(2)}`;
+          lineItemsTable.appendChild(discountRow);
         }
-
-        promoHidden.value = code;
-        discountTotalInput.value = newTotal.toFixed(2);
-
-        localStorage.setItem(
-          "discountedSubtotal",
-          discountedSubtotal.toFixed(2)
-        );
-        localStorage.setItem("discountedTotal", newTotal.toFixed(2));
-        localStorage.setItem("appliedPromoCode", code);
-        localStorage.setItem("discountedTax", newTax.toFixed(2));
-        localStorage.setItem("promoDiscount", discountAmount.toFixed(2));
-
-        console.log("Promo applied:", code, "New Total:", newTotal);
-      });
-
-      // Auto re-apply if stored code exists
-      const savedCode = localStorage.getItem("appliedPromoCode");
-      if (savedCode && promoInput.value !== savedCode) {
-        promoInput.value = savedCode;
-        applyButton.click();
       }
+    }
+
+    const promoDiscountSpan = document.getElementById(
+      "promoDiscount"
+    ) as HTMLSpanElement | null;
+
+    applyButton.addEventListener("click", () => {
+      const code = promoInput.value.trim().toUpperCase();
+      const validCodes: Record<string, number> = {
+        SAVE10: 0.1,
+        SAVE20: 0.2,
+        WELCOME5: 0.05,
+      };
+
+      const discount = validCodes[code];
+      if (!discount) {
+        alert("Invalid promo code.");
+        promoHidden.value = "";
+        discountTotalInput.value = "";
+        localStorage.clear();
+        return;
+      }
+
+      const originalSubtotal = parseFloat(
+        subPriceSpan.dataset.original || subPriceSpan.textContent || "0"
+      );
+      if (!subPriceSpan.dataset.original)
+        subPriceSpan.dataset.original = originalSubtotal.toString();
+
+      const discountedSubtotal = +(originalSubtotal * (1 - discount)).toFixed(
+        2
+      );
+      const originalTax = parseFloat(
+        taxPriceSpan.dataset.original || taxPriceSpan.textContent || "0"
+      );
+      if (!taxPriceSpan.dataset.original)
+        taxPriceSpan.dataset.original = originalTax.toString();
+
+      const taxRate =
+        originalSubtotal === 0 ? 0 : originalTax / originalSubtotal;
+      const newTax = +(discountedSubtotal * taxRate).toFixed(2);
+
+      const rush = parseFloat(rushPriceSpan.textContent || "0");
+      const ship = parseFloat(shipPriceSpan.textContent || "0");
+      const newTotal = +(discountedSubtotal + newTax + rush + ship).toFixed(2);
+      const discountAmount = +(originalSubtotal - discountedSubtotal).toFixed(
+        2
+      );
+
+      subPriceSpan.textContent = discountedSubtotal.toFixed(2);
+      taxPriceSpan.textContent = newTax.toFixed(2);
+      grandPriceSpan.textContent = newTotal.toFixed(2);
+      if (promoDiscountSpan)
+        promoDiscountSpan.textContent = `-${discountAmount.toFixed(2)}`;
+
+      promoHidden.value = code;
+      discountTotalInput.value = newTotal.toFixed(2);
+
+      localStorage.setItem("discountedSubtotal", discountedSubtotal.toFixed(2));
+      localStorage.setItem("discountedTotal", newTotal.toFixed(2));
+      localStorage.setItem("discountedTax", newTax.toFixed(2));
+      localStorage.setItem("appliedPromoCode", code);
+      localStorage.setItem("promoDiscount", discountAmount.toFixed(2));
+
+      console.log("Promo applied:", code, "New Total:", newTotal);
+    });
+
+    clearButton.addEventListener("click", () => {
+      promoInput.value = "";
+      promoHidden.value = "";
+      discountTotalInput.value = "";
+
+      const originalSubtotal = parseFloat(
+        subPriceSpan.dataset.original || subPriceSpan.textContent || "0"
+      );
+      const originalTax = parseFloat(
+        taxPriceSpan.dataset.original || taxPriceSpan.textContent || "0"
+      );
+
+      subPriceSpan.textContent = originalSubtotal.toFixed(2);
+      taxPriceSpan.textContent = originalTax.toFixed(2);
+
+      const rush = parseFloat(rushPriceSpan.textContent || "0");
+      const ship = parseFloat(shipPriceSpan.textContent || "0");
+      const newTotal = +(originalSubtotal + originalTax + rush + ship).toFixed(
+        2
+      );
+      grandPriceSpan.textContent = newTotal.toFixed(2);
+
+      if (promoDiscountSpan) promoDiscountSpan.textContent = `-0.00`;
+
+      localStorage.removeItem("appliedPromoCode");
+      localStorage.removeItem("discountedSubtotal");
+      localStorage.removeItem("discountedTotal");
+      localStorage.removeItem("discountedTax");
+      localStorage.removeItem("promoDiscount");
+
+      console.log("Promo cleared.");
+    });
+
+    // Auto re-apply saved promo
+    const savedCode = localStorage.getItem("appliedPromoCode");
+    if (savedCode && promoInput.value !== savedCode) {
+      promoInput.value = savedCode;
+      applyButton.click();
     }
   });
 }
