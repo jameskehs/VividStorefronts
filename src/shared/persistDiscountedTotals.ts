@@ -1,66 +1,52 @@
 export function persistDiscountedTotals(): void {
-  window.addEventListener("DOMContentLoaded", () => {
-    const subPriceSpan = document.getElementById(
-      "subPrice"
-    ) as HTMLSpanElement | null;
-    const taxPriceSpan = document.getElementById(
-      "taxPrice"
-    ) as HTMLSpanElement | null;
-    const grandPriceSpan = document.getElementById(
-      "grandPrice"
-    ) as HTMLSpanElement | null;
-    const promoInput = document.getElementById(
-      "customerPO"
-    ) as HTMLInputElement | null;
-    const discountRowId = "discountRow";
+  const subPrice = document.getElementById("subPrice") as HTMLElement | null;
+  const taxPrice = document.getElementById("taxPrice") as HTMLElement | null;
+  const grandPrice = document.getElementById(
+    "grandPrice"
+  ) as HTMLElement | null;
 
-    const storedSubtotal = localStorage.getItem("discountedSubtotal");
-    const storedTax = localStorage.getItem("discountedTax");
-    const storedTotal = localStorage.getItem("discountedTotal");
-    const storedDiscount = localStorage.getItem("promoDiscount");
-    const storedPromoCode = localStorage.getItem("promoCode");
+  const storedSubtotal = localStorage.getItem("discountedSubtotal");
+  const storedTax = localStorage.getItem("discountedTax");
+  const storedTotal = localStorage.getItem("discountedTotal");
+  const storedDiscount = localStorage.getItem("promoDiscount");
 
-    // Only continue if values are found
-    if (!storedSubtotal || !storedTax || !storedTotal || !storedDiscount)
-      return;
+  if (!subPrice || !taxPrice || !grandPrice) return;
 
-    if (subPriceSpan) {
-      subPriceSpan.dataset.original ??= subPriceSpan.textContent || "0";
-      subPriceSpan.textContent = storedSubtotal;
-    }
+  // Store original values if not already stored
+  if (!subPrice.dataset.original) {
+    subPrice.dataset.original =
+      subPrice.textContent?.replace("$", "").trim() || "";
+  }
+  if (!taxPrice.dataset.original) {
+    taxPrice.dataset.original =
+      taxPrice.textContent?.replace("$", "").trim() || "";
+  }
+  if (!grandPrice.dataset.original) {
+    grandPrice.dataset.original =
+      grandPrice.textContent?.replace("$", "").trim() || "";
+  }
 
-    if (taxPriceSpan) {
-      taxPriceSpan.dataset.original ??= taxPriceSpan.textContent || "0";
-      taxPriceSpan.textContent = storedTax;
-    }
+  if (storedSubtotal && storedTax && storedTotal && storedDiscount) {
+    subPrice.textContent = parseFloat(storedSubtotal).toFixed(2);
+    taxPrice.textContent = parseFloat(storedTax).toFixed(2);
+    grandPrice.textContent = parseFloat(storedTotal).toFixed(2);
 
-    if (grandPriceSpan) {
-      grandPriceSpan.dataset.original ??= grandPriceSpan.textContent || "0";
-      grandPriceSpan.textContent = storedTotal;
-    }
-
-    if (promoInput && storedPromoCode) {
-      promoInput.value = storedPromoCode;
-    }
-
-    // Add discount row if not already there
+    // Inject the promo discount row if not already present
     const lineItemsTable = document.querySelector(
       "#lineItems table"
     ) as HTMLTableElement | null;
-    if (lineItemsTable && !document.getElementById(discountRowId)) {
-      const rows = lineItemsTable.rows;
-      const discountRow = lineItemsTable.insertRow(Math.min(3, rows.length)); // Usually above subtotal
+    if (lineItemsTable && !document.getElementById("discountRow")) {
+      const row = lineItemsTable.insertRow(3); // Adjust this index if needed
+      row.id = "discountRow";
 
-      discountRow.id = discountRowId;
-
-      const cell1 = discountRow.insertCell(0);
+      const cell1 = row.insertCell(0);
       cell1.textContent = "Promo Discount:";
 
-      const cell2 = discountRow.insertCell(1);
+      const cell2 = row.insertCell(1);
       cell2.innerHTML = `$<span id="promoDiscount">-${parseFloat(
         storedDiscount
       ).toFixed(2)}</span>`;
       cell2.style.textAlign = "right";
     }
-  });
+  }
 }

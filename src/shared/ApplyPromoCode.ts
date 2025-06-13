@@ -1,18 +1,31 @@
 export function applyPromoCode(): void {
   document.addEventListener("DOMContentLoaded", () => {
-    const applyBtn = document.getElementById("applyPromoCodeBtn");
-    const clearBtn = document.getElementById("clearPromoCodeBtn");
+    const applyBtn = document.getElementById(
+      "applyPromoCodeBtn"
+    ) as HTMLButtonElement | null;
+    const clearBtn = document.getElementById(
+      "clearPromoCodeBtn"
+    ) as HTMLButtonElement | null;
     const promoInput = document.getElementById(
       "customerPO"
     ) as HTMLInputElement | null;
 
     if (!applyBtn || !clearBtn || !promoInput) return;
 
+    const getElementValue = (id: string): number => {
+      const el = document.getElementById(id) as HTMLElement | null;
+      if (!el) return 0;
+      const value = el.textContent?.replace("$", "").trim();
+      return parseFloat(value || "0");
+    };
+
+    const formatCurrency = (amount: number): string => amount.toFixed(2);
+
     applyBtn.addEventListener("click", () => {
       const code = promoInput.value.trim();
       if (!code) return;
 
-      const discountAmount = 7.43; // Replace with actual logic
+      const discountAmount = 7.43; // Replace with dynamic logic as needed
       const subPrice = document.getElementById(
         "subPrice"
       ) as HTMLElement | null;
@@ -30,15 +43,24 @@ export function applyPromoCode(): void {
           subPrice.textContent?.replace("$", "") ||
           "0"
       );
-      const newSubtotal = originalSubtotal - discountAmount;
-      const taxRate = 0.105; // Example rate for recalculating tax
-      const newTax = parseFloat((newSubtotal * taxRate).toFixed(2));
-      const newTotal = parseFloat((newSubtotal + newTax).toFixed(2));
+      if (!subPrice.dataset.original) {
+        subPrice.dataset.original = originalSubtotal.toFixed(2);
+      }
+
+      const newSubtotal = +(originalSubtotal - discountAmount).toFixed(2);
+      const taxRate = 0.105;
+      const newTax = +(newSubtotal * taxRate).toFixed(2);
+      const newTotal = +(
+        newSubtotal +
+        newTax +
+        getElementValue("rushPrice") +
+        getElementValue("shipPrice")
+      ).toFixed(2);
 
       // Update DOM
-      subPrice.textContent = newSubtotal.toFixed(2);
-      taxPrice.textContent = newTax.toFixed(2);
-      grandPrice.textContent = newTotal.toFixed(2);
+      subPrice.textContent = formatCurrency(newSubtotal);
+      taxPrice.textContent = formatCurrency(newTax);
+      grandPrice.textContent = formatCurrency(newTotal);
 
       // Store values
       localStorage.setItem("discountedSubtotal", newSubtotal.toFixed(2));
@@ -47,39 +69,36 @@ export function applyPromoCode(): void {
       localStorage.setItem("promoDiscount", discountAmount.toFixed(2));
       localStorage.setItem("promoCode", code);
 
-      // Add promo discount row if not already there
+      // Add discount row if it doesn't exist
       const lineItemsTable = document.querySelector(
         "#lineItems table"
       ) as HTMLTableElement | null;
-      if (lineItemsTable) {
-        const existingDiscountRow = document.getElementById("discountRow");
-        if (!existingDiscountRow) {
-          const row = lineItemsTable.insertRow(3); // Adjust position as needed
-          row.id = "discountRow";
+      if (lineItemsTable && !document.getElementById("discountRow")) {
+        const row = lineItemsTable.insertRow(3);
+        row.id = "discountRow";
 
-          const cell1 = row.insertCell(0);
-          cell1.textContent = "Promo Discount:";
-          const cell2 = row.insertCell(1);
-          cell2.innerHTML = `$<span id="promoDiscount">-${discountAmount.toFixed(
-            2
-          )}</span>`;
-          cell2.style.textAlign = "right";
-        }
+        const cell1 = row.insertCell(0);
+        cell1.textContent = "Promo Discount:";
+
+        const cell2 = row.insertCell(1);
+        cell2.innerHTML = `$<span id="promoDiscount">-${formatCurrency(
+          discountAmount
+        )}</span>`;
+        cell2.style.textAlign = "right";
       }
     });
 
     clearBtn.addEventListener("click", () => {
+      // Clear stored promo data
       localStorage.removeItem("discountedSubtotal");
       localStorage.removeItem("discountedTax");
       localStorage.removeItem("discountedTotal");
       localStorage.removeItem("promoDiscount");
       localStorage.removeItem("promoCode");
 
-      const promoDiscount = document.getElementById("promoDiscount");
+      // Remove discount row if it exists
       const row = document.getElementById("discountRow");
-      if (promoDiscount && row) {
-        row.remove();
-      }
+      if (row) row.remove();
 
       const subPrice = document.getElementById(
         "subPrice"
@@ -91,15 +110,12 @@ export function applyPromoCode(): void {
         "grandPrice"
       ) as HTMLElement | null;
 
-      if (subPrice && subPrice.dataset.original) {
+      if (subPrice?.dataset.original)
         subPrice.textContent = subPrice.dataset.original;
-      }
-      if (taxPrice && taxPrice.dataset.original) {
+      if (taxPrice?.dataset.original)
         taxPrice.textContent = taxPrice.dataset.original;
-      }
-      if (grandPrice && grandPrice.dataset.original) {
+      if (grandPrice?.dataset.original)
         grandPrice.textContent = grandPrice.dataset.original;
-      }
 
       promoInput.value = "";
     });
