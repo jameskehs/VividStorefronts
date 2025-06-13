@@ -38,13 +38,27 @@ export function applyPromoCode(): void {
     }
 
     if (!document.getElementById("applyPromoCodeBtn")) {
+      const buttonContainer = document.createElement("div");
+      buttonContainer.style.marginTop = "8px";
+      buttonContainer.style.display = "flex";
+      buttonContainer.style.gap = "8px";
+      buttonContainer.style.justifyContent = "center";
+
+      // Apply Button
       const applyButton = document.createElement("button");
       applyButton.innerText = "Apply Promo Code";
       applyButton.type = "button";
       applyButton.id = "applyPromoCodeBtn";
-      applyButton.style.marginTop = "8px";
-      applyButton.style.display = "block";
-      parentSection.appendChild(applyButton);
+
+      // Clear Button
+      const clearButton = document.createElement("button");
+      clearButton.innerText = "Clear";
+      clearButton.type = "button";
+      clearButton.id = "clearPromoCodeBtn";
+
+      buttonContainer.appendChild(applyButton);
+      buttonContainer.appendChild(clearButton);
+      parentSection.appendChild(buttonContainer);
 
       const form = promoInput.form;
       if (!form) return;
