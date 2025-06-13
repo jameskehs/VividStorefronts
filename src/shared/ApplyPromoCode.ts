@@ -5,10 +5,11 @@ export function applyPromoCode(): void {
     ) as HTMLInputElement | null;
     if (!promoInput) return;
 
-    const parentSection = promoInput.closest("section");
-    if (!parentSection) return;
+    // Use the closest box instead of section
+    const promoContainer =
+      promoInput.parentElement || promoInput.closest("div") || document.body;
 
-    // Recreate buttons if missing
+    // Ensure buttons exist
     let applyBtn = document.getElementById(
       "applyPromoCodeBtn"
     ) as HTMLButtonElement | null;
@@ -17,11 +18,11 @@ export function applyPromoCode(): void {
     ) as HTMLButtonElement | null;
 
     if (!applyBtn || !clearBtn) {
-      const buttonContainer = document.createElement("div");
-      buttonContainer.style.marginTop = "8px";
-      buttonContainer.style.display = "flex";
-      buttonContainer.style.gap = "8px";
-      buttonContainer.style.justifyContent = "center";
+      const buttonWrapper = document.createElement("div");
+      buttonWrapper.style.marginTop = "8px";
+      buttonWrapper.style.display = "flex";
+      buttonWrapper.style.gap = "8px";
+      buttonWrapper.style.justifyContent = "center";
 
       applyBtn = document.createElement("button");
       applyBtn.id = "applyPromoCodeBtn";
@@ -33,18 +34,18 @@ export function applyPromoCode(): void {
       clearBtn.type = "button";
       clearBtn.textContent = "Clear";
 
-      buttonContainer.appendChild(applyBtn);
-      buttonContainer.appendChild(clearBtn);
-      parentSection.appendChild(buttonContainer);
+      buttonWrapper.appendChild(applyBtn);
+      buttonWrapper.appendChild(clearBtn);
+
+      promoContainer.appendChild(buttonWrapper);
     }
 
-    if (!applyBtn || !clearBtn || !promoInput) return;
-
-    applyBtn.addEventListener("click", () => {
+    // Add listeners
+    applyBtn?.addEventListener("click", () => {
       const code = promoInput.value.trim();
       if (!code) return;
 
-      const discountAmount = 7.43; // Replace with actual logic
+      const discountAmount = 7.43; // Replace this with your logic
       const subPrice = document.getElementById(
         "subPrice"
       ) as HTMLElement | null;
@@ -62,10 +63,13 @@ export function applyPromoCode(): void {
           subPrice.textContent?.replace("$", "") ||
           "0"
       );
-      const newSubtotal = originalSubtotal - discountAmount;
-      const taxRate = 0.105; // Example
-      const newTax = parseFloat((newSubtotal * taxRate).toFixed(2));
-      const newTotal = parseFloat((newSubtotal + newTax).toFixed(2));
+      if (!subPrice.dataset.original)
+        subPrice.dataset.original = originalSubtotal.toFixed(2);
+
+      const newSubtotal = +(originalSubtotal - discountAmount).toFixed(2);
+      const taxRate = 0.105;
+      const newTax = +(newSubtotal * taxRate).toFixed(2);
+      const newTotal = +(newSubtotal + newTax).toFixed(2);
 
       subPrice.textContent = newSubtotal.toFixed(2);
       taxPrice.textContent = newTax.toFixed(2);
@@ -86,6 +90,7 @@ export function applyPromoCode(): void {
 
         const cell1 = row.insertCell(0);
         cell1.textContent = "Promo Discount:";
+
         const cell2 = row.insertCell(1);
         cell2.innerHTML = `$<span id="promoDiscount">-${discountAmount.toFixed(
           2
@@ -94,18 +99,12 @@ export function applyPromoCode(): void {
       }
     });
 
-    clearBtn.addEventListener("click", () => {
+    clearBtn?.addEventListener("click", () => {
       localStorage.removeItem("discountedSubtotal");
       localStorage.removeItem("discountedTax");
       localStorage.removeItem("discountedTotal");
       localStorage.removeItem("promoDiscount");
       localStorage.removeItem("promoCode");
-
-      const promoDiscount = document.getElementById("promoDiscount");
-      const row = document.getElementById("discountRow");
-      if (promoDiscount && row) {
-        row.remove();
-      }
 
       const subPrice = document.getElementById(
         "subPrice"
@@ -117,14 +116,17 @@ export function applyPromoCode(): void {
         "grandPrice"
       ) as HTMLElement | null;
 
-      if (subPrice && subPrice.dataset.original)
+      if (subPrice?.dataset.original)
         subPrice.textContent = subPrice.dataset.original;
-      if (taxPrice && taxPrice.dataset.original)
+      if (taxPrice?.dataset.original)
         taxPrice.textContent = taxPrice.dataset.original;
-      if (grandPrice && grandPrice.dataset.original)
+      if (grandPrice?.dataset.original)
         grandPrice.textContent = grandPrice.dataset.original;
 
       promoInput.value = "";
+
+      const row = document.getElementById("discountRow");
+      if (row) row.remove();
     });
   });
 }
