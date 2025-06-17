@@ -32,3 +32,39 @@ export function main() {
   if (GLOBALVARS.currentPage === StorefrontPage.VIEWORDERS) {
   }
 }
+function convertMenuTextToSVGIcons(): void {
+  const tryConvert = () => {
+    const menuItems = document.querySelectorAll<HTMLLIElement>("#menu li");
+
+    if (menuItems.length === 0) {
+      setTimeout(tryConvert, 200);
+      return;
+    }
+
+    const svgMap: Record<string, string> = {
+      HOME: "home.svg",
+      CATALOG: "catalog.svg",
+      "MY ACCOUNT": "my-account.svg",
+      "SHOPPING CART": "shopping-cart.svg",
+    };
+
+    menuItems.forEach((item) => {
+      const link = item.querySelector("a");
+      if (link) {
+        const text = link.textContent?.trim().toUpperCase();
+        const svgFile = svgMap[text ?? ""];
+
+        if (svgFile) {
+          link.innerHTML = `<img src="/assets/${svgFile}" alt="${text}" style="width:20px;height:20px;" />`;
+          link.setAttribute("title", text || "");
+        }
+      }
+    });
+  };
+
+  document.readyState === "loading"
+    ? document.addEventListener("DOMContentLoaded", tryConvert)
+    : tryConvert();
+}
+
+convertMenuTextToSVGIcons();
