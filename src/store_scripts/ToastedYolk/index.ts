@@ -55,7 +55,7 @@ function convertMenuTextToSVGIcons(): void {
         const svgFile = svgMap[text ?? ""];
 
         if (svgFile) {
-          link.innerHTML = `<img src="../../assets/${svgFile}" alt="${text}" style="width:20px;height:20px;" />`;
+          link.innerHTML = `<img src="/assets/${svgFile}" alt="${text}" style="width:20px;height:20px;" />`;
           link.setAttribute("title", text || "");
         }
       }
