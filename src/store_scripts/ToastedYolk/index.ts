@@ -32,3 +32,30 @@ export function main() {
   if (GLOBALVARS.currentPage === StorefrontPage.VIEWORDERS) {
   }
 }
+function convertMenuTextToIcons(): void {
+  document.addEventListener("DOMContentLoaded", () => {
+    const menuItems = document.querySelectorAll<HTMLLIElement>("#menu li");
+
+    const iconMap: Record<string, string> = {
+      HOME: "fa-home",
+      CATALOG: "fa-book-open",
+      "MY ACCOUNT": "fa-user",
+      "SHOPPING CART": "fa-shopping-cart",
+    };
+
+    menuItems.forEach((item) => {
+      const link = item.querySelector("a");
+      if (link) {
+        const text = link.textContent?.trim().toUpperCase();
+        const iconClass = iconMap[text ?? ""];
+
+        if (iconClass) {
+          link.innerHTML = `<i class="fa ${iconClass}"></i>`;
+          link.setAttribute("title", text || "");
+        }
+      }
+    });
+  });
+}
+
+convertMenuTextToIcons();
