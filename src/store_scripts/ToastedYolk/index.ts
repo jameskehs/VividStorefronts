@@ -33,6 +33,13 @@ export function main() {
   }
 }
 function convertMenuTextToSVGIcons(): void {
+  const svgMap: Record<string, string> = {
+    HOME: "home.svg",
+    CATALOG: "catalog.svg",
+    "MY ACCOUNT": "my-account.svg",
+    "SHOPPING CART": "shopping-cart.svg",
+  };
+
   const tryConvert = () => {
     const menuItems = document.querySelectorAll<HTMLLIElement>("#menu li");
 
@@ -41,13 +48,6 @@ function convertMenuTextToSVGIcons(): void {
       return;
     }
 
-    const svgMap: Record<string, string> = {
-      HOME: "home.svg",
-      CATALOG: "catalog.svg",
-      "MY ACCOUNT": "my-account.svg",
-      "SHOPPING CART": "shopping-cart.svg",
-    };
-
     menuItems.forEach((item) => {
       const link = item.querySelector("a");
       if (link) {
@@ -55,7 +55,7 @@ function convertMenuTextToSVGIcons(): void {
         const svgFile = svgMap[text ?? ""];
 
         if (svgFile) {
-          link.innerHTML = `<img src="assets/${svgFile}" alt="${text}" style="width:20px;height:20px;" />`;
+          link.innerHTML = `<img src="assets/${svgFile}" alt="${text}" style="width:20px;height:20px;">`;
           link.setAttribute("title", text || "");
         }
       }
