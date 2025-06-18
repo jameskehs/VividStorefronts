@@ -131,6 +131,7 @@ table.tableMain {
   align-items: center;
   justify-content: center;
   margin-left: 40px;
+  width: 400px;
 }
 
 #home-search-input {
