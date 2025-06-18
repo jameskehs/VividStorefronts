@@ -39,7 +39,18 @@ table.tableMain {
   text-transform: capitalize;
   transition: transform 0.2s ease, color 0.2s ease;
 }
-
+#menu li a,
+#menu li a:visited,
+#menu li a:hover,
+#menu li a:active,
+#menu li.menuG a,
+#menu li:hover > a {
+  text-decoration: none !important;
+}
+#menu li a:focus {
+  outline: none;
+  text-decoration: none !important;
+}
 #menu li a:hover {
   transform: scale(1.15);
   color: #000;
@@ -66,16 +77,4 @@ table.tableMain {
   min-width: 16px;
   text-align: center;
   z-index: 1;
-}
-#menu li a,
-#menu li a:visited,
-#menu li a:hover,
-#menu li a:active,
-#menu li.menuG a,
-#menu li:hover > a {
-  text-decoration: none !important;
-}
-#menu li a:focus {
-  outline: none;
-  text-decoration: none !important;
 }
