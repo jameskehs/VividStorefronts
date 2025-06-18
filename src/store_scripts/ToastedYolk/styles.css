@@ -37,7 +37,7 @@ table.tableMain {
   display: inline;
 }
 
-/* Link styling */
+/* Menu links */
 #menu li a {
   display: inline-flex;
   align-items: center;
@@ -54,32 +54,39 @@ table.tableMain {
   transition: transform 0.2s ease, color 0.2s ease;
 }
 
-/* Prevent underline in all states */
+/* Kill all underlines and bottom borders */
 #menu li a,
-#menu li a * {
-  text-decoration: none !important;
-  border-bottom: none !important;
-}
-
-/* Hover and active states */
-#menu li a:hover,
+#menu li a *,
+#menu li a:visited,
+#menu li a:active,
 #menu li.menuG a,
 #menu li:hover > a,
 #menu li a:focus {
-  color: #000;
-  transform: scale(1.15);
+  text-decoration: none !important;
+  border-bottom: none !important;
   outline: none;
 }
 
-/* Icon styling (badge parent) */
-#menu li a i {
+/* Hover and selected behavior */
+#menu li a:hover {
+  color: #000;
+  transform: scale(1.15);
+}
+
+/* Wrap for icon + badge */
+#menu li a .icon-wrap {
+  position: relative;
+  display: inline-block;
+}
+
+/* Font Awesome icon */
+#menu li a .icon-wrap i {
   color: #67a042;
-  position: relative; /* this makes the icon the anchor for .badge */
   font-size: 20px;
 }
 
-/* Cart badge styling */
-#menu li a .badge {
+/* Cart badge */
+#menu li a .icon-wrap .badge {
   position: absolute;
   top: -6px;
   right: -10px;
@@ -95,7 +102,7 @@ table.tableMain {
   z-index: 1;
 }
 
-/* Optional: underline effect for selected menu item */
+/* Optional: underline for current page link */
 #menu li.menuG a:before {
   content: "";
   position: absolute;
@@ -106,7 +113,7 @@ table.tableMain {
   height: 1px;
 }
 
-/* Last menu item spacing */
+/* Final menu item adjustment */
 #menu li:last-child a {
   padding: 10px 0 0 15px;
   background: transparent;

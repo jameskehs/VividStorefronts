@@ -61,11 +61,15 @@ function convertMenuTextToIcons(): void {
         const iconClass = matchedKey ? iconMap[matchedKey] : "";
 
         if (iconClass) {
-          // Extract numeric count like "2" from "(2)"
           const countMatch = rawText?.match(/\((\d+)\)/)?.[1];
-          link.innerHTML = `<i class="fa ${iconClass}"></i>${
-            countMatch ? `<span class="badge">${countMatch}</span>` : ""
-          }`;
+
+          // Create a container span to wrap icon and badge
+          link.innerHTML = `
+    <span class="icon-wrap">
+      <i class="fa ${iconClass}"></i>
+      ${countMatch ? `<span class="badge">${countMatch}</span>` : ""}
+    </span>
+  `;
           link.setAttribute("title", rawText || "");
         }
       }
