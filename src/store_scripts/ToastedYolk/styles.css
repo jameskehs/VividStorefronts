@@ -23,6 +23,20 @@ table.tableMain {
   width: 100%;
   background-color: var(--navbar-bg);
 }
-#menu li a i {
-  color: #67a042;
+#menu li a {
+  position: relative;
+  display: inline-block;
+}
+
+#menu li a .badge {
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  background-color: #ff3b3b;
+  color: white;
+  font-size: 10px;
+  font-weight: bold;
+  border-radius: 12px;
+  padding: 2px 6px;
+  line-height: 1;
 }

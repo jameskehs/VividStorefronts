@@ -32,6 +32,7 @@ export function main() {
   if (GLOBALVARS.currentPage === StorefrontPage.VIEWORDERS) {
   }
 }
+
 function convertMenuTextToIcons(): void {
   const iconMap: Record<string, string> = {
     HOME: "fa-home",
@@ -53,15 +54,18 @@ function convertMenuTextToIcons(): void {
       if (link) {
         const rawText = link.textContent?.trim().toUpperCase();
 
-        // Find the icon that matches the beginning of the label
+        // Match based on start of menu text
         const matchedKey = Object.keys(iconMap).find((key) =>
           rawText?.startsWith(key)
         );
         const iconClass = matchedKey ? iconMap[matchedKey] : "";
 
         if (iconClass) {
-          const countMatch = rawText?.replace(matchedKey!, "").trim(); // like (1)
-          link.innerHTML = `<i class="fa ${iconClass}"></i> <span>${countMatch}</span>`;
+          // Extract numeric count like "2" from "(2)"
+          const countMatch = rawText?.match(/\((\d+)\)/)?.[1];
+          link.innerHTML = `<i class="fa ${iconClass}"></i>${
+            countMatch ? `<span class="badge">${countMatch}</span>` : ""
+          }`;
           link.setAttribute("title", rawText || "");
         }
       }
