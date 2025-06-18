@@ -86,7 +86,7 @@ table.tableMain {
   color: #67a042;
   line-height: 1;
   position: relative;
-  top: -1px; /* fine-tune as needed */
+  top: -3px; /* fine-tune as needed */
 }
 
 /* === BADGE SHOWN BESIDE ICON (NOT OVERLAPPING) === */
@@ -107,7 +107,4 @@ table.tableMain {
 #menu li:last-child a {
   padding: 10px 0 0 15px;
   background: transparent;
-}
-.icon-wrap i.fa-shopping-cart {
-  top: -3px;
 }
