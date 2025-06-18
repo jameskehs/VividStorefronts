@@ -83,27 +83,36 @@ function convertMenuTextToIcons(): void {
 
 convertMenuTextToIcons();
 
-export function moveSearchBarToHeader(): void {
+function moveSearchBarToHeader(): void {
   const logoLinks = document.getElementById("logoLinks");
-  const logoTable = logoLinks?.querySelector("table");
-  const navWrapper = document.getElementById("navWrapper");
   const searchContainer = document.getElementById("home-search-container");
+  const tableLogo = logoLinks?.querySelector("table");
+  const navWrapper = document.getElementById("navWrapper");
 
-  if (!logoLinks || !logoTable || !navWrapper || !searchContainer) {
-    console.warn("One or more required elements not found");
+  if (!logoLinks || !searchContainer || !tableLogo || !navWrapper) {
+    console.warn("One or more required elements are missing");
     return;
   }
 
-  // Clear current logoLinks children and reappend in correct order
-  logoLinks.innerHTML = "";
-  logoLinks.appendChild(logoTable);
-  logoLinks.appendChild(searchContainer);
-  logoLinks.appendChild(navWrapper);
+  // Avoid double appending
+  if (searchContainer.parentElement === logoLinks) return;
+
+  // Create wrapper div for layout (logo | search | nav)
+  const wrapper = document.createElement("div");
+  wrapper.style.display = "flex";
+  wrapper.style.alignItems = "center";
+  wrapper.style.justifyContent = "space-between";
+  wrapper.style.width = "100%";
+  wrapper.style.gap = "24px";
+
+  wrapper.appendChild(tableLogo);
+  wrapper.appendChild(searchContainer);
+  wrapper.appendChild(navWrapper);
+
+  logoLinks.innerHTML = ""; // Clean out old content
+  logoLinks.appendChild(wrapper);
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  moveSearchBarToHeader();
-});
 function bindSearchEvents(): void {
   const input = document.getElementById(
     "home-search-input"
@@ -131,6 +140,7 @@ function bindSearchEvents(): void {
     });
   }
 }
+
 document.addEventListener("DOMContentLoaded", () => {
   moveSearchBarToHeader();
   bindSearchEvents();
