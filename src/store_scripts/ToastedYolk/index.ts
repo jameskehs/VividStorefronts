@@ -82,3 +82,25 @@ function convertMenuTextToIcons(): void {
 }
 
 convertMenuTextToIcons();
+
+document.addEventListener("DOMContentLoaded", () => {
+  const searchInput = document.getElementById(
+    "home-search-input"
+  ) as HTMLInputElement | null;
+  const searchBtn = document.getElementById("home-search-btn");
+
+  function performSearch() {
+    const query = searchInput?.value.trim();
+    if (query) {
+      window.location.href = `/catalog?search=${encodeURIComponent(query)}`;
+    }
+  }
+
+  searchBtn?.addEventListener("click", performSearch);
+
+  searchInput?.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      performSearch();
+    }
+  });
+});
