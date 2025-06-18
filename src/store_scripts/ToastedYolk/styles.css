@@ -23,6 +23,21 @@ table.tableMain {
   width: 100%;
   background-color: var(--navbar-bg);
 }
+#menu {
+  width: 100%;
+  background: transparent;
+  position: relative;
+}
+
+#menu li {
+  float: left;
+  text-align: left;
+  margin: 0 auto;
+  position: relative;
+  display: inline;
+}
+
+/* Link styling with icon support */
 #menu li a {
   position: relative;
   display: inline-flex;
@@ -39,30 +54,28 @@ table.tableMain {
   text-transform: capitalize;
   transition: transform 0.2s ease, color 0.2s ease;
 }
-#menu li a,
-#menu li a:visited,
+
+/* Hover and selected link styling */
 #menu li a:hover,
+#menu li a:visited,
 #menu li a:active,
 #menu li.menuG a,
-#menu li:hover > a {
-  text-decoration: none !important;
-}
+#menu li:hover > a,
 #menu li a:focus {
-  outline: none;
   text-decoration: none !important;
-}
-#menu li a:hover {
-  transform: scale(1.15);
   color: #000;
-  text-decoration: none !important;
+  transform: scale(1.15);
+  outline: none;
 }
 
+/* Icon styling */
 #menu li a i {
   color: #67a042;
   position: relative;
   font-size: 20px;
 }
 
+/* Cart badge styling */
 #menu li a .badge {
   position: absolute;
   top: 2px;
@@ -77,4 +90,21 @@ table.tableMain {
   min-width: 16px;
   text-align: center;
   z-index: 1;
+}
+
+/* Selected link underline (used on current page) */
+#menu li.menuG a:before {
+  content: "";
+  position: absolute;
+  right: 15px;
+  left: 15px;
+  background-color: #1d78bf;
+  top: 28px;
+  height: 1px;
+}
+
+/* Adjust final menu item spacing */
+#menu li:last-child a {
+  padding: 10px 0 0 15px;
+  background: transparent;
 }
