@@ -108,3 +108,8 @@ table.tableMain {
   padding: 10px 0 0 15px;
   background: transparent;
 }
+#menu li a,
+#menu li a * {
+  text-decoration: none !important;
+  border-bottom: none !important;
+}
