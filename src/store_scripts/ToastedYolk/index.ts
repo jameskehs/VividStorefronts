@@ -108,7 +108,8 @@ export function moveSearchBarToHeader(): void {
   headWrapper.insertBefore(searchWrapper, logoLinks.nextSibling);
 }
 
-// ✅ Add this at the bottom of index.ts
-document.addEventListener("DOMContentLoaded", () => {
+// Run after full page load
+window.onload = () => {
+  convertMenuTextToIcons();
   moveSearchBarToHeader();
-});
+};
