@@ -1,38 +1,30 @@
-// <script src="https://main--vividstorefronts.netlify.app/main.js"></script>
-// <script>loadStorefrontScript(brandingProfile)</script>
-
+// Import dependencies
 import { StorefrontPage } from "../../enums/StorefrontPage.enum";
 import { GLOBALVARS } from "../../index";
 
+// Main page routing
 export function main() {
   console.log(GLOBALVARS.currentPage);
 
-  if (GLOBALVARS.currentPage === StorefrontPage.ADDTOCART) {
-  }
-  if (GLOBALVARS.currentPage === StorefrontPage.CART) {
-  }
-  if (GLOBALVARS.currentPage === StorefrontPage.CATALOG) {
-  }
-  if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTADDRESS) {
-  }
-  if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTCONFIRMATION) {
-  }
-  if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTPAYMENT) {
-  }
-  if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTREVIEW) {
-  }
-  if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTSHIPPING) {
-  }
-  if (GLOBALVARS.currentPage === StorefrontPage.CREATEEDITACCOUNT) {
-  }
-  if (GLOBALVARS.currentPage === StorefrontPage.CUSTOMIZETEMPLATE) {
-  }
-  if (GLOBALVARS.currentPage === StorefrontPage.MYACCOUNT) {
-  }
-  if (GLOBALVARS.currentPage === StorefrontPage.VIEWORDERS) {
+  switch (GLOBALVARS.currentPage) {
+    case StorefrontPage.ADDTOCART:
+    case StorefrontPage.CART:
+    case StorefrontPage.CATALOG:
+    case StorefrontPage.CHECKOUTADDRESS:
+    case StorefrontPage.CHECKOUTCONFIRMATION:
+    case StorefrontPage.CHECKOUTPAYMENT:
+    case StorefrontPage.CHECKOUTREVIEW:
+    case StorefrontPage.CHECKOUTSHIPPING:
+    case StorefrontPage.CREATEEDITACCOUNT:
+    case StorefrontPage.CUSTOMIZETEMPLATE:
+    case StorefrontPage.MYACCOUNT:
+    case StorefrontPage.VIEWORDERS:
+      // Do something if needed
+      break;
   }
 }
 
+// Replace menu text with icons
 function convertMenuTextToIcons(): void {
   const iconMap: Record<string, string> = {
     HOME: "fa-home",
@@ -43,7 +35,6 @@ function convertMenuTextToIcons(): void {
 
   const tryConvert = () => {
     const menuItems = document.querySelectorAll<HTMLLIElement>("#menu li");
-
     if (menuItems.length === 0) {
       setTimeout(tryConvert, 200);
       return;
@@ -53,8 +44,6 @@ function convertMenuTextToIcons(): void {
       const link = item.querySelector("a");
       if (link) {
         const rawText = link.textContent?.trim().toUpperCase();
-
-        // Match based on start of menu text
         const matchedKey = Object.keys(iconMap).find((key) =>
           rawText?.startsWith(key)
         );
@@ -62,14 +51,12 @@ function convertMenuTextToIcons(): void {
 
         if (iconClass) {
           const countMatch = rawText?.match(/\((\d+)\)/)?.[1];
-
-          // Create a container span to wrap icon and badge
           link.innerHTML = `
-    <span class="icon-wrap">
-      <i class="fa ${iconClass}"></i>
-      ${countMatch ? `<span class="badge">${countMatch}</span>` : ""}
-    </span>
-  `;
+            <span class="icon-wrap">
+              <i class="fa ${iconClass}"></i>
+              ${countMatch ? `<span class="badge">${countMatch}</span>` : ""}
+            </span>
+          `;
           link.setAttribute("title", rawText || "");
         }
       }
@@ -81,8 +68,7 @@ function convertMenuTextToIcons(): void {
     : tryConvert();
 }
 
-convertMenuTextToIcons();
-
+// Move search bar to top header
 export function moveSearchBarToHeader(): void {
   const headWrapper = document.getElementById("headWrapper");
   const logoLinks = document.getElementById("logoLinks");
@@ -93,22 +79,17 @@ export function moveSearchBarToHeader(): void {
     return;
   }
 
-  // Create wrapper to center the search bar
-  const searchWrapper = document.createElement("div");
-  searchWrapper.id = "headerSearchWrapper";
-  searchWrapper.style.display = "flex";
-  searchWrapper.style.justifyContent = "center";
-  searchWrapper.style.width = "100%";
-  searchWrapper.style.marginTop = "12px";
+  const wrapper = document.createElement("div");
+  wrapper.style.display = "flex";
+  wrapper.style.justifyContent = "center";
+  wrapper.style.marginTop = "12px";
+  wrapper.appendChild(searchContainer);
 
-  // Move the search bar into the wrapper
-  searchWrapper.appendChild(searchContainer);
-
-  // Insert after logoLinks
-  headWrapper.insertBefore(searchWrapper, logoLinks.nextSibling);
+  headWrapper.insertBefore(wrapper, logoLinks.nextSibling);
 }
 
-// ✅ Add this at the bottom of index.ts
-document.addEventListener("DOMContentLoaded", () => {
+// Run after full page load
+window.onload = () => {
+  convertMenuTextToIcons();
   moveSearchBarToHeader();
-});
+};
