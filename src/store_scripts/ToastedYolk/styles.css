@@ -38,33 +38,49 @@ table.tableMain {
   display: inline-block;
 }
 
-/* === MENU LINKS === */
+/* === LINK STYLING === */
 #menu li a {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 10px;
   height: 52px;
-  text-decoration: none !important;
+  padding: 10px 14px;
   color: #444;
+  text-decoration: none;
   transition: transform 0.2s ease, color 0.2s ease;
 }
 
-/* === HOVER EFFECT === */
+/* === HOVER === */
 #menu li a:hover {
   transform: scale(1.15);
   color: #000;
 }
 
-/* === ICON + BADGE SIDE BY SIDE === */
+/* === REMOVE ALL UNDERLINES === */
+#menu li a,
+#menu li a *,
+#menu li a:before,
+#menu li a:after {
+  text-decoration: none !important;
+  border: none !important;
+  background: transparent !important;
+  outline: none !important;
+}
+
+/* === REMOVE SELECTED UNDERLINE === */
+#menu li.menuG a:before {
+  display: none !important;
+}
+
+/* === ICON WRAPPER === */
 .icon-wrap {
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  vertical-align: middle;
 }
 
-/* === ICON STYLE === */
+/* === ICON === */
 .icon-wrap i {
   font-size: 24px;
   color: #67a042;
@@ -72,9 +88,8 @@ table.tableMain {
   vertical-align: middle;
 }
 
-/* === CART COUNT BADGE BESIDE ICON === */
+/* === BADGE (positioned beside, not above) === */
 .icon-wrap .badge {
-  display: inline-block;
   background-color: #ff3b3b;
   color: white;
   font-size: 11px;
@@ -82,29 +97,13 @@ table.tableMain {
   border-radius: 12px;
   padding: 2px 6px;
   line-height: 1;
+  display: inline-block;
   min-width: 16px;
-  text-align: center;
   vertical-align: middle;
+  margin-top: 2px; /* this nudge aligns it perfectly */
 }
 
-/* === REMOVE ALL UNDERLINES EVERYWHERE === */
-#menu li a,
-#menu li a *,
-#menu li a:before,
-#menu li a:after {
-  text-decoration: none !important;
-  border: none !important;
-  border-bottom: none !important;
-  background: transparent !important;
-  outline: none !important;
-}
-
-/* === ACTIVE MENU ITEM UNDERLINE FIX === */
-#menu li.menuG a:before {
-  display: none !important;
-}
-
-/* === LAST MENU ITEM === */
+/* === LAST ITEM FIX === */
 #menu li:last-child a {
   padding: 10px 0 0 15px;
   background: transparent;
