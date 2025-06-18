@@ -93,17 +93,22 @@ export function moveSearchBarToHeader(): void {
     return;
   }
 
-  // Create a flex wrapper for centering
-  const wrapper = document.createElement("div");
-  wrapper.style.display = "flex";
-  wrapper.style.justifyContent = "center";
-  wrapper.style.marginTop = "12px";
-  wrapper.appendChild(searchContainer);
+  // Create wrapper to center the search bar
+  const searchWrapper = document.createElement("div");
+  searchWrapper.id = "headerSearchWrapper";
+  searchWrapper.style.display = "flex";
+  searchWrapper.style.justifyContent = "center";
+  searchWrapper.style.width = "400px";
+  searchWrapper.style.marginTop = "12px";
 
-  // Insert the search bar after logoLinks
-  headWrapper.insertBefore(wrapper, logoLinks.nextSibling);
+  // Move the search bar into the wrapper
+  searchWrapper.appendChild(searchContainer);
+
+  // Insert after logoLinks
+  headWrapper.insertBefore(searchWrapper, logoLinks.nextSibling);
 }
 
-window.onload = () => {
+// ✅ Add this at the bottom of index.ts
+document.addEventListener("DOMContentLoaded", () => {
   moveSearchBarToHeader();
-};
+});
