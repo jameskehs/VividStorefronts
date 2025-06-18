@@ -77,15 +77,16 @@ table.tableMain {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  vertical-align: middle;
 }
 
-/* === ICON === */
+/* === ICON (normalized vertical alignment) === */
 .icon-wrap i {
   font-size: 24px;
   color: #67a042;
   line-height: 1;
   vertical-align: middle;
+  position: relative;
+  top: 1px; /* adjust up slightly to align with others */
 }
 
 /* === BADGE (positioned beside, not above) === */
