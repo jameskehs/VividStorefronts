@@ -1,30 +1,38 @@
-// Import dependencies
+// <script src="https://main--vividstorefronts.netlify.app/main.js"></script>
+// <script>loadStorefrontScript(brandingProfile)</script>
+
 import { StorefrontPage } from "../../enums/StorefrontPage.enum";
 import { GLOBALVARS } from "../../index";
 
-// Main page routing
 export function main() {
   console.log(GLOBALVARS.currentPage);
 
-  switch (GLOBALVARS.currentPage) {
-    case StorefrontPage.ADDTOCART:
-    case StorefrontPage.CART:
-    case StorefrontPage.CATALOG:
-    case StorefrontPage.CHECKOUTADDRESS:
-    case StorefrontPage.CHECKOUTCONFIRMATION:
-    case StorefrontPage.CHECKOUTPAYMENT:
-    case StorefrontPage.CHECKOUTREVIEW:
-    case StorefrontPage.CHECKOUTSHIPPING:
-    case StorefrontPage.CREATEEDITACCOUNT:
-    case StorefrontPage.CUSTOMIZETEMPLATE:
-    case StorefrontPage.MYACCOUNT:
-    case StorefrontPage.VIEWORDERS:
-      // Do something if needed
-      break;
+  if (GLOBALVARS.currentPage === StorefrontPage.ADDTOCART) {
+  }
+  if (GLOBALVARS.currentPage === StorefrontPage.CART) {
+  }
+  if (GLOBALVARS.currentPage === StorefrontPage.CATALOG) {
+  }
+  if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTADDRESS) {
+  }
+  if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTCONFIRMATION) {
+  }
+  if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTPAYMENT) {
+  }
+  if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTREVIEW) {
+  }
+  if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTSHIPPING) {
+  }
+  if (GLOBALVARS.currentPage === StorefrontPage.CREATEEDITACCOUNT) {
+  }
+  if (GLOBALVARS.currentPage === StorefrontPage.CUSTOMIZETEMPLATE) {
+  }
+  if (GLOBALVARS.currentPage === StorefrontPage.MYACCOUNT) {
+  }
+  if (GLOBALVARS.currentPage === StorefrontPage.VIEWORDERS) {
   }
 }
 
-// Replace menu text with icons
 function convertMenuTextToIcons(): void {
   const iconMap: Record<string, string> = {
     HOME: "fa-home",
@@ -35,6 +43,7 @@ function convertMenuTextToIcons(): void {
 
   const tryConvert = () => {
     const menuItems = document.querySelectorAll<HTMLLIElement>("#menu li");
+
     if (menuItems.length === 0) {
       setTimeout(tryConvert, 200);
       return;
@@ -44,6 +53,8 @@ function convertMenuTextToIcons(): void {
       const link = item.querySelector("a");
       if (link) {
         const rawText = link.textContent?.trim().toUpperCase();
+
+        // Match based on start of menu text
         const matchedKey = Object.keys(iconMap).find((key) =>
           rawText?.startsWith(key)
         );
@@ -51,12 +62,14 @@ function convertMenuTextToIcons(): void {
 
         if (iconClass) {
           const countMatch = rawText?.match(/\((\d+)\)/)?.[1];
+
+          // Create a container span to wrap icon and badge
           link.innerHTML = `
-            <span class="icon-wrap">
-              <i class="fa ${iconClass}"></i>
-              ${countMatch ? `<span class="badge">${countMatch}</span>` : ""}
-            </span>
-          `;
+    <span class="icon-wrap">
+      <i class="fa ${iconClass}"></i>
+      ${countMatch ? `<span class="badge">${countMatch}</span>` : ""}
+    </span>
+  `;
           link.setAttribute("title", rawText || "");
         }
       }
@@ -68,28 +81,29 @@ function convertMenuTextToIcons(): void {
     : tryConvert();
 }
 
-// Move search bar to top header
-export function moveSearchBarOverLogo(): void {
+convertMenuTextToIcons();
+
+export function moveSearchBarToHeader(): void {
+  const headWrapper = document.getElementById("headWrapper");
   const logoLinks = document.getElementById("logoLinks");
   const searchContainer = document.getElementById("home-search-container");
 
-  if (!logoLinks || !searchContainer) {
-    console.warn("Required elements not found to layer search bar.");
+  if (!headWrapper || !logoLinks || !searchContainer) {
+    console.warn("Required elements not found to move search bar.");
     return;
   }
 
-  // Ensure parent is positioned
-  logoLinks.style.position = "relative";
+  // Create a flex wrapper for centering
+  const wrapper = document.createElement("div");
+  wrapper.style.display = "flex";
+  wrapper.style.justifyContent = "center";
+  wrapper.style.marginTop = "12px";
+  wrapper.appendChild(searchContainer);
 
-  // Style the search container to overlay
-  searchContainer.style.position = "absolute";
-  searchContainer.style.top = "0"; // adjust as needed
-  searchContainer.style.left = "50%";
-  searchContainer.style.transform = "translateX(-50%)";
-  searchContainer.style.zIndex = "9999";
+  // Insert the search bar after logoLinks
+  headWrapper.insertBefore(wrapper, logoLinks.nextSibling);
 }
 
-// Run after full page load
-document.addEventListener("DOMContentLoaded", () => {
-  moveSearchBarOverLogo();
-});
+window.onload = () => {
+  moveSearchBarToHeader();
+};
