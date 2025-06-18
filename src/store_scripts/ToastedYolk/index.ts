@@ -32,12 +32,12 @@ export function main() {
   if (GLOBALVARS.currentPage === StorefrontPage.VIEWORDERS) {
   }
 }
-function convertMenuTextToSVGIcons(): void {
-  const svgMap: Record<string, string> = {
-    HOME: "home.svg",
-    CATALOG: "catalog.svg",
-    "MY ACCOUNT": "my-account.svg",
-    "SHOPPING CART": "shopping-cart.svg",
+function convertMenuTextToIcons(): void {
+  const iconMap: Record<string, string> = {
+    HOME: "fa-home",
+    CATALOG: "fa-book-open",
+    "MY ACCOUNT": "fa-user",
+    "SHOPPING CART": "fa-shopping-cart",
   };
 
   const tryConvert = () => {
@@ -52,10 +52,10 @@ function convertMenuTextToSVGIcons(): void {
       const link = item.querySelector("a");
       if (link) {
         const text = link.textContent?.trim().toUpperCase();
-        const svgFile = svgMap[text ?? ""];
+        const iconClass = iconMap[text ?? ""];
 
-        if (svgFile) {
-          link.innerHTML = `<img src="/src/assets/${svgFile}" alt="${text}" style="width:20px;height:20px;">`;
+        if (iconClass) {
+          link.innerHTML = `<i class="fa ${iconClass}"></i>`;
           link.setAttribute("title", text || "");
         }
       }
@@ -67,4 +67,4 @@ function convertMenuTextToSVGIcons(): void {
     : tryConvert();
 }
 
-convertMenuTextToSVGIcons();
+convertMenuTextToIcons();
