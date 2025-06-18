@@ -91,6 +91,7 @@ table.tableMain {
 
 /* === BADGE SHOWN BESIDE ICON (NOT OVERLAPPING) === */
 .icon-wrap .badge {
+  all: unset !important;
   display: inline-block !important;
   background-color: #ff3b3b !important;
   color: white !important;
@@ -100,8 +101,8 @@ table.tableMain {
   padding: 2px 6px !important;
   line-height: 1 !important;
   min-width: 16px !important;
-  height: auto !important;
   text-align: center !important;
+  z-index: 999 !important;
   visibility: visible !important;
   opacity: 1 !important;
 }
