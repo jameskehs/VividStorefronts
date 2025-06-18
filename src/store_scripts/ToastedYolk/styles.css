@@ -23,66 +23,49 @@ table.tableMain {
   width: 100%;
   background-color: var(--navbar-bg);
 }
-#menu {
-  width: 100%;
-  background: transparent;
-  position: relative;
+/* Remove underline from selected/active menu item */
+#menu li.menuG a:before {
+  display: none !important;
 }
 
-#menu li {
-  float: left;
-  text-align: left;
-  margin: 0 auto;
-  position: relative;
-  display: inline;
+/* Fully disable all underlines and border styling */
+#menu li a,
+#menu li a *,
+#menu li a:before,
+#menu li a:after {
+  text-decoration: none !important;
+  border: none !important;
+  border-bottom: none !important;
+  background: transparent !important;
 }
 
-/* Menu links */
+/* Adjust icon layout */
 #menu li a {
-  display: inline-flex;
+  display: flex;
+  justify-content: center;
   align-items: center;
-  gap: 6px;
-  font-size: 18px;
-  font-weight: 400;
-  letter-spacing: 0.35px;
-  color: #444;
+  padding: 10px;
   height: 52px;
-  padding: 10px 14px 10px 15px;
-  line-height: 25px;
-  text-decoration: none;
-  text-transform: capitalize;
   transition: transform 0.2s ease, color 0.2s ease;
 }
 
-/* Kill all underlines and bottom borders */
-#menu li a,
-#menu li a *,
-#menu li a:visited,
-#menu li a:active,
-#menu li.menuG a,
-#menu li:hover > a,
-#menu li a:focus {
-  text-decoration: none !important;
-  border-bottom: none !important;
-  outline: none;
-}
-
-/* Hover and selected behavior */
-#menu li a:hover {
-  color: #000;
-  transform: scale(1.15);
-}
-
-/* Wrap for icon + badge */
+/* Center icon + badge */
 #menu li a .icon-wrap {
   position: relative;
   display: inline-block;
+  width: 24px;
+  height: 24px;
 }
 
 /* Font Awesome icon */
 #menu li a .icon-wrap i {
   color: #67a042;
-  font-size: 20px;
+  font-size: 22px;
+  line-height: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  text-align: center;
 }
 
 /* Cart badge */
@@ -96,25 +79,14 @@ table.tableMain {
   font-weight: bold;
   border-radius: 50%;
   padding: 2px 5px;
-  line-height: 1;
   min-width: 16px;
+  line-height: 1;
   text-align: center;
-  z-index: 1;
+  z-index: 10;
 }
 
-/* Optional: underline for current page link */
-#menu li.menuG a:before {
-  content: "";
-  position: absolute;
-  right: 15px;
-  left: 15px;
-  background-color: #1d78bf;
-  top: 28px;
-  height: 1px;
-}
-
-/* Final menu item adjustment */
-#menu li:last-child a {
-  padding: 10px 0 0 15px;
-  background: transparent;
+/* Hover zoom */
+#menu li a:hover {
+  transform: scale(1.15);
+  color: #000;
 }
