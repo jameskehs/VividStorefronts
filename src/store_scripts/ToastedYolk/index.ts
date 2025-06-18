@@ -82,24 +82,3 @@ function convertMenuTextToIcons(): void {
 }
 
 convertMenuTextToIcons();
-
-export function moveSearchBarToTopMenu(): void {
-  // Only run on the homepage or where the header is present
-  const menu = document.getElementById("menu");
-  const searchContainer = document.getElementById("home-search-container");
-
-  if (menu && searchContainer) {
-    // Style the container to blend into the nav
-    searchContainer.style.marginLeft = "auto";
-    searchContainer.style.display = "flex";
-    searchContainer.style.alignItems = "center";
-
-    // Move the search bar into the nav
-    menu.parentElement?.appendChild(searchContainer);
-  } else {
-    console.warn("Menu or search container not found.");
-  }
-}
-document.addEventListener("DOMContentLoaded", () => {
-  moveSearchBarToTopMenu();
-});
