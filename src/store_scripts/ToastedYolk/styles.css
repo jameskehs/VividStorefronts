@@ -113,3 +113,37 @@ table.tableMain {
   padding: 10px 0 0 15px;
   background: transparent;
 }
+#home-search-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 24px;
+  min-width: 1250px;
+}
+#home-search-input {
+  box-sizing: border-box;
+  height: 42px;
+  padding: 4px;
+  font-size: 18px;
+  width: 50%;
+  margin-right: 12px;
+  background: none;
+  border: 1px solid #bbb;
+}
+#home-search-btn {
+  box-sizing: border-box;
+  cursor: pointer;
+  border-radius: 6px;
+  background-color: white;
+  border: 1px solid #eee;
+  height: 42px;
+  width: 42px;
+  background: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#home-search-btn svg {
+  height: 42px;
+  width: 42px;
+}
