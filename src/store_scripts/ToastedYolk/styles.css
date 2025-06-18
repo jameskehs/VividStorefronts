@@ -67,3 +67,15 @@ table.tableMain {
   text-align: center;
   z-index: 1;
 }
+#menu li a,
+#menu li a:visited,
+#menu li a:hover,
+#menu li a:active,
+#menu li.menuG a,
+#menu li:hover > a {
+  text-decoration: none !important;
+}
+#menu li a:focus {
+  outline: none;
+  text-decoration: none !important;
+}
