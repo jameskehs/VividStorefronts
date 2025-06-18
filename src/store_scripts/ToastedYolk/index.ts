@@ -92,26 +92,44 @@ export function moveSearchBarNextToLogo(): void {
     return;
   }
 
-  // Style logoLinks as a flex container
-  logoLinks.style.display = "flex";
-  logoLinks.style.alignItems = "center";
-  logoLinks.style.justifyContent = "space-between"; // or "center" if only logo + search
-
-  // Insert search bar right after the logo (table)
+  // Move the search bar after the logo table
   const table = logoLinks.querySelector("table");
   if (table) {
     table.insertAdjacentElement("afterend", searchContainer);
   }
 
-  // Style the search bar for spacing
+  // Flex layout
+  logoLinks.style.display = "flex";
+  logoLinks.style.alignItems = "center";
+  logoLinks.style.justifyContent = "space-between";
+
+  // Optional styling
   searchContainer.style.marginLeft = "40px";
   searchContainer.style.flexGrow = "1";
   searchContainer.style.display = "flex";
   searchContainer.style.justifyContent = "center";
+
+  // ✅ Rebind the search button and enter key
+  const input = document.getElementById(
+    "home-search-input"
+  ) as HTMLInputElement;
+  const btn = document.getElementById("home-search-btn");
+
+  function searchProducts() {
+    const query = input?.value.trim();
+    if (query) {
+      window.location.href = `/catalog/?search=${encodeURIComponent(
+        query
+      )}&g=0&y=0&p=0&m=g`;
+    }
+  }
+
+  btn?.addEventListener("click", searchProducts);
+  input?.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") searchProducts();
+  });
 }
 
-// Run after full page load
-window.onload = () => {
-  convertMenuTextToIcons();
+document.addEventListener("DOMContentLoaded", () => {
   moveSearchBarNextToLogo();
-};
+});
