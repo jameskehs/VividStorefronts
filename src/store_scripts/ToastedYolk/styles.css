@@ -23,12 +23,80 @@ table.tableMain {
   width: 100%;
   background-color: var(--navbar-bg);
 }
-/* Remove underline from selected/active menu item */
-#menu li.menuG a:before {
-  display: none !important;
+/* === MENU STRUCTURE === */
+#menu {
+  width: 100%;
+  background: transparent;
+  position: relative;
 }
 
-/* Fully disable all underlines and border styling */
+#menu li {
+  float: left;
+  text-align: left;
+  margin: 0 auto;
+  position: relative;
+  display: inline;
+}
+
+#menu li a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  height: 52px;
+  transition: transform 0.2s ease, color 0.2s ease;
+  text-decoration: none !important;
+  color: #444;
+  position: relative;
+}
+
+/* === HOVER EFFECT === */
+#menu li a:hover {
+  transform: scale(1.15);
+  color: #000;
+}
+
+/* === ICON WRAPPER === */
+#menu li a .icon-wrap {
+  position: relative !important;
+  display: inline-block !important;
+  width: 24px !important;
+  height: 24px !important;
+}
+
+/* === ICON STYLING === */
+#menu li a .icon-wrap i {
+  color: #67a042 !important;
+  font-size: 24px !important;
+  display: block !important;
+  text-align: center !important;
+  width: 100% !important;
+  height: 100% !important;
+  line-height: 24px !important;
+}
+
+/* === BADGE STYLING === */
+#menu li a .icon-wrap .badge {
+  position: absolute !important;
+  top: -6px !important;
+  right: -10px !important;
+  background-color: #ff3b3b !important;
+  color: white !important;
+  font-size: 10px !important;
+  font-weight: bold !important;
+  border-radius: 50% !important;
+  padding: 2px 5px !important;
+  min-width: 16px !important;
+  height: 16px !important;
+  line-height: 1 !important;
+  text-align: center !important;
+  z-index: 999 !important;
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* === CLEANUP: REMOVE UNDERLINES COMPLETELY === */
 #menu li a,
 #menu li a *,
 #menu li a:before,
@@ -37,95 +105,16 @@ table.tableMain {
   border: none !important;
   border-bottom: none !important;
   background: transparent !important;
+  outline: none !important;
 }
 
-/* Adjust icon layout */
-#menu li a {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 10px;
-  height: 52px;
-  transition: transform 0.2s ease, color 0.2s ease;
+/* === REMOVE LINE UNDER ACTIVE ITEM === */
+#menu li.menuG a:before {
+  display: none !important;
 }
 
-/* Center icon + badge */
-#menu li a .icon-wrap {
-  position: relative;
-  display: inline-block;
-  width: 24px;
-  height: 24px;
-}
-
-/* Font Awesome icon */
-#menu li a .icon-wrap i {
-  color: #67a042;
-  font-size: 22px;
-  line-height: 1;
-  display: block;
-  width: 100%;
-  height: 100%;
-  text-align: center;
-}
-
-/* Cart badge */
-#menu li a .icon-wrap .badge {
-  position: absolute;
-  top: -6px;
-  right: -10px;
-  background-color: #ff3b3b;
-  color: white;
-  font-size: 10px;
-  font-weight: bold;
-  border-radius: 50%;
-  padding: 2px 5px;
-  min-width: 16px;
-  line-height: 1;
-  text-align: center;
-  z-index: 10;
-}
-
-/* Hover zoom */
-#menu li a:hover {
-  transform: scale(1.15);
-  color: #000;
-}
-/* Ensure container is relatively positioned */
-.icon-wrap {
-  position: relative;
-  display: inline-block;
-  width: 24px;
-  height: 24px;
-}
-
-/* Style and position the icon */
-.icon-wrap i {
-  color: #67a042;
-  font-size: 24px;
-  display: block;
-  text-align: center;
-  width: 100%;
-  height: 100%;
-  line-height: 24px;
-}
-
-/* Style and position the badge */
-.icon-wrap .badge {
-  position: absolute;
-  top: -6px;
-  right: -10px;
-  background-color: #ff3b3b;
-  color: white;
-  font-size: 10px;
-  font-weight: bold;
-  border-radius: 50%;
-  padding: 2px 5px;
-  min-width: 16px;
-  height: 16px;
-  line-height: 1;
-  text-align: center;
-  z-index: 10;
-  display: inline-block;
-  visibility: visible;
-  opacity: 1;
+/* === LAST CHILD STYLING === */
+#menu li:last-child a {
+  padding: 10px 0 0 15px;
+  background: transparent;
 }
