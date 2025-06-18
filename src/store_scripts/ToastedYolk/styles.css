@@ -49,6 +49,12 @@ table.tableMain {
   text-decoration: none;
   transition: transform 0.2s ease, color 0.2s ease;
 }
+#menu li a .icon-wrap i {
+  color: #67a042 !important;
+  font-size: 24px;
+  line-height: 1;
+  vertical-align: middle;
+}
 
 /* === HOVER === */
 #menu li a:hover {
@@ -83,10 +89,9 @@ table.tableMain {
 /* === CART ICON FIXED ALIGNMENT === */
 .icon-wrap i.fa-shopping-cart {
   font-size: 24px;
-  color: #67a042;
   line-height: 1;
   position: relative;
-  top: -3px; /* fine-tune as needed */
+  top: -4px; /* fine-tune as needed */
 }
 
 /* === BADGE SHOWN BESIDE ICON (NOT OVERLAPPING) === */
