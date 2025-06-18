@@ -110,4 +110,8 @@ export function moveSearchBarNextToLogo(): void {
   searchContainer.style.justifyContent = "center";
 }
 
-document.addEventListener("DOMContentLoaded", moveSearchBarNextToLogo);
+// Run after full page load
+window.onload = () => {
+  convertMenuTextToIcons();
+  moveSearchBarNextToLogo();
+};
