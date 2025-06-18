@@ -23,7 +23,7 @@ table.tableMain {
   width: 100%;
   background-color: var(--navbar-bg);
 }
-/* === MENU STRUCTURE === */
+/* === MENU CONTAINER === */
 #menu {
   width: 100%;
   background: transparent;
@@ -38,6 +38,7 @@ table.tableMain {
   display: inline;
 }
 
+/* === LINK STYLING === */
 #menu li a {
   display: flex;
   justify-content: center;
@@ -56,47 +57,12 @@ table.tableMain {
   color: #000;
 }
 
-/* === ICON WRAPPER === */
-#menu li a .icon-wrap {
-  position: relative !important;
-  display: inline-block !important;
-  width: 24px !important;
-  height: 24px !important;
+/* === ACTIVE LINK UNDERLINE OVERRIDE === */
+#menu li.menuG a:before {
+  display: none !important;
 }
 
-/* === ICON STYLING === */
-#menu li a .icon-wrap i {
-  color: #67a042 !important;
-  font-size: 24px !important;
-  display: block !important;
-  text-align: center !important;
-  width: 100% !important;
-  height: 100% !important;
-  line-height: 24px !important;
-}
-
-/* === BADGE STYLING === */
-#menu li a .icon-wrap .badge {
-  position: absolute !important;
-  top: -6px !important;
-  right: -10px !important;
-  background-color: #ff3b3b !important;
-  color: white !important;
-  font-size: 10px !important;
-  font-weight: bold !important;
-  border-radius: 50% !important;
-  padding: 2px 5px !important;
-  min-width: 16px !important;
-  height: 16px !important;
-  line-height: 1 !important;
-  text-align: center !important;
-  z-index: 999 !important;
-  display: inline-block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-}
-
-/* === CLEANUP: REMOVE UNDERLINES COMPLETELY === */
+/* === UNIVERSAL UNDERLINE/BORDER CLEANUP === */
 #menu li a,
 #menu li a *,
 #menu li a:before,
@@ -108,13 +74,43 @@ table.tableMain {
   outline: none !important;
 }
 
-/* === REMOVE LINE UNDER ACTIVE ITEM === */
-#menu li.menuG a:before {
-  display: none !important;
-}
-
-/* === LAST CHILD STYLING === */
+/* === LAST CHILD MENU ITEM === */
 #menu li:last-child a {
   padding: 10px 0 0 15px;
   background: transparent;
+}
+
+/* === ICON WRAPPER FOR FA ICON + BADGE === */
+#menu li a .icon-wrap {
+  position: relative;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 24px;
+  height: 24px;
+}
+
+/* === FA ICON STYLING === */
+#menu li a .icon-wrap i {
+  color: #67a042;
+  font-size: 24px;
+  line-height: 1;
+  display: inline-block;
+}
+
+/* === BADGE STYLING === */
+#menu li a .icon-wrap .badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background-color: #ff3b3b;
+  color: white;
+  font-size: 10px;
+  font-weight: bold;
+  border-radius: 50%;
+  padding: 2px 5px;
+  line-height: 1;
+  min-width: 16px;
+  text-align: center;
+  z-index: 10;
 }
