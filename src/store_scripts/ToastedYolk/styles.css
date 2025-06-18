@@ -58,7 +58,7 @@ table.tableMain {
 
 /* === REMOVE ALL UNDERLINES === */
 #menu li a,
-#menu li a *,
+#menu li a i,
 #menu li a:before,
 #menu li a:after {
   text-decoration: none !important;
@@ -91,20 +91,16 @@ table.tableMain {
 
 /* === BADGE SHOWN BESIDE ICON (NOT OVERLAPPING) === */
 .icon-wrap .badge {
-  all: unset !important;
-  display: inline-block !important;
-  background-color: #ff3b3b !important;
-  color: white !important;
-  font-size: 11px !important;
-  font-weight: bold !important;
-  border-radius: 12px !important;
-  padding: 2px 6px !important;
-  line-height: 1 !important;
-  min-width: 16px !important;
-  text-align: center !important;
-  z-index: 999 !important;
-  visibility: visible !important;
-  opacity: 1 !important;
+  display: inline-block;
+  background-color: #ff3b3b;
+  color: white;
+  font-size: 11px;
+  font-weight: bold;
+  border-radius: 12px;
+  padding: 2px 6px;
+  line-height: 1;
+  min-width: 16px;
+  text-align: center;
 }
 
 /* === LAST ITEM FIX === */
