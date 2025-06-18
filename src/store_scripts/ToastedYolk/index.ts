@@ -93,13 +93,19 @@ export function moveSearchBarToHeader(): void {
     return;
   }
 
-  // Optional styling tweaks
-  searchContainer.style.margin = "0 auto";
-  searchContainer.style.padding = "8px 0";
-  searchContainer.style.maxWidth = "600px";
-  searchContainer.style.justifyContent = "center";
+  // Create wrapper to center the search bar
+  const searchWrapper = document.createElement("div");
+  searchWrapper.id = "headerSearchWrapper";
+  searchWrapper.style.display = "flex";
+  searchWrapper.style.justifyContent = "center";
+  searchWrapper.style.width = "100%";
+  searchWrapper.style.marginTop = "12px";
 
-  headWrapper.insertBefore(searchContainer, logoLinks.nextSibling);
+  // Move the search bar into the wrapper
+  searchWrapper.appendChild(searchContainer);
+
+  // Insert after logoLinks
+  headWrapper.insertBefore(searchWrapper, logoLinks.nextSibling);
 }
 
 // ✅ Add this at the bottom of index.ts
