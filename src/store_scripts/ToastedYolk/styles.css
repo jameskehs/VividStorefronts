@@ -116,7 +116,7 @@ table.tableMain {
   justify-content: center;
   align-items: center;
   margin-top: 24px;
-  min-width: 1250px;
+  min-width: 300px;
 }
 #home-search-input {
   box-sizing: border-box;
