@@ -82,3 +82,27 @@ function convertMenuTextToIcons(): void {
 }
 
 convertMenuTextToIcons();
+
+export function moveSearchBarToHeader(): void {
+  const headWrapper = document.getElementById("headWrapper");
+  const logoLinks = document.getElementById("logoLinks");
+  const searchContainer = document.getElementById("home-search-container");
+
+  if (!headWrapper || !logoLinks || !searchContainer) {
+    console.warn("Required elements not found to move search bar.");
+    return;
+  }
+
+  // Optional styling tweaks
+  searchContainer.style.margin = "0 auto";
+  searchContainer.style.padding = "8px 0";
+  searchContainer.style.maxWidth = "600px";
+  searchContainer.style.justifyContent = "center";
+
+  headWrapper.insertBefore(searchContainer, logoLinks.nextSibling);
+}
+
+// ✅ Add this at the bottom of index.ts
+document.addEventListener("DOMContentLoaded", () => {
+  moveSearchBarToHeader();
+});
