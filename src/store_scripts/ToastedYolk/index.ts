@@ -83,53 +83,26 @@ function convertMenuTextToIcons(): void {
 
 convertMenuTextToIcons();
 
-export function moveSearchBarNextToLogo(): void {
+export function moveSearchBarToHeader(): void {
   const logoLinks = document.getElementById("logoLinks");
   const searchContainer = document.getElementById("home-search-container");
 
   if (!logoLinks || !searchContainer) {
-    console.warn("Required elements not found to move search bar.");
+    console.warn("Could not find required elements to move the search bar.");
     return;
   }
 
-  // Move the search bar after the logo table
-  const table = logoLinks.querySelector("table");
-  if (table) {
-    table.insertAdjacentElement("afterend", searchContainer);
-  }
-
-  // Flex layout
-  logoLinks.style.display = "flex";
-  logoLinks.style.alignItems = "center";
-  logoLinks.style.justifyContent = "space-between";
-
-  // Optional styling
+  // Set up styling on the container
+  searchContainer.style.display = "flex";
+  searchContainer.style.alignItems = "center";
+  searchContainer.style.justifyContent = "center";
   searchContainer.style.marginLeft = "40px";
   searchContainer.style.flexGrow = "1";
-  searchContainer.style.display = "flex";
-  searchContainer.style.justifyContent = "center";
 
-  // ✅ Rebind the search button and enter key
-  const input = document.getElementById(
-    "home-search-input"
-  ) as HTMLInputElement;
-  const btn = document.getElementById("home-search-btn");
-
-  function searchProducts() {
-    const query = input?.value.trim();
-    if (query) {
-      window.location.href = `/catalog/?search=${encodeURIComponent(
-        query
-      )}&g=0&y=0&p=0&m=g`;
-    }
-  }
-
-  btn?.addEventListener("click", searchProducts);
-  input?.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") searchProducts();
-  });
+  // Insert into the logoLinks container
+  logoLinks.insertBefore(searchContainer, logoLinks.children[1]); // insert after logo table
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  moveSearchBarNextToLogo();
+  moveSearchBarToHeader();
 });

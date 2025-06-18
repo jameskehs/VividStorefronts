@@ -1,11 +1,3 @@
-#headWrapper {
-  z-index: 1 !important;
-}
-
-#logoLinks {
-  z-index: 1 !important;
-}
-
 .tableSiteBanner img {
   height: 120px;
 }
@@ -125,35 +117,40 @@ table.tableMain {
   background: transparent;
 }
 
+#logoLinks {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
 #home-search-container {
   display: flex;
-  justify-content: center;
   align-items: center;
-  min-width: 300px;
-  max-width: 600px;
-  width: 400px;
-  padding: 8px;
-  z-index: 3 !important;
+  justify-content: center;
+  margin-left: 40px;
 }
 
 #home-search-input {
   height: 42px;
-  padding: 6px;
-  font-size: 16px;
-  width: 60%;
-  margin-right: 10px;
+  padding: 4px;
+  font-size: 18px;
+  width: 300px;
+  margin-right: 12px;
   border: 1px solid #bbb;
 }
 
 #home-search-btn {
   height: 42px;
   width: 42px;
-  background: white;
-  border: 1px solid #ccc;
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   cursor: pointer;
+  border: 1px solid #bbb;
+  background-color: #fff;
 }
 
 #home-search-btn svg {
