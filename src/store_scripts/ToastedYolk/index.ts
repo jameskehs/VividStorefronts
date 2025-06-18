@@ -51,12 +51,18 @@ function convertMenuTextToIcons(): void {
     menuItems.forEach((item) => {
       const link = item.querySelector("a");
       if (link) {
-        const text = link.textContent?.trim().toUpperCase();
-        const iconClass = iconMap[text ?? ""];
+        const rawText = link.textContent?.trim().toUpperCase();
+
+        // Find the icon that matches the beginning of the label
+        const matchedKey = Object.keys(iconMap).find((key) =>
+          rawText?.startsWith(key)
+        );
+        const iconClass = matchedKey ? iconMap[matchedKey] : "";
 
         if (iconClass) {
-          link.innerHTML = `<i class="fa ${iconClass}"></i>`;
-          link.setAttribute("title", text || "");
+          const countMatch = rawText?.replace(matchedKey!, "").trim(); // like (1)
+          link.innerHTML = `<i class="fa ${iconClass}"></i> <span>${countMatch}</span>`;
+          link.setAttribute("title", rawText || "");
         }
       }
     });
