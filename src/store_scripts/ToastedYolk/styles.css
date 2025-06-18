@@ -109,3 +109,6 @@ table.tableMain {
   padding: 10px 0 0 15px;
   background: transparent;
 }
+.icon-wrap i.fa-shopping-cart {
+  top: 1px;
+}
