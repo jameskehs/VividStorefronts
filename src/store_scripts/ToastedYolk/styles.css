@@ -117,20 +117,18 @@ table.tableMain {
   background: transparent;
 }
 
-#logoLinks > div {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 24px;
+/* Inside #logoLinks layout */
+#logoLinks .logo-layout {
+  max-width: 1600px;
+  margin: 0 auto;
 }
 
 #home-search-container {
   display: flex;
-  justify-content: center;
   align-items: center;
-  flex: 1;
+  justify-content: center;
   max-width: 500px;
+  width: 100%;
 }
 
 #home-search-input {

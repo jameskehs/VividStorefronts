@@ -83,34 +83,45 @@ function convertMenuTextToIcons(): void {
 
 convertMenuTextToIcons();
 
-function moveSearchBarToHeader(): void {
+export function moveSearchBarToHeader(): void {
   const logoLinks = document.getElementById("logoLinks");
   const searchContainer = document.getElementById("home-search-container");
   const tableLogo = logoLinks?.querySelector("table");
   const navWrapper = document.getElementById("navWrapper");
 
-  if (!logoLinks || !searchContainer || !tableLogo || !navWrapper) {
-    console.warn("One or more required elements are missing");
+  if (!logoLinks || !tableLogo || !searchContainer || !navWrapper) {
+    console.warn("Missing elements to restructure header");
     return;
   }
 
-  // Avoid double appending
-  if (searchContainer.parentElement === logoLinks) return;
+  // Only insert once
+  if (logoLinks.querySelector(".logo-layout")) return;
 
-  // Create wrapper div for layout (logo | search | nav)
-  const wrapper = document.createElement("div");
-  wrapper.style.display = "flex";
-  wrapper.style.alignItems = "center";
-  wrapper.style.justifyContent = "space-between";
-  wrapper.style.width = "100%";
-  wrapper.style.gap = "24px";
+  // Create a wrapper for horizontal alignment
+  const layoutRow = document.createElement("div");
+  layoutRow.className = "logo-layout";
+  layoutRow.style.display = "flex";
+  layoutRow.style.alignItems = "center";
+  layoutRow.style.justifyContent = "space-between";
+  layoutRow.style.width = "100%";
+  layoutRow.style.gap = "32px";
 
-  wrapper.appendChild(tableLogo);
-  wrapper.appendChild(searchContainer);
-  wrapper.appendChild(navWrapper);
+  // Wrap logo in a container for consistent spacing
+  const logoWrapper = document.createElement("div");
+  logoWrapper.appendChild(tableLogo);
 
-  logoLinks.innerHTML = ""; // Clean out old content
-  logoLinks.appendChild(wrapper);
+  const searchWrapper = document.createElement("div");
+  searchWrapper.style.flex = "1";
+  searchWrapper.style.display = "flex";
+  searchWrapper.style.justifyContent = "center";
+  searchWrapper.appendChild(searchContainer);
+
+  layoutRow.appendChild(logoWrapper);
+  layoutRow.appendChild(searchWrapper);
+  layoutRow.appendChild(navWrapper);
+
+  logoLinks.innerHTML = "";
+  logoLinks.appendChild(layoutRow);
 }
 
 function bindSearchEvents(): void {
