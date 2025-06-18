@@ -80,37 +80,42 @@ table.tableMain {
   background: transparent;
 }
 
-/* === ICON WRAPPER FOR FA ICON + BADGE === */
+/* === ICON WRAPPER FOR FA ICON + BADGE (CLEANED) === */
 #menu li a .icon-wrap {
-  position: relative;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  width: 24px;
-  height: 24px;
+  position: relative !important;
+  display: inline-block !important;
+  width: 1.5em;
+  height: 1.5em;
+  line-height: 1;
+  vertical-align: middle;
 }
 
-/* === FA ICON STYLING === */
+/* === FA ICON STYLING (TARGET ONLY CART IF YOU WANT) === */
 #menu li a .icon-wrap i {
-  color: #67a042;
   font-size: 24px;
+  color: #67a042;
+  vertical-align: middle;
   line-height: 1;
-  display: inline-block;
 }
 
-/* === BADGE STYLING === */
+/* === BADGE STYLING (FINAL + FIXED) === */
 #menu li a .icon-wrap .badge {
-  position: absolute;
-  top: -6px;
-  right: -6px;
-  background-color: #ff3b3b;
-  color: white;
-  font-size: 10px;
-  font-weight: bold;
-  border-radius: 50%;
-  padding: 2px 5px;
-  line-height: 1;
-  min-width: 16px;
-  text-align: center;
-  z-index: 10;
+  position: absolute !important;
+  top: -8px !important;
+  right: -10px !important;
+  background-color: #ff3b3b !important;
+  color: #fff !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  border-radius: 50% !important;
+  padding: 2px 6px !important;
+  line-height: 1 !important;
+  min-width: 16px !important;
+  height: 16px !important;
+  text-align: center !important;
+  z-index: 999 !important;
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  box-shadow: 0 0 0 1px #fff;
 }
