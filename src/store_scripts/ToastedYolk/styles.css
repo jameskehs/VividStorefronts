@@ -26,6 +26,7 @@ table.tableMain {
 #menu li a {
   position: relative;
   display: inline-block;
+  color: #67a042;
 }
 
 #menu li a .badge {
