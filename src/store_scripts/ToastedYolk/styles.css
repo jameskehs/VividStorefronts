@@ -23,3 +23,6 @@ table.tableMain {
   width: 100%;
   background-color: var(--navbar-bg);
 }
+#menu li a i {
+  color: #67a042;
+}
