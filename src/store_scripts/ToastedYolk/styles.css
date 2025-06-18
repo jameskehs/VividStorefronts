@@ -1,9 +1,9 @@
 #headWrapper {
-  z-index: 1;
+  z-index: 1 !important;
 }
 
 #logoLinks {
-  z-index: 2;
+  z-index: 1 !important;
 }
 
 .tableSiteBanner img {
@@ -124,6 +124,7 @@ table.tableMain {
   padding: 10px 0 0 15px;
   background: transparent;
 }
+
 #home-search-container {
   display: flex;
   justify-content: center;
@@ -132,7 +133,7 @@ table.tableMain {
   max-width: 600px;
   width: 400px;
   padding: 8px;
-  z-index: 3;
+  z-index: 3 !important;
 }
 
 #home-search-input {
