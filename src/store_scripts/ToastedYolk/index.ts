@@ -69,27 +69,27 @@ function convertMenuTextToIcons(): void {
 }
 
 // Move search bar to top header
-export function moveSearchBarToHeader(): void {
-  const headWrapper = document.getElementById("headWrapper");
+export function moveSearchBarOverLogo(): void {
   const logoLinks = document.getElementById("logoLinks");
   const searchContainer = document.getElementById("home-search-container");
 
-  if (!headWrapper || !logoLinks || !searchContainer) {
-    console.warn("Required elements not found to move search bar.");
+  if (!logoLinks || !searchContainer) {
+    console.warn("Required elements not found to layer search bar.");
     return;
   }
 
-  const wrapper = document.createElement("div");
-  wrapper.style.display = "flex";
-  wrapper.style.justifyContent = "center";
-  wrapper.style.marginTop = "12px";
-  wrapper.appendChild(searchContainer);
+  // Ensure parent is positioned
+  logoLinks.style.position = "relative";
 
-  headWrapper.insertBefore(wrapper, logoLinks.nextSibling);
+  // Style the search container to overlay
+  searchContainer.style.position = "absolute";
+  searchContainer.style.top = "0"; // adjust as needed
+  searchContainer.style.left = "50%";
+  searchContainer.style.transform = "translateX(-50%)";
+  searchContainer.style.zIndex = "9999";
 }
 
 // Run after full page load
-window.onload = () => {
-  convertMenuTextToIcons();
-  moveSearchBarToHeader();
-};
+document.addEventListener("DOMContentLoaded", () => {
+  moveSearchBarOverLogo();
+});
