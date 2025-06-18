@@ -25,17 +25,15 @@ table.tableMain {
 }
 /* === MENU CONTAINER === */
 #menu {
-  width: 100%;
-  background: transparent;
-  position: relative;
+  display: flex;
+  justify-content: center; /* or space-between */
+  align-items: center;
 }
 
 #menu li {
-  float: left;
-  text-align: center;
-  margin: 0 auto;
-  position: relative;
   display: inline-block;
+  float: none; /* REMOVE float */
+  text-align: center;
 }
 
 /* === LINK STYLING === */
