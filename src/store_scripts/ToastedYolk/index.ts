@@ -85,24 +85,53 @@ convertMenuTextToIcons();
 
 export function moveSearchBarToHeader(): void {
   const logoLinks = document.getElementById("logoLinks");
+  const logoTable = logoLinks?.querySelector("table");
+  const navWrapper = document.getElementById("navWrapper");
   const searchContainer = document.getElementById("home-search-container");
 
-  if (!logoLinks || !searchContainer) {
-    console.warn("Could not find required elements to move the search bar.");
+  if (!logoLinks || !logoTable || !navWrapper || !searchContainer) {
+    console.warn("One or more required elements not found");
     return;
   }
 
-  // Set up styling on the container
-  searchContainer.style.display = "flex";
-  searchContainer.style.alignItems = "center";
-  searchContainer.style.justifyContent = "center";
-  searchContainer.style.marginLeft = "40px";
-  searchContainer.style.flexGrow = "1";
-
-  // Insert into the logoLinks container
-  logoLinks.insertBefore(searchContainer, logoLinks.children[1]); // insert after logo table
+  // Clear current logoLinks children and reappend in correct order
+  logoLinks.innerHTML = "";
+  logoLinks.appendChild(logoTable);
+  logoLinks.appendChild(searchContainer);
+  logoLinks.appendChild(navWrapper);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
   moveSearchBarToHeader();
+});
+function bindSearchEvents(): void {
+  const input = document.getElementById(
+    "home-search-input"
+  ) as HTMLInputElement;
+  const button = document.getElementById("home-search-btn");
+
+  function searchProducts() {
+    const searchValue = input?.value.trim();
+    if (searchValue) {
+      window.location.href = `${
+        window.location.origin
+      }/catalog/?search=${encodeURIComponent(searchValue)}&g=0&y=0&p=0&m=g`;
+    }
+  }
+
+  if (button) {
+    button.addEventListener("click", searchProducts);
+  }
+
+  if (input) {
+    input.addEventListener("keydown", (e: KeyboardEvent) => {
+      if (e.key === "Enter") {
+        searchProducts();
+      }
+    });
+  }
+}
+document.addEventListener("DOMContentLoaded", () => {
+  moveSearchBarToHeader();
+  bindSearchEvents();
 });

@@ -121,17 +121,15 @@ table.tableMain {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  max-width: 1600px;
-  margin: 0 auto;
-  padding: 0 20px;
+  gap: 40px;
 }
 
 #home-search-container {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-left: 40px;
-  width: 100%;
+  flex: 1;
+  max-width: 500px;
 }
 
 #home-search-input {
