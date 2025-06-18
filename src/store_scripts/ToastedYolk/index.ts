@@ -83,55 +83,31 @@ function convertMenuTextToIcons(): void {
 
 convertMenuTextToIcons();
 
-export function moveSearchBarAboveLogo(): void {
-  const headWrapper = document.getElementById("headWrapper");
+export function moveSearchBarNextToLogo(): void {
   const logoLinks = document.getElementById("logoLinks");
   const searchContainer = document.getElementById("home-search-container");
 
-  if (!headWrapper || !logoLinks || !searchContainer) {
-    console.warn("Required elements not found.");
+  if (!logoLinks || !searchContainer) {
+    console.warn("Required elements not found to move search bar.");
     return;
   }
 
-  // Create a wrapper div for centering
-  const wrapper = document.createElement("div");
-  wrapper.id = "headerSearchWrapper";
-  wrapper.style.display = "flex";
-  wrapper.style.justifyContent = "center";
-  wrapper.style.width = "100%";
-  wrapper.style.marginBottom = "12px";
+  // Style logoLinks as a flex container
+  logoLinks.style.display = "flex";
+  logoLinks.style.alignItems = "center";
+  logoLinks.style.justifyContent = "space-between"; // or "center" if only logo + search
 
-  // Add search container into wrapper
-  wrapper.appendChild(searchContainer);
+  // Insert search bar right after the logo (table)
+  const table = logoLinks.querySelector("table");
+  if (table) {
+    table.insertAdjacentElement("afterend", searchContainer);
+  }
 
-  // Apply basic styling to search container
+  // Style the search bar for spacing
+  searchContainer.style.marginLeft = "40px";
+  searchContainer.style.flexGrow = "1";
   searchContainer.style.display = "flex";
-  searchContainer.style.alignItems = "center";
-  searchContainer.style.gap = "8px";
-
-  // Optional: Style the input and button
-  const input = document.getElementById(
-    "home-search-input"
-  ) as HTMLInputElement;
-  const button = document.getElementById(
-    "home-search-btn"
-  ) as HTMLButtonElement;
-  if (input) {
-    input.style.padding = "8px";
-    input.style.fontSize = "16px";
-    input.style.width = "280px";
-  }
-  if (button) {
-    button.style.padding = "8px 12px";
-    button.style.cursor = "pointer";
-  }
-
-  // Insert above logoLinks
-  headWrapper.insertBefore(wrapper, logoLinks);
+  searchContainer.style.justifyContent = "center";
 }
 
-// Run after full page load
-window.onload = () => {
-  convertMenuTextToIcons();
-  moveSearchBarAboveLogo();
-};
+document.addEventListener("DOMContentLoaded", moveSearchBarNextToLogo);
