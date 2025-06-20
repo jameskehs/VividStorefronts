@@ -122,35 +122,3 @@ table.tableMain {
   max-width: 1600px;
   margin: 0 auto;
 }
-
-#home-search-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-}
-
-#home-search-input {
-  height: 42px;
-  padding: 4px;
-  font-size: 18px;
-  width: 300px;
-  margin-right: 12px;
-  border: 1px solid #bbb;
-}
-
-#home-search-btn {
-  height: 42px;
-  width: 42px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  border: 1px solid #bbb;
-  background-color: #fff;
-}
-
-#home-search-btn svg {
-  height: 20px;
-  width: 20px;
-}
