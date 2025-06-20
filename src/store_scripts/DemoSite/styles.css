@@ -1,3 +1,156 @@
 #quoteNameBox {
   display: none;
 }
+
+.tableSiteBanner img {
+  height: 80px;
+}
+
+#loginWrapper {
+  width: 100%;
+  background-color: var(--loginbar-bg);
+  padding: 0px 32px;
+  box-shadow: 0px 0px 0px rgb(255, 255, 255) !important;
+}
+
+table.tableMain {
+  top: auto !important; /* Ensure no top value is applied */
+  max-width: 1600px;
+  margin: auto !important;
+}
+
+#headWrapper {
+  padding-top: 12px;
+  padding-right: 32px;
+  padding-bottom: 12px;
+  padding-left: 32px;
+  width: 100%;
+  background-color: var(--navbar-bg);
+}
+
+/* === MENU CONTAINER === */
+#menu {
+  display: flex;
+  justify-content: center; /* or space-between */
+  align-items: center;
+}
+
+#menu li {
+  display: inline-block;
+  float: none; /* REMOVE float */
+  text-align: center;
+}
+
+/* === LINK STYLING === */
+#menu li a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 52px;
+  padding: 10px 14px;
+  color: #444;
+  text-decoration: none;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+#menu li a .icon-wrap i {
+  color: #67a042 !important;
+  font-size: 24px;
+  line-height: 1;
+  vertical-align: middle;
+}
+
+/* === HOVER === */
+#menu li a:hover {
+  transform: scale(1.15);
+  color: #000;
+}
+
+/* === REMOVE ALL UNDERLINES === */
+#menu li a,
+#menu li a i,
+#menu li a:before,
+#menu li a:after {
+  text-decoration: none !important;
+  border: none !important;
+  background: transparent !important;
+  outline: none !important;
+}
+
+/* === REMOVE SELECTED UNDERLINE === */
+#menu li.menuG a:before {
+  display: none !important;
+}
+
+/* === ICON WRAPPER === */
+.icon-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  vertical-align: middle;
+}
+
+/* === CART ICON FIXED ALIGNMENT === */
+.icon-wrap i.fa-shopping-cart {
+  font-size: 24px;
+  line-height: 1;
+  position: relative;
+  top: -4px; /* fine-tune as needed */
+}
+
+/* === BADGE SHOWN BESIDE ICON (NOT OVERLAPPING) === */
+.icon-wrap .badge {
+  display: inline-block;
+  background-color: #ff3b3b;
+  color: white;
+  font-size: 11px;
+  font-weight: bold;
+  border-radius: 12px;
+  padding: 2px 6px;
+  line-height: 1;
+  min-width: 16px;
+  text-align: center;
+}
+
+/* === LAST ITEM FIX === */
+#menu li:last-child a {
+  padding: 10px 0 0 15px;
+  background: transparent;
+}
+
+/* Inside #logoLinks layout */
+#logoLinks .logo-layout {
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+#home-search-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+#home-search-input {
+  height: 42px;
+  padding: 4px;
+  font-size: 18px;
+  width: 300px;
+  margin-right: 12px;
+  border: 1px solid #bbb;
+}
+
+#home-search-btn {
+  height: 42px;
+  width: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 1px solid #bbb;
+  background-color: #fff;
+}
+
+#home-search-btn svg {
+  height: 20px;
+  width: 20px;
+}
