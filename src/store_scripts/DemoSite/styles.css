@@ -165,7 +165,7 @@ table.tableMain {
 #pricing-table {
   margin: 0 auto;
   border-collapse: collapse;
-  width: auto;
+  width: 100%;
 }
 #pricing-table th {
   background-color: transparent !important;
