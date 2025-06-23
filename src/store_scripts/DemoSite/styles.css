@@ -160,7 +160,7 @@ table.tableMain {
 
 #pricing-table th,
 #pricing-table td {
-  padding: 4px;
+  padding: 8px;
 }
 #pricing-table {
   margin: 0 auto;
@@ -170,4 +170,6 @@ table.tableMain {
 #pricing-table th {
   background-color: transparent !important;
   color: black;
+  font-weight: bold;
+  text-transform: uppercase;
 }
