@@ -150,3 +150,24 @@ table.tableMain {
   height: 20px;
   width: 20px;
 }
+
+#pricing-table,
+#pricing-table tr,
+#pricing-table th,
+#pricing-table td {
+  border-top: 1px solid #70707024;
+}
+
+#pricing-table th,
+#pricing-table td {
+  padding: 4px;
+}
+#pricing-table {
+  margin: 0 auto;
+  border-collapse: collapse;
+  width: auto;
+}
+#pricing-table th {
+  background-color: transparent !important;
+  color: black;
+}
