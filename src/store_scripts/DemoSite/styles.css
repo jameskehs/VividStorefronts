@@ -192,84 +192,53 @@ table.tableMain {
 #sideBarNav {
   width: 300px !important;
 }
-/* Make the entire table behave like a box */
-.tablesorter {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-/* Remove table borders/spacing entirely */
-.tablesorter,
-.tablesorter tr,
-.tablesorter td {
-  border: none !important;
-  padding: 0;
-}
-
-/* The image row */
+/* Make the productImageRow behave like a flex container with image left / fields right */
 #productImageRow {
   display: flex;
+  gap: 24px;
   align-items: flex-start;
-  gap: 20px;
   padding: 16px;
-  flex-wrap: wrap;
+  background-color: #fff;
   box-sizing: border-box;
+  flex-wrap: wrap;
 }
 
-/* Image cell */
+/* Hide the original label column in the template if it remained */
 #productImageLabel {
-  display: none; /* remove the left label cell */
-}
-
-#productImageCol {
-  flex: 0 0 180px;
-  text-align: center;
-}
-
-#productImageCol img {
-  max-width: 100%;
-  height: auto;
-}
-
-/* Right side with all fields */
-#productImageCol > table {
-  width: 100%;
-}
-
-#productImageCol > table tr {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 12px;
-}
-
-#productImageCol > table td {
-  padding: 4px 0;
-}
-
-/* Hide label columns on other rows for cleaner stacking */
-#productRow > td:first-child,
-#quantityRow > td:first-child,
-#paperRow > td:first-child {
   display: none;
 }
 
-/* Style the right side fields stacked */
-#productRow td,
-#quantityRow td,
-#paperRow td {
-  display: block;
+/* The left cell with the image */
+#productImageCol {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
   width: 100%;
-  padding: 8px 16px;
-  box-sizing: border-box;
 }
 
-/* Align attached file count and button */
-.buttonContainer {
-  margin-top: 12px;
+/* The actual image itself */
+#productImageCol img {
+  max-width: 180px;
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Our new stacked fields container on the right */
+.cart-fields-stack {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  gap: 12px;
+  flex: 1;
+  min-width: 220px;
+}
+
+/* Style the button container (1 file attached + button) nicely */
+.buttonContainer {
+  display: flex;
+  flex-direction: column;
   gap: 8px;
-  padding: 8px 16px;
-  box-sizing: border-box;
+  margin-top: 12px;
+  align-items: flex-start;
 }
