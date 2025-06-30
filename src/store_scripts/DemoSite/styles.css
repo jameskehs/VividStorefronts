@@ -192,3 +192,84 @@ table.tableMain {
 #sideBarNav {
   width: 300px !important;
 }
+/* Make the entire table behave like a box */
+.tablesorter {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* Remove table borders/spacing entirely */
+.tablesorter,
+.tablesorter tr,
+.tablesorter td {
+  border: none !important;
+  padding: 0;
+}
+
+/* The image row */
+#productImageRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 16px;
+  flex-wrap: wrap;
+  box-sizing: border-box;
+}
+
+/* Image cell */
+#productImageLabel {
+  display: none; /* remove the left label cell */
+}
+
+#productImageCol {
+  flex: 0 0 180px;
+  text-align: center;
+}
+
+#productImageCol img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Right side with all fields */
+#productImageCol > table {
+  width: 100%;
+}
+
+#productImageCol > table tr {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 12px;
+}
+
+#productImageCol > table td {
+  padding: 4px 0;
+}
+
+/* Hide label columns on other rows for cleaner stacking */
+#productRow > td:first-child,
+#quantityRow > td:first-child,
+#paperRow > td:first-child {
+  display: none;
+}
+
+/* Style the right side fields stacked */
+#productRow td,
+#quantityRow td,
+#paperRow td {
+  display: block;
+  width: 100%;
+  padding: 8px 16px;
+  box-sizing: border-box;
+}
+
+/* Align attached file count and button */
+.buttonContainer {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px 16px;
+  box-sizing: border-box;
+}
