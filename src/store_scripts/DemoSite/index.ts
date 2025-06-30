@@ -2,6 +2,7 @@ import { StorefrontPage } from "../../enums/StorefrontPage.enum";
 import { GLOBALVARS } from "../../index";
 import { applyPromoCode } from "../../shared/ApplyPromoCode";
 import { persistDiscountedTotals } from "../../shared/persistDiscountedTotals";
+import { restructureCartLayout } from "../../shared/restructureCartLayout";
 
 export function main() {
   console.log(GLOBALVARS.currentPage);
@@ -11,6 +12,9 @@ export function main() {
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CART) {
     // Optional: Add logic for Cart Page
+    document.addEventListener("DOMContentLoaded", () => {
+      restructureCartLayout();
+    });
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CATALOG) {
     // Optional: Add logic for Catalog Page
