@@ -12,9 +12,6 @@ export function main() {
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CART) {
     // Optional: Add logic for Cart Page
-    document.addEventListener("DOMContentLoaded", () => {
-      restructureCartLayout();
-    });
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CATALOG) {
     // Optional: Add logic for Catalog Page
