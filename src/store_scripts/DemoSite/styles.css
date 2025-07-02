@@ -6,17 +6,6 @@ img.finishedGoodThmb {
   border: 1px gray solid;
 }
 
-.prodCell .left a {
-  background-color: #fff !important;
-  display: block;
-  /* border-radius: 8px; */
-  transition: all 0.2s ease;
-  height: auto;
-  /* max-height: 250px; */
-  padding-top: 8px;
-  padding-bottom: 4px;
-}
-
 #loginWrapper {
   width: 100%;
   background-color: var(--loginbar-bg);
