@@ -2,6 +2,10 @@
   height: 120px;
 }
 
+div.spriteLayer {
+  border: 1px solid;
+}
+
 #loginWrapper {
   width: 100%;
   background-color: var(--loginbar-bg);
