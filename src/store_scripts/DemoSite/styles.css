@@ -2,10 +2,6 @@
   height: 120px;
 }
 
-img.finishedGoodThmb {
-  border: 1px gray solid;
-}
-
 #loginWrapper {
   width: 100%;
   background-color: var(--loginbar-bg);
