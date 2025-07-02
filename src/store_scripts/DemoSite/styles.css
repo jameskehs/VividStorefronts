@@ -18,6 +18,13 @@
   margin: 4px;
 }
 
+img.finishedGoodThmb {
+  max-height: 250px;
+  height: auto;
+  /*padding: 4px;*/
+  border: 1px #444 solid;
+}
+
 .prodCell .left a {
   background-color: transparent !important;
   display: block;
