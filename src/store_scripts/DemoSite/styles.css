@@ -21,7 +21,7 @@
 img.finishedGoodThmb {
   max-height: 250px;
   height: auto;
-  /*padding: 4px;*/
+  padding: 0px;
   border: 1px solid lightgray;
 }
 
@@ -32,11 +32,11 @@ div.anchorCatalog {
 
 ul.TreeControl li#active {
   border-bottom: none;
-  /*border-left-color: var(--secondary-color);*/
+  border-left-color: none;
 }
 
 ul.dropdown-content {
-  /*background-color: #ddd;*/
+  background-color: #fff;
   margin-right: 5px !important;
 }
 
@@ -242,4 +242,6 @@ table.tableMain {
 
 #sideBarNav {
   width: 300px !important;
+  border-radius: 8px;
+  padding: 8px;
 }
