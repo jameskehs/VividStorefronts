@@ -32,7 +32,7 @@ div.anchorCatalog {
 
 ul.TreeControl li#active {
   border-bottom: none;
-  border-left-color: none;
+  border-left-color: transparent;
 }
 
 ul.dropdown-content {
@@ -244,4 +244,8 @@ table.tableMain {
   width: 300px !important;
   border-radius: 8px;
   padding: 8px;
+}
+
+table#catalogTblheader {
+  display: none;
 }
