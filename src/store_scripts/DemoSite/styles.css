@@ -250,3 +250,8 @@ table.tableMain {
 table#catalogTblheader {
   display: none;
 }
+
+#TCtable {
+  background: none;
+  padding: 8px;
+}
