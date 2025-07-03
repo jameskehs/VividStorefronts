@@ -25,6 +25,25 @@ img.finishedGoodThmb {
   border: 1px solid lightgray;
 }
 
+div.anchorCatalog {
+  background-color: var(--primary-color) !important;
+  display: none;
+}
+
+ul.TreeControl li#active {
+  border-bottom: none;
+  /*border-left-color: var(--secondary-color);*/
+}
+
+ul.dropdown-content {
+  /*background-color: #ddd;*/
+  margin-right: 5px !important;
+}
+
+ul.TreeControl {
+  background-color: #fff;
+}
+
 #mainContentSF {
   width: 100% !important;
   max-width: none;
