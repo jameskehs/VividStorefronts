@@ -244,14 +244,11 @@ table.tableMain {
 
 #sideBarNav {
   width: 300px !important;
-  background-color: none;
+  background-color: transparent;
+  border-radius: 8px;
+  padding: 10px;
 }
 
 table#catalogTblheader {
   display: none;
-}
-
-#TCtable {
-  background: #fff;
-  padding: 8px;
 }
