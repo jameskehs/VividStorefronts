@@ -42,6 +42,8 @@ ul.dropdown-content {
 
 ul.TreeControl {
   background-color: #fff;
+  border-radius: 8px;
+  padding: 8px;
 }
 
 #mainContentSF {
@@ -242,8 +244,7 @@ table.tableMain {
 
 #sideBarNav {
   width: 300px !important;
-  border-radius: 8px;
-  padding: 8px;
+  background-color: #fff;
 }
 
 table#catalogTblheader {
