@@ -244,7 +244,7 @@ table.tableMain {
 
 #sideBarNav {
   width: 300px !important;
-  background-color: #fff;
+  background-color: none;
 }
 
 table#catalogTblheader {
@@ -252,6 +252,6 @@ table#catalogTblheader {
 }
 
 #TCtable {
-  background: none;
+  background: #fff;
   padding: 8px;
 }
