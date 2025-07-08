@@ -3,46 +3,41 @@ import { GLOBALVARS } from "../../index";
 import { applyPromoCode } from "../../shared/ApplyPromoCode";
 import { persistDiscountedTotals } from "../../shared/persistDiscountedTotals";
 
-console.log("[EARLY] GLOBALVARS.currentPage =", GLOBALVARS.currentPage);
-
-document.addEventListener("DOMContentLoaded", () => {
-  console.log("[LATE] GLOBALVARS.currentPage =", GLOBALVARS.currentPage);
-});
-
 export function main() {
   console.log(GLOBALVARS.currentPage);
 
-  if (GLOBALVARS.currentPage === StorefrontPage.ADDTOCART) {
-    document.addEventListener("DOMContentLoaded", () => {
+  document.addEventListener("DOMContentLoaded", () => {
+    console.log("[LATE] GLOBALVARS.currentPage =", GLOBALVARS.currentPage);
+
+    if (GLOBALVARS.currentPage === StorefrontPage.ADDTOCART) {
+      console.log("[AddToCart] ✅ Add To Cart Page detected!");
+
       const img = document.getElementById(
         "productImage"
       ) as HTMLImageElement | null;
       const artID = (window as any).p?.artID;
 
       if (!img) {
-        console.warn("[AddToCart] No #productImage found.");
+        console.warn("[AddToCart] ❌ No #productImage found.");
         return;
       }
 
       if (!artID) {
-        console.warn("[AddToCart] No artID found on window.p.");
+        console.warn("[AddToCart] ❌ No artID found on window.p.");
         return;
       }
 
       const desiredURL = `gen/pdf_art_image.php?artID=${artID}`;
-
-      console.log(
-        `[AddToCart] Starting forced image override to ${desiredURL}`
-      );
+      console.log(`[AddToCart] Forcing image to ${desiredURL}`);
 
       // Immediately set once
       img.src = desiredURL;
       img.width = 400;
       img.style.height = "auto";
 
-      // Set up an interval to keep forcing it
+      // Set up an interval to keep overwriting legacy AJAX changes
       const interval = setInterval(() => {
-        if (img.src !== location.origin + "/" + desiredURL) {
+        if (!img.src.endsWith(desiredURL)) {
           console.log(
             `[AddToCart] Overwriting legacy AJAX src: ${img.src} -> ${desiredURL}`
           );
@@ -55,10 +50,10 @@ export function main() {
       // Stop after 10 seconds
       setTimeout(() => {
         clearInterval(interval);
-        console.log("[AddToCart] Stopped forcing productImage src.");
+        console.log("[AddToCart] ✅ Stopped forcing productImage src.");
       }, 10000);
-    });
-  }
+    }
+  });
 
   if (GLOBALVARS.currentPage === StorefrontPage.CART) {
     // Optional: Add logic for Cart Page
