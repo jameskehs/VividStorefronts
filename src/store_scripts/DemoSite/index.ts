@@ -23,46 +23,34 @@ export function main() {
         return;
       }
 
+      const desiredURL = `gen/pdf_art_image.php?artID=${artID}`;
+
       console.log(
-        `[AddToCart] Setting up MutationObserver for productImage (artID=${artID})`
+        `[AddToCart] Starting forced image override to ${desiredURL}`
       );
 
-      // Define our observer
-      const observer = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-          if (
-            mutation.type === "attributes" &&
-            mutation.attributeName === "src"
-          ) {
-            console.log(
-              `[AddToCart] Detected src change on #productImage: ${img.src}`
-            );
-
-            // Always force our high-res URL
-            const newURL = `gen/pdf_art_image.php?artID=${artID}`;
-            if (img.src !== newURL) {
-              console.log(
-                `[AddToCart] Replacing src with high-res URL: ${newURL}`
-              );
-              img.src = newURL;
-              img.width = 400;
-              img.style.height = "auto";
-            }
-          }
-        });
-      });
-
-      // Start observing
-      observer.observe(img, { attributes: true, attributeFilter: ["src"] });
-
-      // Set once initially as well
-      const initialURL = `gen/pdf_art_image.php?artID=${artID}`;
-      console.log(
-        `[AddToCart] Setting initial productImage src: ${initialURL}`
-      );
-      img.src = initialURL;
+      // Immediately set once
+      img.src = desiredURL;
       img.width = 400;
       img.style.height = "auto";
+
+      // Set up an interval to keep forcing it
+      const interval = setInterval(() => {
+        if (img.src !== location.origin + "/" + desiredURL) {
+          console.log(
+            `[AddToCart] Overwriting legacy AJAX src: ${img.src} -> ${desiredURL}`
+          );
+          img.src = desiredURL;
+          img.width = 400;
+          img.style.height = "auto";
+        }
+      }, 300);
+
+      // Stop after 10 seconds
+      setTimeout(() => {
+        clearInterval(interval);
+        console.log("[AddToCart] Stopped forcing productImage src.");
+      }, 10000);
     });
   }
 
