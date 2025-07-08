@@ -252,3 +252,7 @@ table.tableMain {
 table#catalogTblheader {
   display: none;
 }
+
+#buttonContainer {
+  display: none;
+}
