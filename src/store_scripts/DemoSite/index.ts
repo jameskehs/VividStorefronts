@@ -3,6 +3,8 @@ import { GLOBALVARS } from "../../index";
 import { applyPromoCode } from "../../shared/ApplyPromoCode";
 import { persistDiscountedTotals } from "../../shared/persistDiscountedTotals";
 
+console.log("[DEBUG] GLOBALVARS.currentPage =", GLOBALVARS.currentPage);
+
 export function main() {
   console.log(GLOBALVARS.currentPage);
 
