@@ -4,18 +4,36 @@ import { applyPromoCode } from "../../shared/ApplyPromoCode";
 import { persistDiscountedTotals } from "../../shared/persistDiscountedTotals";
 
 console.log(
-  "[DEBUG] GLOBALVARS.currentPage =",
+  "[DEBUG EARLY] GLOBALVARS.currentPage =",
   JSON.stringify(GLOBALVARS.currentPage)
 );
 
 export function main() {
-  console.log(GLOBALVARS.currentPage);
+  console.log(
+    "[DEBUG EARLY] main() GLOBALVARS.currentPage =",
+    GLOBALVARS.currentPage
+  );
 
   document.addEventListener("DOMContentLoaded", () => {
-    console.log("[LATE] GLOBALVARS.currentPage =", GLOBALVARS.currentPage);
+    console.log(
+      "[DEBUG LATE] GLOBALVARS.currentPage =",
+      JSON.stringify(GLOBALVARS.currentPage)
+    );
+    console.log(
+      "[DEBUG LATE] window.location.pathname =",
+      window.location.pathname
+    );
 
-    if (GLOBALVARS.currentPage === StorefrontPage.ADDTOCART) {
-      console.log("[AddToCart] ✅ Add To Cart Page detected!");
+    // Robust page detection
+    const isAddToCartPage = () => {
+      const page = GLOBALVARS?.currentPage?.trim().toLowerCase() || "";
+      if (page.includes("add to cart")) return true;
+      if (window.location.pathname.includes("/cart/3-edit.php")) return true;
+      return false;
+    };
+
+    if (isAddToCartPage()) {
+      console.log("[AddToCart] ✅ Detected Add To Cart Page!");
 
       const img = document.getElementById(
         "productImage"
@@ -60,6 +78,7 @@ export function main() {
     }
   });
 
+  // Other page-specific logic
   if (GLOBALVARS.currentPage === StorefrontPage.CART) {
     // Optional: Add logic for Cart Page
   }
