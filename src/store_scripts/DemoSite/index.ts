@@ -14,7 +14,7 @@ export function main() {
     GLOBALVARS.currentPage
   );
 
-  document.addEventListener("DOMContentLoaded", () => {
+  function init() {
     console.log(
       "[DEBUG LATE] GLOBALVARS.currentPage =",
       JSON.stringify(GLOBALVARS.currentPage)
@@ -24,7 +24,7 @@ export function main() {
       window.location.pathname
     );
 
-    // Robust page detection
+    // Robust detection function
     const isAddToCartPage = () => {
       const page = GLOBALVARS?.currentPage?.trim().toLowerCase() || "";
       if (page.includes("add to cart")) return true;
@@ -76,7 +76,14 @@ export function main() {
         console.log("[AddToCart] ✅ Stopped forcing productImage src.");
       }, 10000);
     }
-  });
+  }
+
+  // Make sure our init runs in *all* cases
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
 
   // Other page-specific logic
   if (GLOBALVARS.currentPage === StorefrontPage.CART) {
