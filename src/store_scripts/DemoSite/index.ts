@@ -50,7 +50,7 @@ export function main() {
         return;
       }
 
-      const desiredURL = `gen/pdf_art_image.php?artID=${artID}`;
+      const desiredURL = `gen/pdf_art_image.php?zoomimage=1&artID=${artID}`;
       console.log(`[AddToCart] Forcing image to ${desiredURL}`);
 
       // Immediately set once
