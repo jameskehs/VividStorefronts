@@ -253,6 +253,6 @@ table#catalogTblheader {
   display: none;
 }
 
-#buttonContainer {
+.buttonContainer {
   display: none;
 }
