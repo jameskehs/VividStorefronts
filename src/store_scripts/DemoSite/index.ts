@@ -7,25 +7,62 @@ export function main() {
   console.log(GLOBALVARS.currentPage);
 
   if (GLOBALVARS.currentPage === StorefrontPage.ADDTOCART) {
-    // ✅ Add logic for Add to Cart Page - replace productImage with high-res
     document.addEventListener("DOMContentLoaded", () => {
       const img = document.getElementById(
         "productImage"
       ) as HTMLImageElement | null;
       const artID = (window as any).p?.artID;
 
-      if (img && artID) {
-        console.log(
-          `[AddToCart] Found artID=${artID}, updating productImage src...`
-        );
-        img.src = `gen/pdf_art_image.php?artID=${artID}`;
-        img.width = 400;
-        img.style.height = "auto";
-      } else {
-        console.warn(
-          "[AddToCart] Could not find productImage element or artID variable on this page."
-        );
+      if (!img) {
+        console.warn("[AddToCart] No #productImage found.");
+        return;
       }
+
+      if (!artID) {
+        console.warn("[AddToCart] No artID found on window.p.");
+        return;
+      }
+
+      console.log(
+        `[AddToCart] Setting up MutationObserver for productImage (artID=${artID})`
+      );
+
+      // Define our observer
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (
+            mutation.type === "attributes" &&
+            mutation.attributeName === "src"
+          ) {
+            console.log(
+              `[AddToCart] Detected src change on #productImage: ${img.src}`
+            );
+
+            // Always force our high-res URL
+            const newURL = `gen/pdf_art_image.php?artID=${artID}`;
+            if (img.src !== newURL) {
+              console.log(
+                `[AddToCart] Replacing src with high-res URL: ${newURL}`
+              );
+              img.src = newURL;
+              img.width = 400;
+              img.style.height = "auto";
+            }
+          }
+        });
+      });
+
+      // Start observing
+      observer.observe(img, { attributes: true, attributeFilter: ["src"] });
+
+      // Set once initially as well
+      const initialURL = `gen/pdf_art_image.php?artID=${artID}`;
+      console.log(
+        `[AddToCart] Setting initial productImage src: ${initialURL}`
+      );
+      img.src = initialURL;
+      img.width = 400;
+      img.style.height = "auto";
     });
   }
 
