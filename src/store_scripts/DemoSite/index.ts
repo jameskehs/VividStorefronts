@@ -25,18 +25,23 @@ export function main() {
       const uniqueNoCache = Date.now();
       const desiredURL = `${origin}/catalog/gen/pdf_art_image.php?artID=${artID}&nocache=${uniqueNoCache}`;
 
-      img.src = desiredURL;
-      img.width = 400;
-      img.style.height = "auto";
+      // Only replace if it's the old thumbnail
+      if (img.src.startsWith(`${origin}/.cache`)) {
+        img.src = desiredURL;
+        img.width = 400;
+        img.style.height = "auto";
+      }
 
+      // Watch for AJAX overwrites for a short time
       const interval = setInterval(() => {
-        if (img.src !== desiredURL) {
+        if (img.src.startsWith(`${origin}/.cache`)) {
           img.src = desiredURL;
           img.width = 400;
           img.style.height = "auto";
         }
       }, 300);
 
+      // Stop checking after 10 seconds
       setTimeout(() => {
         clearInterval(interval);
       }, 10000);
