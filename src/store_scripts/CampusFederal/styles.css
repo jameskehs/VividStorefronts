@@ -196,17 +196,17 @@ table.tableMain {
 }
 
 #home-search-input {
-  height: 42px;
+  height: 38px;
   padding: 4px;
-  font-size: 18px;
+  font-size: 16px;
   width: 500px;
   margin-right: 0px;
   border: 1px solid #bbb;
 }
 
 #home-search-btn {
-  height: 42px;
-  width: 42px;
+  height: 38px;
+  width: 38px;
   display: flex;
   align-items: center;
   justify-content: center;
