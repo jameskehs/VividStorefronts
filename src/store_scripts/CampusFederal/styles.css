@@ -23,7 +23,7 @@ img.finishedGoodThmb {
   max-height: 250px;
   height: auto;
   padding: 0px;
-  border: 1px solid lightgray;
+  border: 0px solid lightgray;
 }
 
 div.anchorCatalog {
