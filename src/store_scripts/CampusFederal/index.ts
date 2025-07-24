@@ -1,7 +1,5 @@
 import { StorefrontPage } from "../../enums/StorefrontPage.enum";
 import { GLOBALVARS } from "../../index";
-import { applyPromoCode } from "../../shared/ApplyPromoCode";
-import { persistDiscountedTotals } from "../../shared/persistDiscountedTotals";
 
 export function main() {
   function init() {
