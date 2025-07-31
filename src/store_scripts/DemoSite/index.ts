@@ -65,26 +65,55 @@ export function main() {
     applyPromoCode();
 
     const displayCcFeeMessage = () => {
-      const container =
-        document.querySelector("#checkout_box") || document.body;
+      if (document.getElementById("cc-fee-notice-modal")) return;
 
-      if (document.getElementById("cc-fee-notice")) return;
+      const modalOverlay = document.createElement("div");
+      modalOverlay.id = "cc-fee-notice-modal";
+      modalOverlay.style.position = "fixed";
+      modalOverlay.style.top = "0";
+      modalOverlay.style.left = "0";
+      modalOverlay.style.width = "100vw";
+      modalOverlay.style.height = "100vh";
+      modalOverlay.style.backgroundColor = "rgba(0, 0, 0, 0.4)";
+      modalOverlay.style.display = "flex";
+      modalOverlay.style.alignItems = "center";
+      modalOverlay.style.justifyContent = "center";
+      modalOverlay.style.zIndex = "9999";
 
-      const notice = document.createElement("div");
-      notice.id = "cc-fee-notice";
-      notice.textContent =
-        "⚠️ A credit card processing fee will be applied to your order total.";
-      notice.style.backgroundColor = "#fff3cd";
-      notice.style.border = "1px solid #ffeeba";
-      notice.style.color = "#856404";
-      notice.style.padding = "12px";
-      notice.style.margin = "20px 0";
-      notice.style.fontSize = "1rem";
-      notice.style.fontWeight = "bold";
-      notice.style.borderRadius = "5px";
-      notice.style.textAlign = "center";
+      const modalBox = document.createElement("div");
+      modalBox.style.backgroundColor = "#fff3cd";
+      modalBox.style.border = "1px solid #ffeeba";
+      modalBox.style.color = "#856404";
+      modalBox.style.padding = "24px";
+      modalBox.style.borderRadius = "8px";
+      modalBox.style.fontSize = "1rem";
+      modalBox.style.fontWeight = "bold";
+      modalBox.style.maxWidth = "400px";
+      modalBox.style.boxShadow = "0 0 20px rgba(0,0,0,0.2)";
+      modalBox.style.position = "relative";
+      modalBox.style.textAlign = "center";
 
-      container.insertBefore(notice, container.firstChild);
+      modalBox.innerHTML = `
+    <div style="margin-bottom: 1em;">⚠️ A credit card processing fee will be applied to your order total.</div>
+    <button id="cc-fee-close-btn" style="
+      background-color: #856404;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+    ">Close</button>
+  `;
+
+      modalOverlay.appendChild(modalBox);
+      document.body.appendChild(modalOverlay);
+
+      const closeBtn = modalBox.querySelector(
+        "#cc-fee-close-btn"
+      ) as HTMLButtonElement;
+      closeBtn.onclick = () => {
+        modalOverlay.remove();
+      };
     };
 
     const targetSelector = "#load_payment";
