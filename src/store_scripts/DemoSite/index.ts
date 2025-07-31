@@ -81,9 +81,9 @@ export function main() {
       modalOverlay.style.zIndex = "99999"; // boosted z-index
 
       const modalBox = document.createElement("div");
-      modalBox.style.backgroundColor = "#fff3cd";
-      modalBox.style.border = "1px solid #ffeeba";
-      modalBox.style.color = "#856404";
+      modalBox.style.backgroundColor = "#ffffff";
+      modalBox.style.border = "1px solid #ffffff";
+      modalBox.style.color = "#000000";
       modalBox.style.padding = "24px";
       modalBox.style.borderRadius = "8px";
       modalBox.style.fontSize = "1rem";
@@ -94,15 +94,15 @@ export function main() {
       modalBox.style.textAlign = "center";
 
       modalBox.innerHTML = `
-      <div style="margin-bottom: 1em;">⚠️ A credit card processing fee will be applied to your order total.</div>
+      <div style="margin: 1em;">⚠️ A credit card processing fee will be applied to your order total.</div>
       <button id="cc-fee-close-btn" style="
-        background-color: #856404;
+        background-color: #aaaaaa;
         color: white;
         border: none;
         padding: 8px 16px;
         border-radius: 4px;
         cursor: pointer;
-      ">Close</button>
+      ">Accept</button>
     `;
 
       modalOverlay.appendChild(modalBox);
