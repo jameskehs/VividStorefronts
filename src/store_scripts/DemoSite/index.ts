@@ -61,13 +61,11 @@ export function main() {
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTPAYMENT) {
     applyPromoCode();
 
-    // Display credit card fee notification
     const displayCcFeeMessage = () => {
       const container =
         document.querySelector("#checkout_box") || document.body;
 
-      const existingNotice = document.getElementById("cc-fee-notice");
-      if (existingNotice) return;
+      if (document.getElementById("cc-fee-notice")) return;
 
       const notice = document.createElement("div");
       notice.id = "cc-fee-notice";
@@ -86,7 +84,36 @@ export function main() {
       container.insertBefore(notice, container.firstChild);
     };
 
-    displayCcFeeMessage();
+    const shouldShowCcNotice = () => {
+      const ccOnly = document.querySelector<HTMLInputElement>(
+        "input[name='paymentMethod'][value='anetIFrame']"
+      )?.checked;
+
+      const ccIframeVisible =
+        (document.querySelector("#load_payment") as HTMLElement | null)?.style
+          .display !== "none";
+
+      return ccOnly || ccIframeVisible;
+    };
+
+    const waitForIframeAndTrigger = () => {
+      const maxWait = 5000;
+      const interval = 100;
+      let elapsed = 0;
+
+      const check = () => {
+        if (shouldShowCcNotice()) {
+          displayCcFeeMessage();
+        } else if (elapsed < maxWait) {
+          elapsed += interval;
+          setTimeout(check, interval);
+        }
+      };
+
+      check();
+    };
+
+    waitForIframeAndTrigger();
   }
 
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTREVIEW) {
