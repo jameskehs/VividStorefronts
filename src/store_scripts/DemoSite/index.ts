@@ -87,33 +87,51 @@ export function main() {
       container.insertBefore(notice, container.firstChild);
     };
 
-    const targetSelector = "#load_payment";
+    const removeCcFeeMessage = () => {
+      const notice = document.getElementById("cc-fee-notice");
+      if (notice) notice.remove();
+    };
 
-    const observer = new MutationObserver(() => {
-      const iframe = document.querySelector(
-        targetSelector
-      ) as HTMLElement | null;
-      if (iframe && iframe.offsetParent !== null) {
-        displayCcFeeMessage();
-        observer.disconnect(); // stop watching once shown
+    const handlePaymentChange = () => {
+      const payWithCard = document.getElementById(
+        "newCC"
+      ) as HTMLInputElement | null;
+      const payWithPO = document.getElementById(
+        "purchaseOrder"
+      ) as HTMLInputElement | null;
+
+      if (payWithCard?.checked) {
+        // Wait for iframe to appear
+        const targetSelector = "#load_payment";
+        const waitForIframe = () => {
+          const iframe = document.querySelector(
+            targetSelector
+          ) as HTMLElement | null;
+          if (iframe && iframe.offsetParent !== null) {
+            displayCcFeeMessage();
+          } else {
+            setTimeout(waitForIframe, 200);
+          }
+        };
+        waitForIframe();
+      } else if (payWithPO?.checked) {
+        removeCcFeeMessage();
       }
-    });
+    };
 
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true,
-    });
+    const payWithCard = document.getElementById(
+      "newCC"
+    ) as HTMLInputElement | null;
+    const payWithPO = document.getElementById(
+      "purchaseOrder"
+    ) as HTMLInputElement | null;
 
-    // Also do a delayed check in case iframe is already there
-    setTimeout(() => {
-      const iframe = document.querySelector(
-        targetSelector
-      ) as HTMLElement | null;
-      if (iframe && iframe.offsetParent !== null) {
-        displayCcFeeMessage();
-        observer.disconnect();
-      }
-    }, 1000);
+    // Initial check
+    handlePaymentChange();
+
+    // Watch for user changes
+    payWithCard?.addEventListener("change", handlePaymentChange);
+    payWithPO?.addEventListener("change", handlePaymentChange);
   }
 }
 
