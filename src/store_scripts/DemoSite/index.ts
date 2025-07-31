@@ -58,7 +58,10 @@ export function main() {
     persistDiscountedTotals();
   }
 
-  if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTPAYMENT) {
+  if (
+    GLOBALVARS.currentPage === StorefrontPage.CHECKOUTPAYMENT ||
+    window.location.pathname.includes("/checkout/4-payment.php")
+  ) {
     applyPromoCode();
 
     const displayCcFeeMessage = () => {
@@ -84,40 +87,33 @@ export function main() {
       container.insertBefore(notice, container.firstChild);
     };
 
-    const shouldShowCcNotice = () => {
-      const ccOnly = document.querySelector<HTMLInputElement>(
-        "input[name='paymentMethod'][value='anetIFrame']"
-      )?.checked;
+    const targetSelector = "#load_payment";
 
-      const ccIframeVisible =
-        (document.querySelector("#load_payment") as HTMLElement | null)?.style
-          .display !== "none";
+    const observer = new MutationObserver(() => {
+      const iframe = document.querySelector(
+        targetSelector
+      ) as HTMLElement | null;
+      if (iframe && iframe.offsetParent !== null) {
+        displayCcFeeMessage();
+        observer.disconnect(); // stop watching once shown
+      }
+    });
 
-      return ccOnly || ccIframeVisible;
-    };
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+    });
 
-    const waitForIframeAndTrigger = () => {
-      const maxWait = 5000;
-      const interval = 100;
-      let elapsed = 0;
-
-      const check = () => {
-        if (shouldShowCcNotice()) {
-          displayCcFeeMessage();
-        } else if (elapsed < maxWait) {
-          elapsed += interval;
-          setTimeout(check, interval);
-        }
-      };
-
-      check();
-    };
-
-    waitForIframeAndTrigger();
-  }
-
-  if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTREVIEW) {
-    persistDiscountedTotals();
+    // Also do a delayed check in case iframe is already there
+    setTimeout(() => {
+      const iframe = document.querySelector(
+        targetSelector
+      ) as HTMLElement | null;
+      if (iframe && iframe.offsetParent !== null) {
+        displayCcFeeMessage();
+        observer.disconnect();
+      }
+    }, 1000);
   }
 }
 
