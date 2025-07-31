@@ -86,7 +86,7 @@ export function main() {
       modalBox.style.color = "#000000";
       modalBox.style.padding = "24px";
       modalBox.style.borderRadius = "8px";
-      modalBox.style.fontSize = "1.5rem";
+      modalBox.style.fontSize = "1.2rem";
       modalBox.style.fontWeight = "bold";
       modalBox.style.maxWidth = "400px";
       modalBox.style.boxShadow = "0 0 20px rgba(0,0,0,0.2)";
@@ -97,9 +97,9 @@ export function main() {
       <div style="margin-bottom: 1em;">⚠️ A credit card processing fee will be applied to your order total.</div>
       <button id="cc-fee-close-btn" style="
         background-color: #dadada;
-        color: white;
+        color: black;
         border: none;
-        padding: 16px 16px;
+        padding: 4px 16px;
         border-radius: 4px;
         cursor: pointer;
       ">Accept</button>
