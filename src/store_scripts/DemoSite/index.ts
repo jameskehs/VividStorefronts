@@ -87,51 +87,33 @@ export function main() {
       container.insertBefore(notice, container.firstChild);
     };
 
-    const removeCcFeeMessage = () => {
-      const notice = document.getElementById("cc-fee-notice");
-      if (notice) notice.remove();
-    };
+    const targetSelector = "#load_payment";
 
-    const handlePaymentChange = () => {
-      const payWithCard = document.getElementById(
-        "newCC"
-      ) as HTMLInputElement | null;
-      const payWithPO = document.getElementById(
-        "purchaseOrder"
-      ) as HTMLInputElement | null;
-
-      if (payWithCard?.checked) {
-        // Wait for iframe to appear
-        const targetSelector = "#load_payment";
-        const waitForIframe = () => {
-          const iframe = document.querySelector(
-            targetSelector
-          ) as HTMLElement | null;
-          if (iframe && iframe.offsetParent !== null) {
-            displayCcFeeMessage();
-          } else {
-            setTimeout(waitForIframe, 200);
-          }
-        };
-        waitForIframe();
-      } else if (payWithPO?.checked) {
-        removeCcFeeMessage();
+    const observer = new MutationObserver(() => {
+      const iframe = document.querySelector(
+        targetSelector
+      ) as HTMLElement | null;
+      if (iframe && iframe.offsetParent !== null) {
+        displayCcFeeMessage();
+        observer.disconnect(); // stop watching once shown
       }
-    };
+    });
 
-    const payWithCard = document.getElementById(
-      "newCC"
-    ) as HTMLInputElement | null;
-    const payWithPO = document.getElementById(
-      "purchaseOrder"
-    ) as HTMLInputElement | null;
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+    });
 
-    // Initial check
-    handlePaymentChange();
-
-    // Watch for user changes
-    payWithCard?.addEventListener("change", handlePaymentChange);
-    payWithPO?.addEventListener("change", handlePaymentChange);
+    // Also do a delayed check in case iframe is already there
+    setTimeout(() => {
+      const iframe = document.querySelector(
+        targetSelector
+      ) as HTMLElement | null;
+      if (iframe && iframe.offsetParent !== null) {
+        displayCcFeeMessage();
+        observer.disconnect();
+      }
+    }, 1000);
   }
 }
 
