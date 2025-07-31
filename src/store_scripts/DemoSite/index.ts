@@ -60,6 +60,33 @@ export function main() {
 
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTPAYMENT) {
     applyPromoCode();
+
+    // Display credit card fee notification
+    const displayCcFeeMessage = () => {
+      const container =
+        document.querySelector("#checkout_box") || document.body;
+
+      const existingNotice = document.getElementById("cc-fee-notice");
+      if (existingNotice) return;
+
+      const notice = document.createElement("div");
+      notice.id = "cc-fee-notice";
+      notice.textContent =
+        "⚠️ A credit card processing fee will be applied to your order total.";
+      notice.style.backgroundColor = "#fff3cd";
+      notice.style.border = "1px solid #ffeeba";
+      notice.style.color = "#856404";
+      notice.style.padding = "12px";
+      notice.style.margin = "20px 0";
+      notice.style.fontSize = "1rem";
+      notice.style.fontWeight = "bold";
+      notice.style.borderRadius = "5px";
+      notice.style.textAlign = "center";
+
+      container.insertBefore(notice, container.firstChild);
+    };
+
+    displayCcFeeMessage();
   }
 
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTREVIEW) {
