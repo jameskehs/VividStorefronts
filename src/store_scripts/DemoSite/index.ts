@@ -78,7 +78,7 @@ export function main() {
       modalOverlay.style.display = "flex";
       modalOverlay.style.alignItems = "center";
       modalOverlay.style.justifyContent = "center";
-      modalOverlay.style.zIndex = "9999";
+      modalOverlay.style.zIndex = "99999"; // boosted z-index
 
       const modalBox = document.createElement("div");
       modalBox.style.backgroundColor = "#fff3cd";
@@ -94,16 +94,16 @@ export function main() {
       modalBox.style.textAlign = "center";
 
       modalBox.innerHTML = `
-    <div style="margin-bottom: 1em;">⚠️ A credit card processing fee will be applied to your order total.</div>
-    <button id="cc-fee-close-btn" style="
-      background-color: #856404;
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 4px;
-      cursor: pointer;
-    ">Close</button>
-  `;
+      <div style="margin-bottom: 1em;">⚠️ A credit card processing fee will be applied to your order total.</div>
+      <button id="cc-fee-close-btn" style="
+        background-color: #856404;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+      ">Close</button>
+    `;
 
       modalOverlay.appendChild(modalBox);
       document.body.appendChild(modalOverlay);
@@ -116,33 +116,19 @@ export function main() {
       };
     };
 
-    const targetSelector = "#load_payment";
-
-    const observer = new MutationObserver(() => {
+    const waitForIframe = () => {
       const iframe = document.querySelector(
-        targetSelector
+        "#load_payment"
       ) as HTMLElement | null;
       if (iframe && iframe.offsetParent !== null) {
         displayCcFeeMessage();
-        observer.disconnect(); // stop watching once shown
+        return;
       }
-    });
+      requestAnimationFrame(waitForIframe); // keep checking
+    };
 
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true,
-    });
-
-    // Also do a delayed check in case iframe is already there
-    setTimeout(() => {
-      const iframe = document.querySelector(
-        targetSelector
-      ) as HTMLElement | null;
-      if (iframe && iframe.offsetParent !== null) {
-        displayCcFeeMessage();
-        observer.disconnect();
-      }
-    }, 1000);
+    // Delay a little to ensure DOM is initialized
+    setTimeout(() => requestAnimationFrame(waitForIframe), 300);
   }
 }
 
