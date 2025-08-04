@@ -1,6 +1,5 @@
 .tableSiteBanner img {
-  height: 80px;
-  margin-top: 15px;
+  height: 120px;
 }
 
 #loginWrapper {
@@ -8,10 +7,6 @@
   background-color: var(--loginbar-bg);
   padding: 0px 32px;
   box-shadow: 0px 0px 0px rgb(255, 255, 255) !important;
-}
-
-.parentSubcategoryCell {
-  height: 250px !important;
 }
 
 .prodCell {
@@ -27,7 +22,7 @@ img.finishedGoodThmb {
   max-height: 250px;
   height: auto;
   padding: 0px;
-  border: 0px solid lightgray;
+  border: 1px solid lightgray;
 }
 
 div.anchorCatalog {
@@ -122,7 +117,7 @@ table.tableMain {
   transition: transform 0.2s ease, color 0.2s ease;
 }
 #menu li a .icon-wrap i {
-  color: #000 !important;
+  color: #fff !important;
   font-size: 24px;
   line-height: 1;
   vertical-align: middle;
@@ -196,21 +191,21 @@ table.tableMain {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 400px;
+  width: 100%;
 }
 
 #home-search-input {
-  height: 38px;
+  height: 42px;
   padding: 4px;
-  font-size: 16px;
+  font-size: 18px;
   width: 500px;
   margin-right: 0px;
   border: 1px solid #bbb;
 }
 
 #home-search-btn {
-  height: 38px;
-  width: 38px;
+  height: 42px;
+  width: 42px;
   display: flex;
   align-items: center;
   justify-content: center;
