@@ -1,5 +1,5 @@
 .tableSiteBanner img {
-  height: 46px;
+  height: 80px;
   margin-top: 15px;
 }
 
@@ -122,7 +122,7 @@ table.tableMain {
   transition: transform 0.2s ease, color 0.2s ease;
 }
 #menu li a .icon-wrap i {
-  color: #002c77 !important;
+  color: #000 !important;
   font-size: 24px;
   line-height: 1;
   vertical-align: middle;
