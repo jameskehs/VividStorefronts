@@ -26,27 +26,71 @@
   color: #ff0000 !important;
 }
 
-#stake-background {
-  position: fixed;
+div#stake-background {
+  position: absolute;
   top: 0;
+  bottom: 0;
   left: 0;
   right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background-color: #00000075;
+  z-index: 999;
   display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+div#stake-box {
+  background-color: white;
+  width: 350px;
+  height: 100px;
+  padding: 16px;
+  border-radius: 6px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  z-index: 10000;
 }
-#stake-box {
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  text-align: center;
-}
-#stake-exit {
+
+div#stake-exit {
   position: absolute;
   top: 10px;
-  right: 20px;
+  right: 10px;
+  font-size: 18px;
+}
+
+div#stake-exit:hover {
+  font-weight: bold;
+  color: red;
   cursor: pointer;
+}
+
+#stake-box p {
+  font-size: 20px;
+}
+
+#stake-box a {
+  background-color: #153b6b;
+  color: #fff;
+  padding: 12px;
+  border-radius: 6px;
+}
+
+#stake-box a:hover {
+  background-color: #1e559b;
+  text-decoration: none;
+}
+
+div#stake-overlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 999;
+  cursor: pointer;
+}
+
+div#stake-overlay:hover {
+  background-color: #00000015;
 }
