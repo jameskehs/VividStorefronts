@@ -17,7 +17,11 @@ export function main(): void {
   }
 
   if (GLOBALVARS.currentPage === StorefrontPage.CART) {
-    // Already handled in stepStakePopup, but you can add more here
+    if ($("#stake-style").length === 0) {
+      $("head").append(
+        `<link id="stake-style" rel="stylesheet" href="/path/to/stake-popup.css">`
+      );
+    }
   }
 
   if (GLOBALVARS.currentPage === StorefrontPage.CATALOG) {
