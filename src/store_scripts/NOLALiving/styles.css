@@ -1,0 +1,27 @@
+.tableSiteBanner img {
+  height: 100px;
+}
+
+#pricing-table,
+#pricing-table tr,
+#pricing-table th,
+#pricing-table td {
+  border: 1px solid black;
+}
+
+#pricing-table th,
+#pricing-table td {
+  padding: 4px;
+}
+#pricing-table {
+  margin: 0 auto;
+  border-collapse: collapse;
+  width: auto;
+}
+#pricing-table th {
+  background-color: #4098cb;
+  color: white;
+}
+.TCbullet a[alt="New Items"] {
+  color: #ff0000 !important;
+}
