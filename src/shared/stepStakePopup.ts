@@ -88,18 +88,20 @@ export function stepStakePopup(): void {
         if ($("#stake-background").length > 0) return;
 
         $("body").append(`
-          <div id="stake-background">
-            <div id="stake-box">
-              <div id="stake-exit">X</div>
-              <p>Did you order stakes?</p>
-              <a href="/catalog/2-customize.php?&designID=8454&contentID=40142">View Stakes</a>
-            </div>
-          </div>
-        `);
+  <div id="stake-background">
+    <div id="stake-box">
+      <button id="stake-exit" type="button">X</button>
+      <p>Did you order stakes?</p>
+      <a href="/catalog/2-customize.php?&designID=8454&contentID=40142">View Stakes</a>
+    </div>
+  </div>
+`);
 
         $("#stake-exit").on("click", (e) => {
-          e.preventDefault();
-          e.stopPropagation();
+          e.preventDefault(); // Prevent default button behavior
+          e.stopPropagation(); // Stop bubbling
+          e.stopImmediatePropagation(); // ✅ Stop all other click handlers from triggering
+
           $("#stake-background").remove();
           $("#stake-overlay").remove();
 
