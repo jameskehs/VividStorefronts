@@ -62,57 +62,73 @@ export function stepStakePopup(): void {
   }
 
   function enableStakePopup(): void {
-    let allItems = "";
+    let allItems: string[] = [];
+
+    // Extract item names from cart
     $("#shoppingCartTbl .dtContent table td:nth-of-type(2)").each((_i, el) => {
-      allItems += (el as HTMLElement).innerText;
+      const itemName = (el as HTMLElement).innerText.trim();
+      if (itemName) {
+        allItems.push(itemName);
+      }
     });
 
-    console.log("stepStakePopup: All items in cart:", allItems);
+    console.log("stepStakePopup: Cart items found:", allItems);
 
-    if (allItems.includes("Sign Stake")) {
-      console.log("stepStakePopup: 'Sign Stake' found. Skipping popup.");
+    // ⛔ No items? Skip popup
+    if (allItems.length === 0) {
+      console.log("stepStakePopup: No items in cart — skipping popup.");
+      return;
+    }
+
+    // ⛔ If any item includes "Sign Stake", skip popup
+    const containsSignStake = allItems.some((item) =>
+      item.toLowerCase().includes("sign stake")
+    );
+    if (containsSignStake) {
+      console.log("stepStakePopup: 'Sign Stake' found — skipping popup.");
       return;
     }
 
     console.log("stepStakePopup: Triggering stake popup");
 
-    // Make sure overlay doesn't already exist
+    // Avoid duplicate overlay
     if ($("#stake-overlay").length === 0) {
       $("body").append(`<div id="stake-overlay"></div>`);
-
-      $("#stake-overlay").on("click", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-
-        // Only show popup if one doesn't already exist
-        if ($("#stake-background").length > 0) return;
-
-        $("body").append(`
-  <div id="stake-background">
-    <div id="stake-box">
-      <button id="stake-exit" type="button">X</button>
-      <p>Did you order stakes?</p>
-      <a href="/catalog/2-customize.php?&designID=8454&contentID=40142">View Stakes</a>
-    </div>
-  </div>
-`);
-
-        $(document).on("click", "#stake-exit", function (e) {
-          e.preventDefault();
-          e.stopPropagation();
-
-          $("#stake-background").remove();
-          $("#stake-overlay").remove();
-
-          try {
-            if (typeof window.setAction === "function") {
-              window.setAction("process");
-            }
-          } catch (err) {
-            console.warn("setAction failed:", err);
-          }
-        });
-      });
     }
   }
+
+  // Delegate click handler to open the popup
+  $(document).on("click", "#stake-overlay", function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if ($("#stake-background").length > 0) return;
+
+    $("body").append(`
+      <div id="stake-background">
+        <div id="stake-box">
+          <button id="stake-exit" type="button">X</button>
+          <p>Did you order stakes?</p>
+          <a href="/catalog/2-customize.php?&designID=8454&contentID=40142">View Stakes</a>
+        </div>
+      </div>
+    `);
+  });
+
+  // Delegate close button behavior
+  $(document).on("click", "#stake-exit", function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    $("#stake-background").remove();
+    $("#stake-overlay").remove();
+
+    try {
+      if (typeof window.setAction === "function") {
+        window.setAction("process");
+      }
+    } catch (err) {
+      console.warn("setAction failed:", err);
+    }
+  });
 }
