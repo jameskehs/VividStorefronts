@@ -37,7 +37,6 @@ export function stepStakePopup(): void {
       break;
 
     case StorefrontPage.CART:
-      console.log("stepStakePopup: CART page detected");
       enableStakePopup();
       break;
 
@@ -49,12 +48,11 @@ export function stepStakePopup(): void {
           "<p>Shipping address not required. Click button to proceed.</p>"
         );
       $(".FedEx-email-notify").hide();
-      $('button[name="button_shipTo"]').text("Continue to Delivery Method");
-
       const forms = $("#shipToCompany form");
       if (forms.length > 1) {
         forms[1].remove();
       }
+      $('button[name="button_shipTo"]').text("Continue to Delivery Method");
       break;
 
     case StorefrontPage.VIEWORDERS:
@@ -63,7 +61,6 @@ export function stepStakePopup(): void {
       break;
   }
 
-  // Helper function for stake reminder popup
   function enableStakePopup(): void {
     let allItems = "";
     $("#shoppingCartTbl .dtContent table td:nth-of-type(2)").each((_i, el) => {
@@ -79,22 +76,30 @@ export function stepStakePopup(): void {
 
     console.log("stepStakePopup: Triggering stake popup");
 
-    // Make sure #stake-overlay doesn't already exist
+    // Make sure overlay doesn't already exist
     if ($("#stake-overlay").length === 0) {
       $("body").append(`<div id="stake-overlay"></div>`);
 
-      $("#stake-overlay").on("click", () => {
-        $("body").append(`
-        <div id="stake-background">
-          <div id="stake-box">
-            <div id="stake-exit">X</div>
-            <p>Did you order stakes?</p>
-            <a href="/catalog/2-customize.php?&designID=8454&contentID=40142">View Stakes</a>
-          </div>
-        </div>
-      `);
+      $("#stake-overlay").on("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
 
-        $("#stake-exit").on("click", () => {
+        // Only show popup if one doesn't already exist
+        if ($("#stake-background").length > 0) return;
+
+        $("body").append(`
+          <div id="stake-background">
+            <div id="stake-box">
+              <div id="stake-exit">X</div>
+              <p>Did you order stakes?</p>
+              <a href="/catalog/2-customize.php?&designID=8454&contentID=40142">View Stakes</a>
+            </div>
+          </div>
+        `);
+
+        $("#stake-exit").on("click", (e) => {
+          e.preventDefault();
+          e.stopPropagation();
           $("#stake-background").remove();
           $("#stake-overlay").remove();
 
@@ -102,8 +107,8 @@ export function stepStakePopup(): void {
             if (typeof window.setAction === "function") {
               window.setAction("process");
             }
-          } catch (e) {
-            console.warn("setAction failed:", e);
+          } catch (err) {
+            console.warn("setAction failed:", err);
           }
         });
       });
