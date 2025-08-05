@@ -97,10 +97,9 @@ export function stepStakePopup(): void {
   </div>
 `);
 
-        $("#stake-exit").on("click", (e) => {
-          e.preventDefault(); // Prevent default button behavior
-          e.stopPropagation(); // Stop bubbling
-          e.stopImmediatePropagation(); // ✅ Stop all other click handlers from triggering
+        $(document).on("click", "#stake-exit", function (e) {
+          e.preventDefault();
+          e.stopPropagation();
 
           $("#stake-background").remove();
           $("#stake-overlay").remove();
