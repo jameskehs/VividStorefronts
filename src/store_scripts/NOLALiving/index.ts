@@ -3,8 +3,6 @@
 
 import { StorefrontPage } from "../../enums/StorefrontPage.enum";
 import { GLOBALVARS } from "../../index";
-import { enhanceCheckoutAddressPage } from "../../shared/checkoutAddressEnhancements";
-import { enableStakePopup } from "../../shared/stakePopup";
 
 export function main() {
   console.log(GLOBALVARS.currentPage);
@@ -12,12 +10,10 @@ export function main() {
   if (GLOBALVARS.currentPage === StorefrontPage.ADDTOCART) {
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CART) {
-    enableStakePopup();
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CATALOG) {
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTADDRESS) {
-    enhanceCheckoutAddressPage();
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTCONFIRMATION) {
   }
