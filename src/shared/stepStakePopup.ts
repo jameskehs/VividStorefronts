@@ -37,6 +37,7 @@ export function stepStakePopup(): void {
       break;
 
     case StorefrontPage.CART:
+      console.log("stepStakePopup: CART page detected");
       enableStakePopup();
       break;
 
@@ -69,7 +70,14 @@ export function stepStakePopup(): void {
       allItems += (el as HTMLElement).innerText;
     });
 
-    if (allItems.includes("Sign Stake")) return;
+    console.log("stepStakePopup: All items in cart:", allItems);
+
+    if (allItems.includes("Sign Stake")) {
+      console.log("stepStakePopup: 'Sign Stake' found. Skipping popup.");
+      return;
+    }
+
+    console.log("stepStakePopup: Triggering stake popup");
 
     $("#checkoutProceedButton").append("<div id='stake-overlay'></div>");
     $("#stake-overlay").on("click", () => {
