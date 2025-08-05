@@ -79,9 +79,12 @@ export function stepStakePopup(): void {
 
     console.log("stepStakePopup: Triggering stake popup");
 
-    $("#checkoutProceedButton").append("<div id='stake-overlay'></div>");
-    $("#stake-overlay").on("click", () => {
-      $("body").append(`
+    // Make sure #stake-overlay doesn't already exist
+    if ($("#stake-overlay").length === 0) {
+      $("body").append(`<div id="stake-overlay"></div>`);
+
+      $("#stake-overlay").on("click", () => {
+        $("body").append(`
         <div id="stake-background">
           <div id="stake-box">
             <div id="stake-exit">X</div>
@@ -91,11 +94,19 @@ export function stepStakePopup(): void {
         </div>
       `);
 
-      $("#stake-exit").on("click", () => {
-        if (typeof window.setAction === "function") {
-          window.setAction("process");
-        }
+        $("#stake-exit").on("click", () => {
+          $("#stake-background").remove();
+          $("#stake-overlay").remove();
+
+          try {
+            if (typeof window.setAction === "function") {
+              window.setAction("process");
+            }
+          } catch (e) {
+            console.warn("setAction failed:", e);
+          }
+        });
       });
-    });
+    }
   }
 }
