@@ -43,8 +43,10 @@ export function main() {
   if (GLOBALVARS.currentPage === StorefrontPage.CATALOG) {
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTADDRESS) {
+    replaceShippingCostWithTBD();
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTCONFIRMATION) {
+    replaceShippingCostWithTBD();
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTPAYMENT) {
     replaceShippingCostWithTBD();
