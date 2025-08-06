@@ -4,7 +4,7 @@
 import { StorefrontPage } from "../../enums/StorefrontPage.enum";
 import { GLOBALVARS } from "../../index";
 import { replaceAttrText } from "../../shared/replaceSizeText";
-import { hideShippingCostColumn } from "../../shared/hideShippingCostColumn";
+import { replaceShippingCostWithTBD } from "../../shared/replaceShippingCostWithTBD";
 
 export function main() {
   console.log(GLOBALVARS.currentPage);
@@ -51,7 +51,7 @@ export function main() {
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTREVIEW) {
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTSHIPPING) {
-    hideShippingCostColumn();
+    replaceShippingCostWithTBD();
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CREATEEDITACCOUNT) {
   }
