@@ -80,7 +80,7 @@ input#qtyAvailable {
 /* === BADGE SHOWN BESIDE ICON (NOT OVERLAPPING) === */
 .icon-wrap .badge {
   display: inline-block;
-  background-color: #ff3b3b;
+  background-color: #0c95be;
   color: white;
   font-size: 11px;
   font-weight: bold;
