@@ -4,6 +4,7 @@
 import { StorefrontPage } from "../../enums/StorefrontPage.enum";
 import { GLOBALVARS } from "../../index";
 import { replaceAttrText } from "../../shared/replaceSizeText";
+import { hideShippingCostColumn } from "../../shared/hideShippingCostColumn";
 
 export function main() {
   console.log(GLOBALVARS.currentPage);
@@ -50,6 +51,7 @@ export function main() {
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTREVIEW) {
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTSHIPPING) {
+    hideShippingCostColumn();
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CREATEEDITACCOUNT) {
   }
