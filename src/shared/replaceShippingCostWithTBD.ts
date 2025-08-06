@@ -1,6 +1,7 @@
 export function replaceShippingCostWithTBD(): void {
-  function overrideShippingCostText() {
-    // Replace shipping cost in the shipping method table
+  // Function to replace the text with "TBD"
+  const overrideShippingCostText = () => {
+    // Replace shipping method table costs
     const shippingTable = document.getElementById("shipping_method_table");
     if (shippingTable) {
       const rows = shippingTable.querySelectorAll("tr");
@@ -15,31 +16,48 @@ export function replaceShippingCostWithTBD(): void {
       });
     }
 
-    // Replace the shipping & handling value in the summary table
+    // Replace summary shipping cost
     const shipPriceSpan = document.getElementById("shipPrice");
-    if (shipPriceSpan) {
+    if (shipPriceSpan && shipPriceSpan.textContent?.trim().startsWith("$")) {
       shipPriceSpan.textContent = "TBD";
     }
 
-    // Optional: Also replace the hidden actual cost
+    // Optional: Set hidden actual cost to 0.00
     const hiddenCost = document.getElementById(
       "shipActualCost"
     ) as HTMLInputElement;
     if (hiddenCost) {
       hiddenCost.value = "0.00";
     }
+  };
+
+  // Observe only the ship price span
+  const shipPriceTarget = document.getElementById("shipPrice");
+  if (shipPriceTarget) {
+    const observer = new MutationObserver(() => {
+      overrideShippingCostText();
+    });
+
+    observer.observe(shipPriceTarget, {
+      characterData: true,
+      subtree: true,
+      childList: true,
+    });
   }
 
-  // Observe DOM changes to reapply "TBD" when shipping is updated
-  const observer = new MutationObserver(() => {
-    overrideShippingCostText();
-  });
+  // Also observe the table in case shipping method updates
+  const shipMethodTable = document.getElementById("shipping_method_table");
+  if (shipMethodTable) {
+    const observer = new MutationObserver(() => {
+      overrideShippingCostText();
+    });
 
-  observer.observe(document.body, {
-    childList: true,
-    subtree: true,
-  });
+    observer.observe(shipMethodTable, {
+      childList: true,
+      subtree: true,
+    });
+  }
 
-  // Initial call on load
+  // Initial run on page load
   overrideShippingCostText();
 }
