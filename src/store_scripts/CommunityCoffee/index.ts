@@ -5,6 +5,7 @@ import { StorefrontPage } from "../../enums/StorefrontPage.enum";
 import { GLOBALVARS } from "../../index";
 import { replaceAttrText } from "../../shared/replaceSizeText";
 import { replaceShippingCostWithTBD } from "../../shared/replaceShippingCostWithTBD";
+import { forceShippingCostToTBD } from "../../shared/forceShippingCostToTBD";
 
 export function main() {
   console.log(GLOBALVARS.currentPage);
@@ -46,15 +47,19 @@ export function main() {
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTCONFIRMATION) {
     replaceShippingCostWithTBD();
+    forceShippingCostToTBD();
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTPAYMENT) {
     replaceShippingCostWithTBD();
+    forceShippingCostToTBD();
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTREVIEW) {
     replaceShippingCostWithTBD();
+    forceShippingCostToTBD();
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTSHIPPING) {
     replaceShippingCostWithTBD();
+    forceShippingCostToTBD();
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CREATEEDITACCOUNT) {
   }
