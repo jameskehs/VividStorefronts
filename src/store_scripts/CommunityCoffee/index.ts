@@ -54,6 +54,7 @@ export function main() {
     replaceShippingCostWithTBD();
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTSHIPPING) {
+    replaceShippingCostWithTBD();
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CREATEEDITACCOUNT) {
   }
