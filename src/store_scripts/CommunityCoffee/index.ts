@@ -45,16 +45,12 @@ export function main() {
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTADDRESS) {
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTCONFIRMATION) {
-    replaceShippingCostWithTBD();
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTPAYMENT) {
-    replaceShippingCostWithTBD();
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTREVIEW) {
-    replaceShippingCostWithTBD();
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTSHIPPING) {
-    replaceShippingCostWithTBD();
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CREATEEDITACCOUNT) {
   }
