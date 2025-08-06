@@ -6,6 +6,7 @@ import { GLOBALVARS } from "../../index";
 import { replaceAttrText } from "../../shared/replaceSizeText";
 import { replaceShippingCostWithTBD } from "../../shared/replaceShippingCostWithTBD";
 import { forceShippingCostToTBD } from "../../shared/forceShippingCostToTBD";
+import { requirePOAndQuoteName } from "../../shared/requirePOAndQuoteName";
 
 export function main() {
   console.log(GLOBALVARS.currentPage);
@@ -52,6 +53,7 @@ export function main() {
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTPAYMENT) {
     replaceShippingCostWithTBD();
     forceShippingCostToTBD();
+    requirePOAndQuoteName();
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTREVIEW) {
     replaceShippingCostWithTBD();
