@@ -1,26 +1,20 @@
-export function hideShippingCostColumn(): void {
+export function replaceShippingCostWithTBD(): void {
   document.addEventListener("DOMContentLoaded", () => {
-    // --- Hide shipping cost column from shipping method table ---
+    // --- Replace shipping cost in shipping_method_table ---
 
-    // Hide shipping cost header
-    const headerElements = document.querySelectorAll(".shipCostCol");
-    headerElements.forEach((el) => {
-      (el as HTMLElement).style.display = "none";
-    });
-
-    // Hide shipping cost cells in table rows
     const shippingTable = document.getElementById("shipping_method_table");
     if (shippingTable) {
       const rows = shippingTable.querySelectorAll("tr");
       rows.forEach((row) => {
         const cells = row.querySelectorAll("td");
         if (cells.length >= 5) {
-          (cells[4] as HTMLElement).style.display = "none";
+          const costCell = cells[4];
+          costCell.textContent = "TBD";
         }
       });
     }
 
-    // --- Hide Shipping & Handling row from taxRushShipGrand table ---
+    // --- Replace "Shipping & Handling" value with TBD in taxRushShipGrand ---
 
     const taxRushTable = document.getElementById("taxRushShipGrand");
     if (taxRushTable) {
@@ -28,7 +22,10 @@ export function hideShippingCostColumn(): void {
       rows.forEach((row) => {
         const text = row.textContent?.toLowerCase() || "";
         if (text.includes("shipping & handling")) {
-          (row as HTMLElement).style.display = "none";
+          const cells = row.querySelectorAll("td");
+          if (cells.length === 2) {
+            cells[1].textContent = "TBD";
+          }
         }
       });
     }
