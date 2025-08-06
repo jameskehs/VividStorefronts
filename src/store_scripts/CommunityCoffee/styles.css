@@ -42,7 +42,7 @@ input#qtyAvailable {
 /* === HOVER === */
 #menu li a:hover {
   transform: scale(1.15);
-  color: #000;
+  color: #fff;
 }
 
 /* === REMOVE ALL UNDERLINES === */
