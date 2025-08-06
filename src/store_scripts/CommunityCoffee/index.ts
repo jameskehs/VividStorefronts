@@ -49,6 +49,7 @@ export function main() {
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTPAYMENT) {
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTREVIEW) {
+    replaceShippingCostWithTBD();
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTSHIPPING) {
     replaceShippingCostWithTBD();
