@@ -1,7 +1,6 @@
 export function replaceShippingCostWithTBD(): void {
-  // Function to override visible shipping costs if they're greater than 0
   const overrideShippingCostText = () => {
-    // Update each shipping method row
+    // --- Replace shipping method table cell values if > $0.00 ---
     const shippingTable = document.getElementById("shipping_method_table");
     if (shippingTable) {
       const rows = shippingTable.querySelectorAll("tr");
@@ -20,7 +19,7 @@ export function replaceShippingCostWithTBD(): void {
       });
     }
 
-    // Update the summary shipping cost if it's greater than 0
+    // --- Replace shipping summary value if > $0.00 ---
     const shipPriceSpan = document.getElementById("shipPrice");
     if (shipPriceSpan) {
       const text = shipPriceSpan.textContent?.trim();
@@ -32,7 +31,25 @@ export function replaceShippingCostWithTBD(): void {
       }
     }
 
-    // Optional: Override hidden actual cost
+    // --- Replace shipping label text ("Shipping & Handling:") ---
+    const taxRushTable = document.querySelector("#taxRushShipGrand table");
+    if (taxRushTable) {
+      const rows = taxRushTable.querySelectorAll("tr");
+      rows.forEach((row) => {
+        const labelCell = row.cells[0];
+        if (
+          labelCell &&
+          labelCell.textContent
+            ?.trim()
+            .toLowerCase()
+            .includes("shipping & handling")
+        ) {
+          labelCell.textContent = "Shipping:";
+        }
+      });
+    }
+
+    // --- Optionally zero out hidden actual cost ---
     const hiddenCost = document.getElementById(
       "shipActualCost"
     ) as HTMLInputElement;
@@ -41,26 +58,22 @@ export function replaceShippingCostWithTBD(): void {
     }
   };
 
-  // Observe shipping price in summary box
-  const shipPriceTarget = document.getElementById("shipPrice");
-  if (shipPriceTarget) {
-    const observer = new MutationObserver(() => {
-      overrideShippingCostText();
-    });
-    observer.observe(shipPriceTarget, {
-      characterData: true,
-      subtree: true,
+  // Observe value changes in summary shipping price
+  const shipPriceSpan = document.getElementById("shipPrice");
+  if (shipPriceSpan) {
+    const observer = new MutationObserver(overrideShippingCostText);
+    observer.observe(shipPriceSpan, {
       childList: true,
+      subtree: true,
+      characterData: true,
     });
   }
 
-  // Observe shipping method table for dynamic changes
-  const shipMethodTable = document.getElementById("shipping_method_table");
-  if (shipMethodTable) {
-    const observer = new MutationObserver(() => {
-      overrideShippingCostText();
-    });
-    observer.observe(shipMethodTable, {
+  // Observe the shipping method table for changes
+  const shippingTable = document.getElementById("shipping_method_table");
+  if (shippingTable) {
+    const observer = new MutationObserver(overrideShippingCostText);
+    observer.observe(shippingTable, {
       childList: true,
       subtree: true,
     });
