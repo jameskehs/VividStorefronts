@@ -3,6 +3,7 @@
 
 import { StorefrontPage } from "../../enums/StorefrontPage.enum";
 import { GLOBALVARS } from "../../index";
+import { monitorResidentialToastAndBlockPage } from "../../shared/BlockOnResidentialToast";
 
 export function main() {
   console.log(GLOBALVARS.currentPage);
@@ -25,6 +26,8 @@ export function main() {
     $("#continueTbl .smallbody").eq(1)
       .html(`<span class="red">*</span> Delivery time listed includes 1 to 2 days to process order plus shipping.
       Please note we do not process orders on weekends or holidays.`);
+
+    monitorResidentialToastAndBlockPage();
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CREATEEDITACCOUNT) {
   }
