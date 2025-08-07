@@ -1,5 +1,4 @@
 export function monitorResidentialToastAndBlockPage(): void {
-  // Create overlay once
   if (!document.getElementById("page-blocker-overlay")) {
     const overlay = document.createElement("div");
     overlay.id = "page-blocker-overlay";
@@ -16,7 +15,7 @@ export function monitorResidentialToastAndBlockPage(): void {
 
   const overlay = document.getElementById("page-blocker-overlay")!;
 
-  const checkForResidentialToast = () => {
+  const pollInterval = setInterval(() => {
     const toast = document.querySelector(".jq-toast-single");
 
     if (
@@ -25,27 +24,35 @@ export function monitorResidentialToastAndBlockPage(): void {
         "The USPS database indicates your address is Residential"
       )
     ) {
-      // 🔒 Block the page
       overlay.style.display = "block";
 
-      // ❌ Remove the close button
+      // Remove the close button
       const closeBtn = toast.querySelector(".close-jq-toast-single");
       if (closeBtn) closeBtn.remove();
 
-      // ✅ Style the "go back" link (optional)
+      // Preserve the "go back" link
       const goBackLink = toast.querySelector(
         'a[href*="5-shipping.php"]'
       ) as HTMLAnchorElement | null;
+      const linkHTML = goBackLink?.outerHTML || "";
+
+      // Replace the entire toast content
+      toast.innerHTML = `
+        <strong class="sans red">Important Message</strong><br>
+        The USPS database indicates your address is Residential, but you have it flagged as Commercial.<br>
+        <strong>Please go back and click the Verify Address button</strong> to ensure the most reliable package delivery.<br>
+        We verify all addresses with the USPS address database.<br><br>
+        ${linkHTML}
+      `;
+
+      // Style the link
       if (goBackLink) {
         goBackLink.style.fontWeight = "bold";
         goBackLink.style.color = "red";
         goBackLink.style.textDecoration = "underline";
       }
 
-      // ✅ Stop checking once handled
       clearInterval(pollInterval);
     }
-  };
-
-  const pollInterval = setInterval(checkForResidentialToast, 300);
+  }, 300);
 }
