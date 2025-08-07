@@ -26,31 +26,17 @@ export function monitorResidentialToastAndBlockPage(): void {
     ) {
       overlay.style.display = "block";
 
-      // Remove the close button
+      // Remove the close (×) button
       const closeBtn = toast.querySelector(".close-jq-toast-single");
       if (closeBtn) closeBtn.remove();
 
-      // Preserve the "go back" link
-      const goBackLink = toast.querySelector(
-        'a[href*="5-shipping.php"]'
-      ) as HTMLAnchorElement | null;
-      const linkHTML = goBackLink?.outerHTML || "";
-
-      // Replace the entire toast content
+      // Replace toast content with updated message and inline "go back" link
       toast.innerHTML = `
         <strong class="sans red">Important Message</strong><br>
         The USPS database indicates your address is Residential, but you have it flagged as Commercial.<br>
-        <strong>Please go back and click the Verify Address button</strong> to ensure the most reliable package delivery.<br>
-        We verify all addresses with the USPS address database.<br><br>
-        ${linkHTML}
+        Please <a href="5-shipping.php" style="color: red; font-weight: bold; text-decoration: underline;">go back</a> and click the Verify Address button to ensure the most reliable package delivery.<br>
+        We verify all addresses with the USPS address database.
       `;
-
-      // Style the link
-      if (goBackLink) {
-        goBackLink.style.fontWeight = "bold";
-        goBackLink.style.color = "red";
-        goBackLink.style.textDecoration = "underline";
-      }
 
       clearInterval(pollInterval);
     }
