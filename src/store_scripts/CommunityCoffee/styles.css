@@ -140,6 +140,7 @@ input#qtyAvailable {
 }
 
 .list-style-buttons {
+  display: inline;
   margin-bottom: 10px;
 }
 
