@@ -138,3 +138,11 @@ input#qtyAvailable {
   height: 20px;
   width: 20px;
 }
+
+.list-style-buttons {
+  margin-bottom: 10px;
+}
+
+#searchbar {
+  display: none;
+}
