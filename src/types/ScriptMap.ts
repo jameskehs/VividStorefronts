@@ -1,6 +1,6 @@
 export const ScriptMap: Record<number, string> = {
   10: "McAlisters",
-  12: "CatainDs",
+  12: "CaptainDs",
   18: "Mooyah",
   22: "BASF",
   28: "Bernhard",
