@@ -8,6 +8,7 @@ export const ScriptMap: Record<number, string> = {
   46: "Maidpro",
   47: "Fazolis",
   48: "GetFresh",
+  52: "SaladStation",
   53: "FajitaPetes",
   57: "MainSqueeze",
   58: "RaisingCanes",
