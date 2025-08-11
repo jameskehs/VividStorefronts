@@ -72,6 +72,72 @@ export function main() {
     window.location.pathname.includes("/checkout/4-payment.php")
   ) {
     applyPromoCode();
+
+    const displayCcFeeMessage = () => {
+      if (document.getElementById("cc-fee-notice-modal")) return;
+
+      const modalOverlay = document.createElement("div");
+      modalOverlay.id = "cc-fee-notice-modal";
+      modalOverlay.style.position = "fixed";
+      modalOverlay.style.top = "0";
+      modalOverlay.style.left = "0";
+      modalOverlay.style.width = "100vw";
+      modalOverlay.style.height = "100vh";
+      modalOverlay.style.backgroundColor = "rgba(0, 0, 0, 0.4)";
+      modalOverlay.style.display = "flex";
+      modalOverlay.style.alignItems = "center";
+      modalOverlay.style.justifyContent = "center";
+      modalOverlay.style.zIndex = "99999"; // boosted z-index
+
+      const modalBox = document.createElement("div");
+      modalBox.style.backgroundColor = "#ffffff";
+      modalBox.style.border = "1px solid #ffffff";
+      modalBox.style.color = "#000000";
+      modalBox.style.padding = "24px";
+      modalBox.style.borderRadius = "8px";
+      modalBox.style.fontSize = "1.2rem";
+      modalBox.style.fontWeight = "bold";
+      modalBox.style.maxWidth = "400px";
+      modalBox.style.boxShadow = "0 0 20px rgba(0,0,0,0.2)";
+      modalBox.style.position = "relative";
+      modalBox.style.textAlign = "center";
+
+      modalBox.innerHTML = `
+      <div style="margin-bottom: 1em;">⚠️ A credit card processing fee will be applied to your order total.</div>
+      <button id="cc-fee-close-btn" style="
+        background-color: #dadada;
+        color: black;
+        border: none;
+        padding: 4px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+      ">Accept</button>
+    `;
+
+      modalOverlay.appendChild(modalBox);
+      document.body.appendChild(modalOverlay);
+
+      const closeBtn = modalBox.querySelector(
+        "#cc-fee-close-btn"
+      ) as HTMLButtonElement;
+      closeBtn.onclick = () => {
+        modalOverlay.remove();
+      };
+    };
+
+    const waitForIframe = () => {
+      const iframe = document.querySelector(
+        "#load_payment"
+      ) as HTMLElement | null;
+      if (iframe && iframe.offsetParent !== null) {
+        displayCcFeeMessage();
+        return;
+      }
+      requestAnimationFrame(waitForIframe); // keep checking
+    };
+
+    // Delay a little to ensure DOM is initialized
+    setTimeout(() => requestAnimationFrame(waitForIframe), 300);
   }
 }
 
