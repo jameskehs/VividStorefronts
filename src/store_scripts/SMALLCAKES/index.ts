@@ -3,7 +3,6 @@
 
 import { StorefrontPage } from "../../enums/StorefrontPage.enum";
 import { GLOBALVARS } from "../../index";
-import { initCreditCardFeeNotice } from "../../shared/index";
 
 export function main() {
   console.log(GLOBALVARS.currentPage);
@@ -18,17 +17,7 @@ export function main() {
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTCONFIRMATION) {
   }
-  if (
-    GLOBALVARS.currentPage === StorefrontPage.CHECKOUTPAYMENT ||
-    window.location.pathname.includes("/checkout/4-payment.php")
-  ) {
-    initCreditCardFeeNotice({
-      percentage: 3,
-      storage: "session", // don’t show again this session after accept
-      storageKey: "cc-fee-accepted",
-      iframeSelector: "#load_payment", // waits until the payment area is visible
-      // condition: () => /* optional extra guard if you need one */
-    });
+  if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTPAYMENT) {
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTREVIEW) {
   }

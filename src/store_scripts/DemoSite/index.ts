@@ -3,7 +3,6 @@ import { GLOBALVARS } from "../../index";
 import { applyPromoCode } from "../../shared/ApplyPromoCode";
 import { persistDiscountedTotals } from "../../shared/persistDiscountedTotals";
 import { monitorResidentialToastAndBlockPage } from "../../shared/BlockOnResidentialToast";
-import { initCreditCardFeeNotice } from "../../shared/index";
 
 export function main() {
   function init() {
@@ -73,14 +72,6 @@ export function main() {
     window.location.pathname.includes("/checkout/4-payment.php")
   ) {
     applyPromoCode();
-
-    initCreditCardFeeNotice({
-      percentage: 3,
-      storage: "session", // don’t show again this session after accept
-      storageKey: "cc-fee-accepted",
-      iframeSelector: "#load_payment", // waits until the payment area is visible
-      // condition: () => /* optional extra guard if you need one */
-    });
   }
 }
 
