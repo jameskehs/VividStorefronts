@@ -58,6 +58,11 @@ export function main() {
       $("#addToCartButton").text("Add to Cart & Return to Sticker Page");
     }
 
+    if (productName.includes("Hot Cappuccino Label")) {
+      localStorage.setItem("redirect", "/catalog/?g=3544&y=8340");
+      $("#addToCartButton").text("Add to Cart & Return to Sticker Page");
+    }
+
     $("#qtyAvailableDisplay, input#qtyAvailable").closest("tr").hide();
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CART) {
