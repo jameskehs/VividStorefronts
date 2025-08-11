@@ -33,6 +33,31 @@ export function main() {
       $("#addToCartButton").text("Add to Cart & Return to Sticker Page");
     }
 
+    if (productName.includes("Tea Flavor Label")) {
+      localStorage.setItem("redirect", "/catalog/?g=3544&y=8343");
+      $("#addToCartButton").text("Add to Cart & Return to Sticker Page");
+    }
+
+    if (productName.includes("Tea Grip")) {
+      localStorage.setItem("redirect", "/catalog/?g=3544&y=8342");
+      $("#addToCartButton").text("Add to Cart & Return to Sticker Page");
+    }
+
+    if (productName.includes("Whole Bean Hopper Topper")) {
+      localStorage.setItem("redirect", "/catalog/?g=3544&y=8344");
+      $("#addToCartButton").text("Add to Cart & Return to Sticker Page");
+    }
+
+    if (productName.includes("KanPak Label")) {
+      localStorage.setItem("redirect", "/catalog/?g=3544&y=8337");
+      $("#addToCartButton").text("Add to Cart & Return to Sticker Page");
+    }
+
+    if (productName.includes("Infusion Label")) {
+      localStorage.setItem("redirect", "/catalog/?g=3544&y=8717");
+      $("#addToCartButton").text("Add to Cart & Return to Sticker Page");
+    }
+
     $("#qtyAvailableDisplay, input#qtyAvailable").closest("tr").hide();
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CART) {

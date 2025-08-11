@@ -160,8 +160,71 @@ export function initCreditCardFeeNotice(
 }
 
 /* ─────────────────────────────────────────────────────────────
+   Front-end CC fee calculation & grand total update
+   - Includes tax in fee base (subtotal + shipping + tax)
+────────────────────────────────────────────────────────────── */
+
+export interface CcFeeCalcOptions {
+  /** 0.03 means 3% */
+  rate?: number;
+  /** If true, include tax in the fee base */
+  includeTaxInFee?: boolean;
+  /** DOM IDs for targets (without #) */
+  ids?: {
+    subtotal?: string; // default: subPrice
+    tax?: string; // default: taxPrice
+    shipping?: string; // default: shipPrice
+    fee?: string; // default: ccConvFee
+    grand?: string; // default: grandPrice
+  };
+}
+
+export function updateCcFeeAndGrandTotal(opts: CcFeeCalcOptions = {}): void {
+  if (typeof window === "undefined" || typeof document === "undefined") return;
+
+  const rate = opts.rate ?? 0.03;
+  const includeTaxInFee = opts.includeTaxInFee ?? true; // <- default TRUE now
+  const ids = {
+    subtotal: opts.ids?.subtotal ?? "subPrice",
+    tax: opts.ids?.tax ?? "taxPrice",
+    shipping: opts.ids?.shipping ?? "shipPrice",
+    fee: opts.ids?.fee ?? "ccConvFee",
+    grand: opts.ids?.grand ?? "grandPrice",
+  };
+
+  const readNumber = (id: string) => {
+    const el = document.getElementById(id);
+    if (!el) return 0;
+    const txt = (el.textContent || "").replace(/[^0-9.\-]/g, "");
+    const n = parseFloat(txt);
+    return isNaN(n) ? 0 : n;
+  };
+
+  const writeMoney = (id: string, val: number) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = val.toFixed(2);
+  };
+
+  const round2 = (n: number) => Math.round(n * 100) / 100;
+
+  const subtotal = readNumber(ids.subtotal);
+  const tax = readNumber(ids.tax);
+  const shipping = readNumber(ids.shipping);
+
+  // Includes tax in fee base when includeTaxInFee = true
+  const feeBase = subtotal + shipping + (includeTaxInFee ? tax : 0);
+  const fee = round2(feeBase * rate);
+  writeMoney(ids.fee, fee);
+
+  const grand = round2(subtotal + shipping + tax + fee);
+  writeMoney(ids.grand, grand);
+}
+
+/* ─────────────────────────────────────────────────────────────
    Shared storefront bootstrap
 ────────────────────────────────────────────────────────────── */
+
+let __ccFeeObserver: MutationObserver | null = null;
 
 export function runSharedScript(options: OptionsParameter) {
   console.log("Hello from the shared script!");
@@ -187,7 +250,7 @@ export function runSharedScript(options: OptionsParameter) {
   changeSupportText(
     "If you are having issues accessing your account, please contact our support team:",
     "Phone: 225-751-7297",
-    '<a herf="mailto:loginrequest@vividink.com">Email: loginrequest@vividink.com</a>'
+    '<a href="mailto:loginrequest@vividink.com">Email: loginrequest@vividink.com</a>'
   );
 
   AddImagePickerSelectionToMemo();
@@ -196,25 +259,57 @@ export function runSharedScript(options: OptionsParameter) {
     options.enableDropdown && loadDropdownMenu();
   }
 
-  // 🔔 AUTO-TRIGGER the CC fee notice on all storefronts at payment step
+  // 🔔 AUTO-TRIGGER the CC fee notice and correct fee on the payment step
   try {
     const isPaymentPage =
       GLOBALVARS.currentPage === StorefrontPage.CHECKOUTPAYMENT ||
       window.location.pathname.includes("/checkout/4-payment.php");
 
     if (isPaymentPage) {
+      // Show the modal (once per browser, persistent)
       initCreditCardFeeNotice({
         percentage: 3,
-        storage: "local", // show once per session after accept
+        storage: "local",
         storageKey: "cc-fee-accepted",
         iframeSelector: "#load_payment",
         delayMs: 300,
-        // condition: () => true,     // optional extra guard if you ever need it
       });
+
+      // Ensure fee is computed and added into the grand total
+      const run = () =>
+        updateCcFeeAndGrandTotal({
+          rate: 0.03,
+          includeTaxInFee: true, // ✅ include tax in surcharge
+        });
+
+      // Initial run after DOM has settled a bit
+      setTimeout(run, 350);
+
+      // Recompute whenever any of these numbers change
+      const idsToWatch = ["subPrice", "taxPrice", "shipPrice"];
+      const targets = idsToWatch
+        .map((id) => document.getElementById(id))
+        .filter(Boolean) as HTMLElement[];
+
+      if (__ccFeeObserver) {
+        __ccFeeObserver.disconnect();
+        __ccFeeObserver = null;
+      }
+
+      if (targets.length) {
+        __ccFeeObserver = new MutationObserver(() => run());
+        targets.forEach((el) =>
+          __ccFeeObserver!.observe(el, {
+            childList: true,
+            subtree: true,
+            characterData: true,
+          })
+        );
+      }
     }
   } catch (e) {
     // Never let this break checkout
-    console.warn("CC fee notice error:", e);
+    console.warn("CC fee notice or calc error:", e);
   }
 }
 
