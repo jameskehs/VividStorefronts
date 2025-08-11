@@ -103,3 +103,142 @@ function loadDropdownMenu() {
     localStorage.setItem(id!, JSON.stringify(isOpen));
   });
 }
+
+// ─────────────────────────────────────────────────────────────
+// Credit card fee notice (exported, browser-only)
+// Usage (in a storefront file):
+//   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTPAYMENT ||
+//       window.location.pathname.includes('/checkout/4-payment.php')) {
+//     initCreditCardFeeNotice({ percentage: 3 });
+//   }
+// ─────────────────────────────────────────────────────────────
+
+export interface CreditCardFeeNoticeOptions {
+  /** Percent to display (e.g., 3 means 3%) */
+  percentage?: number;
+  /** Custom message. `{PERCENT}` will be replaced with percentage */
+  message?: string;
+  /** Button text */
+  acceptText?: string;
+  /** Element to wait for (visible) before showing the modal; set null to show immediately */
+  iframeSelector?: string | null;
+  /** Delay before the first check (ms) */
+  delayMs?: number;
+  /** z-index for overlay */
+  zIndex?: number;
+  /** Persist acceptance: 'session' | 'local' | null (no persistence) */
+  storage?: "session" | "local" | null;
+  /** Storage key used when `storage` is set */
+  storageKey?: string;
+  /** Extra guard to decide whether to show (e.g., your own route check) */
+  condition?: () => boolean;
+}
+
+export function initCreditCardFeeNotice(
+  opts: CreditCardFeeNoticeOptions = {}
+): void {
+  if (typeof window === "undefined" || typeof document === "undefined") return; // safety for non-browser
+
+  const {
+    percentage = 3,
+    message = "⚠️ In an effort to keep overall cost down, a 3% surcharge will be added to all credit card transactions.",
+    acceptText = "Accept",
+    iframeSelector = "#load_payment",
+    delayMs = 300,
+    zIndex = 99999,
+    storage = "session",
+    storageKey = "cc-fee-notice-accepted",
+    condition,
+  } = opts;
+
+  // Optional route/page guard
+  if (condition && !condition()) return;
+
+  // Respect prior acceptance
+  const storageObj =
+    storage === "local"
+      ? window.localStorage
+      : storage === "session"
+      ? window.sessionStorage
+      : null;
+  if (storageObj && storageObj.getItem(storageKey) === "true") return;
+
+  const MODAL_ID = "cc-fee-notice-modal";
+  const alreadyThere = () => !!document.getElementById(MODAL_ID);
+
+  const showModal = () => {
+    if (alreadyThere()) return;
+
+    const overlay = document.createElement("div");
+    overlay.id = MODAL_ID;
+    Object.assign(overlay.style, {
+      position: "fixed",
+      top: "0",
+      left: "0",
+      width: "100vw",
+      height: "100vh",
+      backgroundColor: "rgba(0, 0, 0, 0.4)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      zIndex: String(zIndex),
+    });
+
+    const box = document.createElement("div");
+    Object.assign(box.style, {
+      backgroundColor: "#ffffff",
+      border: "1px solid #ffffff",
+      color: "#000000",
+      padding: "24px",
+      borderRadius: "8px",
+      fontSize: "1.05rem",
+      fontWeight: "bold",
+      maxWidth: "420px",
+      boxShadow: "0 0 20px rgba(0,0,0,0.2)",
+      position: "relative",
+      textAlign: "center",
+    });
+
+    box.innerHTML = `
+      <div style="margin-bottom: 1em;">
+        ${message.replace("{PERCENT}", String(percentage))}
+      </div>
+      <button id="cc-fee-close-btn" style="
+        background-color: #dadada;
+        color: black;
+        border: none;
+        padding: 6px 18px;
+        border-radius: 4px;
+        cursor: pointer;
+      ">${acceptText}</button>
+    `;
+
+    overlay.appendChild(box);
+    document.body.appendChild(overlay);
+
+    const closeBtn = box.querySelector(
+      "#cc-fee-close-btn"
+    ) as HTMLButtonElement | null;
+    if (closeBtn) {
+      closeBtn.onclick = () => {
+        if (storageObj) storageObj.setItem(storageKey, "true");
+        overlay.remove();
+      };
+    }
+  };
+
+  const waitForTarget = () => {
+    if (!iframeSelector) {
+      showModal();
+      return;
+    }
+    const el = document.querySelector(iframeSelector) as HTMLElement | null;
+    if (el && el.offsetParent !== null) {
+      showModal();
+      return;
+    }
+    requestAnimationFrame(waitForTarget);
+  };
+
+  setTimeout(() => requestAnimationFrame(waitForTarget), delayMs);
+}
