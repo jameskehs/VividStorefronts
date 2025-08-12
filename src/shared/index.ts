@@ -269,8 +269,7 @@ export function runSharedScript(options: OptionsParameter) {
   const isCheckout = path.startsWith("/checkout/");
   const isPaymentPage =
     GLOBALVARS.currentPage === StorefrontPage.CHECKOUTPAYMENT ||
-    path.includes("/checkout/4-payment.php") ||
-    path.includes("/checkout/6-payment.php");
+    path.includes("/checkout/4-payment.php");
 
   // 🔒 Do NOT modify site chrome or content on checkout pages
   if (!isCheckout) {
