@@ -9,3 +9,152 @@ div#inventoryAccountNotice {
   z-index: 9999;
   font-size: 1.25rem;
 }
+.tableSiteBanner img {
+  height: 120px;
+}
+
+#qtyAvailableDisplay,
+input#qtyAvailable {
+  display: none;
+}
+
+.deliveryTimeCol,
+#shipping_method_table tbody tr td:nth-of-type(3) {
+  display: none;
+}
+
+/* === MENU CONTAINER === */
+#menu {
+  display: flex;
+  justify-content: center; /* or space-between */
+  align-items: center;
+}
+
+#menu li {
+  display: inline-block;
+  float: none; /* REMOVE float */
+  text-align: center;
+}
+
+/* === LINK STYLING === */
+#menu li a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 52px;
+  padding: 10px 14px;
+  color: #444;
+  text-decoration: none;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+#menu li a .icon-wrap i {
+  color: #fff !important;
+  font-size: 28px;
+  line-height: 1;
+  vertical-align: middle;
+}
+
+/* === HOVER === */
+#menu li a:hover {
+  transform: scale(1.15);
+  color: #fff;
+}
+
+/* === REMOVE ALL UNDERLINES === */
+#menu li a,
+#menu li a i,
+#menu li a:before,
+#menu li a:after {
+  text-decoration: none !important;
+  border: none !important;
+  background: transparent !important;
+  outline: none !important;
+}
+
+/* === REMOVE SELECTED UNDERLINE === */
+#menu li.menuG a:before {
+  display: none !important;
+}
+
+/* === ICON WRAPPER === */
+.icon-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  vertical-align: middle;
+}
+
+/* === CART ICON FIXED ALIGNMENT === */
+.icon-wrap i.fa-shopping-cart {
+  font-size: 24px;
+  line-height: 1;
+  position: relative;
+  top: -4px; /* fine-tune as needed */
+}
+
+/* === BADGE SHOWN BESIDE ICON (NOT OVERLAPPING) === */
+.icon-wrap .badge {
+  display: inline-block;
+  background-color: #0c95be;
+  color: white;
+  font-size: 11px;
+  font-weight: bold;
+  border-radius: 12px;
+  padding: 2px 6px;
+  line-height: 1;
+  min-width: 16px;
+  text-align: center;
+}
+
+/* === LAST ITEM FIX === */
+#menu li:last-child a {
+  padding: 10px 0 0 15px;
+  background: transparent;
+}
+
+/* Inside #logoLinks layout */
+#logoLinks .logo-layout {
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+#home-search-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+#home-search-input {
+  height: 42px;
+  padding: 4px;
+  font-size: 18px;
+  width: 400px;
+  margin-right: 12px;
+  border: 1px solid #bbb;
+}
+
+#home-search-btn {
+  height: 42px;
+  width: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 1px solid #bbb;
+  background-color: #fff;
+}
+
+#home-search-btn svg {
+  height: 20px;
+  width: 20px;
+}
+
+.list-style-buttons {
+  display: inline;
+  margin-bottom: 10px;
+}
+
+#searchbar {
+  display: none;
+}
