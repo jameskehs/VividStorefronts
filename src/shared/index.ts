@@ -36,149 +36,6 @@ export function calculateCreditCardFees<T extends FeeShipmentLike>(
 }
 
 /* ─────────────────────────────────────────────────────────────
-   Credit card fee notice (exported & auto-triggered)
-────────────────────────────────────────────────────────────── */
-
-export interface CreditCardFeeNoticeOptions {
-  percentage?: number;
-  message?: string;
-  acceptText?: string;
-  iframeSelector?: string | null;
-  iframeTitle?: string; // NEW
-  delayMs?: number;
-  zIndex?: number;
-  storage?: "session" | "local" | null;
-  storageKey?: string;
-  condition?: () => boolean;
-}
-
-export function initCreditCardFeeNotice(
-  opts: CreditCardFeeNoticeOptions = {}
-): void {
-  if (typeof window === "undefined" || typeof document === "undefined") return;
-
-  const {
-    percentage = 3,
-    message = "⚠️ In an effort to keep overall cost down, a {PERCENT}% surcharge will be added to all credit card transactions.",
-    acceptText = "Accept",
-    iframeSelector = "#load_payment",
-    iframeTitle = "Credit Card Payment Form", // NEW default
-    delayMs = 300,
-    zIndex = 99999,
-    storage = "session",
-    storageKey = "cc-fee-notice-accepted",
-    condition,
-  } = opts;
-
-  if (condition && !condition()) return;
-
-  const storageObj =
-    storage === "local"
-      ? window.localStorage
-      : storage === "session"
-      ? window.sessionStorage
-      : null;
-
-  if (storageObj && storageObj.getItem(storageKey) === "true") return;
-
-  const MODAL_ID = "cc-fee-notice-modal";
-  const alreadyThere = () => !!document.getElementById(MODAL_ID);
-
-  // Ensure the iframe has an accessible name
-  const ensureIframeAccessibleName = () => {
-    if (!iframeSelector) return;
-    const frame = document.querySelector(
-      iframeSelector
-    ) as HTMLIFrameElement | null;
-    if (!frame) return;
-    if (!frame.title) frame.title = iframeTitle; // fixes “Frames must have an accessible name”
-    if (!frame.getAttribute("aria-label"))
-      frame.setAttribute("aria-label", iframeTitle);
-  };
-
-  const showModal = () => {
-    if (alreadyThere()) return;
-
-    const overlay = document.createElement("div");
-    overlay.id = MODAL_ID;
-    Object.assign(overlay.style, {
-      position: "fixed",
-      top: "0",
-      left: "0",
-      width: "100vw",
-      height: "100vh",
-      backgroundColor: "rgba(0, 0, 0, 0.4)",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      zIndex: String(zIndex),
-    });
-
-    const box = document.createElement("div");
-    Object.assign(box.style, {
-      backgroundColor: "#ffffff",
-      border: "1px solid #ffffff",
-      color: "#000000",
-      padding: "24px",
-      borderRadius: "8px",
-      fontSize: "1.05rem",
-      fontWeight: "bold",
-      maxWidth: "420px",
-      boxShadow: "0 0 20px rgba(0,0,0,0.2)",
-      position: "relative",
-      textAlign: "center",
-    });
-
-    box.innerHTML = `
-      <div style="margin-bottom: 1em;">
-        ${message.replace("{PERCENT}", String(percentage))}
-      </div>
-      <button id="cc-fee-close-btn" style="
-        background-color: #dadada;
-        color: black;
-        border: none;
-        padding: 6px 18px;
-        border-radius: 4px;
-        cursor: pointer;
-      ">${acceptText}</button>
-    `;
-
-    overlay.appendChild(box);
-    document.body.appendChild(overlay);
-
-    const closeBtn = box.querySelector(
-      "#cc-fee-close-btn"
-    ) as HTMLButtonElement | null;
-    if (closeBtn) {
-      closeBtn.onclick = () => {
-        if (storageObj) storageObj.setItem(storageKey, "true");
-        overlay.remove();
-      };
-    }
-  };
-
-  const waitForTarget = () => {
-    if (!iframeSelector) {
-      showModal();
-      return;
-    }
-    const el = document.querySelector(iframeSelector) as HTMLElement | null;
-    if (el && el.offsetParent !== null) {
-      ensureIframeAccessibleName(); // set title once visible
-      showModal();
-      return;
-    }
-    requestAnimationFrame(waitForTarget);
-  };
-
-  setTimeout(() => requestAnimationFrame(waitForTarget), delayMs);
-
-  // If iframe reloads/swaps — keep it titled
-  const bodyObserver = new MutationObserver(() => ensureIframeAccessibleName());
-  bodyObserver.observe(document.body, { childList: true, subtree: true });
-}
-
-/* ─────────────────────────────────────────────────────────────
    NAN shim for buggy PHP pages
 ────────────────────────────────────────────────────────────── */
 
@@ -205,14 +62,14 @@ function installNaNShimEarly(): void {
 ────────────────────────────────────────────────────────────── */
 
 export interface CcFeeCalcOptions {
-  rate?: number;
-  includeTaxInFee?: boolean;
+  rate?: number; // e.g., 0.03 for 3%
+  includeTaxInFee?: boolean; // true = fee on (subtotal + shipping + tax)
   ids?: {
-    subtotal?: string;
-    tax?: string;
-    shipping?: string;
-    fee?: string;
-    grand?: string;
+    subtotal?: string; // default "subPrice"
+    tax?: string; // default "taxPrice"
+    shipping?: string; // default "shipPrice"
+    fee?: string; // default "ccConvFee"
+    grand?: string; // default "grandPrice"
   };
 }
 
@@ -220,7 +77,7 @@ export function updateCcFeeAndGrandTotal(opts: CcFeeCalcOptions = {}): void {
   if (typeof window === "undefined" || typeof document === "undefined") return;
 
   const rate = opts.rate ?? 0.03;
-  const includeTaxInFee = opts.includeTaxInFee ?? true;
+  const includeTaxInFee = opts.includeTaxInFee ?? true; // include taxes in fee
   const ids = {
     subtotal: opts.ids?.subtotal ?? "subPrice",
     tax: opts.ids?.tax ?? "taxPrice",
@@ -295,40 +152,25 @@ export function runSharedScript(options: OptionsParameter) {
     options.enableDropdown && loadDropdownMenu();
   }
 
+  // Payment-page-only CC fee calc (no pop-up, no iframe title handling)
   try {
     const isPaymentPage =
       GLOBALVARS.currentPage === StorefrontPage.CHECKOUTPAYMENT ||
       window.location.pathname.includes("/checkout/4-payment.php");
 
     if (isPaymentPage) {
-      installNaNShimEarly(); // 👈 Run NAN shim first
-
-      // Immediate iframe title safeguard
-      const f = document.getElementById(
-        "load_payment"
-      ) as HTMLIFrameElement | null;
-      if (f && !f.title) {
-        f.title = "Credit Card Payment Form";
-        if (!f.getAttribute("aria-label"))
-          f.setAttribute("aria-label", "Credit Card Payment Form");
-      }
-
-      initCreditCardFeeNotice({
-        percentage: 3,
-        storage: "local",
-        storageKey: "cc-fee-accepted",
-        iframeSelector: "#load_payment",
-        delayMs: 300,
-      });
+      installNaNShimEarly();
 
       const run = () =>
         updateCcFeeAndGrandTotal({
           rate: 0.03,
-          includeTaxInFee: true,
+          includeTaxInFee: true, // fee includes tax
         });
 
+      // Initial calc after DOM paints
       setTimeout(run, 350);
 
+      // Recalculate whenever these numbers change
       const idsToWatch = ["subPrice", "taxPrice", "shipPrice"];
       const targets = idsToWatch
         .map((id) => document.getElementById(id))
@@ -351,7 +193,7 @@ export function runSharedScript(options: OptionsParameter) {
       }
     }
   } catch (e) {
-    console.warn("CC fee notice or calc error:", e);
+    console.warn("CC fee calc error:", e);
   }
 }
 
