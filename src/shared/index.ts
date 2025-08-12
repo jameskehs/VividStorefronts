@@ -265,54 +265,65 @@ let __ccFeeObserver: MutationObserver | null = null;
 export function runSharedScript(options: OptionsParameter) {
   console.log("Hello from the shared script!");
 
-  $(".tableSiteBanner, #navWrapper").wrapAll(`<div id="logoLinks"></div>`);
+  const path = window.location.pathname;
+  const isCheckout = path.startsWith("/checkout/");
+  const isPaymentPage =
+    GLOBALVARS.currentPage === StorefrontPage.CHECKOUTPAYMENT ||
+    path.includes("/checkout/4-payment.php") ||
+    path.includes("/checkout/6-payment.php");
 
-  options.hideHomeLink && $(".linkH").remove();
-  options.hideAddressBook &&
-    $("button#saveAddressBook, table#addressBook").remove();
-  options.hideCompanyShipTo && $("div#shipToCompany").remove();
-  options.lockAddressBook &&
-    $('button[title="Import address book"], button#saveAddressBook').remove();
+  // 🔒 Do NOT modify site chrome or content on checkout pages
+  if (!isCheckout) {
+    // --- safe on non-checkout pages only ---
+    $(".tableSiteBanner, #navWrapper").wrapAll(`<div id="logoLinks"></div>`);
 
-  ChangeInventoryCountNoticeNEW(
-    "Inventory not available for the desired order quantity. Please contact your account manager at 225-751-7297, or by email at sales@poweredbyprisma.com",
-    "sales@poweredbyprisma.com"
-  );
+    options.hideHomeLink && $(".linkH").remove();
+    options.hideAddressBook &&
+      $("button#saveAddressBook, table#addressBook").remove();
+    options.hideCompanyShipTo && $("div#shipToCompany").remove();
+    options.lockAddressBook &&
+      $('button[title="Import address book"], button#saveAddressBook').remove();
 
-  ChangeCustomerServiceMessage(
-    "For customer service, please email your Sales Representative listed above."
-  );
+    ChangeInventoryCountNoticeNEW(
+      "Inventory not available for the desired order quantity. Please contact your account manager at 225-751-7297, or by email at sales@poweredbyprisma.com",
+      "sales@poweredbyprisma.com"
+    );
 
-  changeSupportText(
-    "If you are having issues accessing your account, please contact our support team:",
-    "Phone: 225-751-7297",
-    '<a href="mailto:loginrequest@vividink.com">Email: loginrequest@vividink.com</a>'
-  );
+    ChangeCustomerServiceMessage(
+      "For customer service, please email your Sales Representative listed above."
+    );
 
-  AddImagePickerSelectionToMemo();
+    changeSupportText(
+      "If you are having issues accessing your account, please contact our support team:",
+      "Phone: 225-751-7297",
+      '<a href="mailto:loginrequest@vividink.com">Email: loginrequest@vividink.com</a>'
+    );
 
-  if (GLOBALVARS.currentPage === StorefrontPage.CATALOG) {
-    options.enableDropdown && loadDropdownMenu();
+    AddImagePickerSelectionToMemo();
+
+    if (GLOBALVARS.currentPage === StorefrontPage.CATALOG) {
+      options.enableDropdown && loadDropdownMenu();
+    }
   }
 
+  // ✅ Payment step: only run payment-related logic; no layout moves
   try {
-    const isPaymentPage =
-      GLOBALVARS.currentPage === StorefrontPage.CHECKOUTPAYMENT ||
-      window.location.pathname.includes("/checkout/4-payment.php");
-
     if (isPaymentPage) {
-      installNaNShimEarly(); // 👈 Run NAN shim first
-
-      // Immediate iframe title safeguard
+      // If you added a HEAD shim, keep window.NAN = 0 there.
+      // Belt-and-suspenders: ensure iframe has a title and is visible
       const f = document.getElementById(
         "load_payment"
       ) as HTMLIFrameElement | null;
-      if (f && !f.title) {
-        f.title = "Credit Card Payment Form";
+      if (f) {
+        if (!f.title) f.title = "Credit Card Payment Form";
         if (!f.getAttribute("aria-label"))
           f.setAttribute("aria-label", "Credit Card Payment Form");
+        f.style.display = "block";
+        f.style.visibility = "visible";
+        if (!f.style.minHeight) f.style.minHeight = "520px";
       }
 
+      // Show the surcharge notice
       initCreditCardFeeNotice({
         percentage: 3,
         storage: "local",
@@ -321,6 +332,7 @@ export function runSharedScript(options: OptionsParameter) {
         delayMs: 300,
       });
 
+      // Keep totals correct
       const run = () =>
         updateCcFeeAndGrandTotal({
           rate: 0.03,
@@ -338,7 +350,6 @@ export function runSharedScript(options: OptionsParameter) {
         __ccFeeObserver.disconnect();
         __ccFeeObserver = null;
       }
-
       if (targets.length) {
         __ccFeeObserver = new MutationObserver(() => run());
         targets.forEach((el) =>
