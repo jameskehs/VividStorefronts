@@ -331,6 +331,13 @@ export function runSharedScript(options: OptionsParameter) {
     // Never let this break checkout
     console.warn("CC fee notice or calc error:", e);
   }
+  // Extra safety: set title immediately if frame is already there
+  const f = document.getElementById("load_payment") as HTMLIFrameElement | null;
+  if (f && !f.title) {
+    f.title = "Credit Card Payment Form";
+    if (!f.getAttribute("aria-label"))
+      f.setAttribute("aria-label", "Credit Card Payment Form");
+  }
 }
 
 function loadDropdownMenu() {
