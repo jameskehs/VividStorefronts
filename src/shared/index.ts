@@ -41,10 +41,9 @@ export function calculateCreditCardFees<T extends FeeShipmentLike>(
 
 export interface CreditCardFeeNoticeOptions {
   percentage?: number;
-  message?: string;
+  message?: string; // {PERCENT} placeholder allowed
   acceptText?: string;
   iframeSelector?: string | null;
-  iframeTitle?: string; // NEW
   delayMs?: number;
   zIndex?: number;
   storage?: "session" | "local" | null;
@@ -62,7 +61,6 @@ export function initCreditCardFeeNotice(
     message = "⚠️ In an effort to keep overall cost down, a {PERCENT}% surcharge will be added to all credit card transactions.",
     acceptText = "Accept",
     iframeSelector = "#load_payment",
-    iframeTitle = "Credit Card Payment Form", // NEW default
     delayMs = 300,
     zIndex = 99999,
     storage = "session",
@@ -83,18 +81,6 @@ export function initCreditCardFeeNotice(
 
   const MODAL_ID = "cc-fee-notice-modal";
   const alreadyThere = () => !!document.getElementById(MODAL_ID);
-
-  // Ensure the iframe has an accessible name
-  const ensureIframeAccessibleName = () => {
-    if (!iframeSelector) return;
-    const frame = document.querySelector(
-      iframeSelector
-    ) as HTMLIFrameElement | null;
-    if (!frame) return;
-    if (!frame.title) frame.title = iframeTitle; // fixes “Frames must have an accessible name”
-    if (!frame.getAttribute("aria-label"))
-      frame.setAttribute("aria-label", iframeTitle);
-  };
 
   const showModal = () => {
     if (alreadyThere()) return;
@@ -164,7 +150,6 @@ export function initCreditCardFeeNotice(
     }
     const el = document.querySelector(iframeSelector) as HTMLElement | null;
     if (el && el.offsetParent !== null) {
-      ensureIframeAccessibleName(); // set title once visible
       showModal();
       return;
     }
@@ -172,47 +157,25 @@ export function initCreditCardFeeNotice(
   };
 
   setTimeout(() => requestAnimationFrame(waitForTarget), delayMs);
-
-  // If iframe reloads/swaps — keep it titled
-  const bodyObserver = new MutationObserver(() => ensureIframeAccessibleName());
-  bodyObserver.observe(document.body, { childList: true, subtree: true });
-}
-
-/* ─────────────────────────────────────────────────────────────
-   NAN shim for buggy PHP pages
-────────────────────────────────────────────────────────────── */
-
-function installNaNShimEarly(): void {
-  const g = window as unknown as Record<string, any>;
-  if (typeof g.NAN === "undefined") {
-    g.NAN = Number.NaN;
-  }
-  const handler = (ev: ErrorEvent) => {
-    if (
-      typeof g.NAN === "undefined" &&
-      /NAN is not defined/i.test(ev.message || "")
-    ) {
-      g.NAN = Number.NaN;
-      ev.preventDefault();
-      window.removeEventListener("error", handler, true);
-    }
-  };
-  window.addEventListener("error", handler, true);
 }
 
 /* ─────────────────────────────────────────────────────────────
    Front-end CC fee calculation & grand total update
+   - Includes tax in fee base (subtotal + shipping + tax)
 ────────────────────────────────────────────────────────────── */
 
 export interface CcFeeCalcOptions {
+  /** 0.03 means 3% */
   rate?: number;
+  /** If true, include tax in the fee base */
   includeTaxInFee?: boolean;
+  /** DOM IDs for targets (without #) */
   ids?: {
-    subtotal?: string;
-    tax?: string;
-    shipping?: string;
-    fee?: string;
-    grand?: string;
+    subtotal?: string; // default: subPrice
+    tax?: string; // default: taxPrice
+    shipping?: string; // default: shipPrice
+    fee?: string; // default: ccConvFee
+    grand?: string; // default: grandPrice
   };
 }
 
@@ -220,7 +183,7 @@ export function updateCcFeeAndGrandTotal(opts: CcFeeCalcOptions = {}): void {
   if (typeof window === "undefined" || typeof document === "undefined") return;
 
   const rate = opts.rate ?? 0.03;
-  const includeTaxInFee = opts.includeTaxInFee ?? true;
+  const includeTaxInFee = opts.includeTaxInFee ?? true; // <- default TRUE now
   const ids = {
     subtotal: opts.ids?.subtotal ?? "subPrice",
     tax: opts.ids?.tax ?? "taxPrice",
@@ -248,6 +211,7 @@ export function updateCcFeeAndGrandTotal(opts: CcFeeCalcOptions = {}): void {
   const tax = readNumber(ids.tax);
   const shipping = readNumber(ids.shipping);
 
+  // Includes tax in fee base when includeTaxInFee = true
   const feeBase = subtotal + shipping + (includeTaxInFee ? tax : 0);
   const fee = round2(feeBase * rate);
   writeMoney(ids.fee, fee);
@@ -265,64 +229,44 @@ let __ccFeeObserver: MutationObserver | null = null;
 export function runSharedScript(options: OptionsParameter) {
   console.log("Hello from the shared script!");
 
-  const path = window.location.pathname;
-  const isCheckout = path.startsWith("/checkout/");
-  const isPaymentPage =
-    GLOBALVARS.currentPage === StorefrontPage.CHECKOUTPAYMENT ||
-    path.includes("/checkout/4-payment.php");
+  $(".tableSiteBanner, #navWrapper").wrapAll(`<div id="logoLinks"></div>`);
 
-  // 🔒 Do NOT modify site chrome or content on checkout pages
-  if (!isCheckout) {
-    // --- safe on non-checkout pages only ---
-    $(".tableSiteBanner, #navWrapper").wrapAll(`<div id="logoLinks"></div>`);
+  options.hideHomeLink && $(".linkH").remove();
+  options.hideAddressBook &&
+    $("button#saveAddressBook, table#addressBook").remove();
+  options.hideCompanyShipTo && $("div#shipToCompany").remove();
+  options.lockAddressBook &&
+    $('button[title="Import address book"], button#saveAddressBook').remove();
 
-    options.hideHomeLink && $(".linkH").remove();
-    options.hideAddressBook &&
-      $("button#saveAddressBook, table#addressBook").remove();
-    options.hideCompanyShipTo && $("div#shipToCompany").remove();
-    options.lockAddressBook &&
-      $('button[title="Import address book"], button#saveAddressBook').remove();
+  ChangeInventoryCountNoticeNEW(
+    "Inventory not available for the desired order quantity. Please contact your account manager at 225-751-7297, or by email at sales@poweredbyprisma.com",
+    "sales@poweredbyprisma.com"
+  );
 
-    ChangeInventoryCountNoticeNEW(
-      "Inventory not available for the desired order quantity. Please contact your account manager at 225-751-7297, or by email at sales@poweredbyprisma.com",
-      "sales@poweredbyprisma.com"
-    );
+  ChangeCustomerServiceMessage(
+    "For customer service, please email your Sales Representative listed above."
+  );
 
-    ChangeCustomerServiceMessage(
-      "For customer service, please email your Sales Representative listed above."
-    );
+  changeSupportText(
+    "If you are having issues accessing your account, please contact our support team:",
+    "Phone: 225-751-7297",
+    '<a href="mailto:loginrequest@vividink.com">Email: loginrequest@vividink.com</a>'
+  );
 
-    changeSupportText(
-      "If you are having issues accessing your account, please contact our support team:",
-      "Phone: 225-751-7297",
-      '<a href="mailto:loginrequest@vividink.com">Email: loginrequest@vividink.com</a>'
-    );
+  AddImagePickerSelectionToMemo();
 
-    AddImagePickerSelectionToMemo();
-
-    if (GLOBALVARS.currentPage === StorefrontPage.CATALOG) {
-      options.enableDropdown && loadDropdownMenu();
-    }
+  if (GLOBALVARS.currentPage === StorefrontPage.CATALOG) {
+    options.enableDropdown && loadDropdownMenu();
   }
 
-  // ✅ Payment step: only run payment-related logic; no layout moves
+  // 🔔 AUTO-TRIGGER the CC fee notice and correct fee on the payment step
   try {
-    if (isPaymentPage) {
-      // If you added a HEAD shim, keep window.NAN = 0 there.
-      // Belt-and-suspenders: ensure iframe has a title and is visible
-      const f = document.getElementById(
-        "load_payment"
-      ) as HTMLIFrameElement | null;
-      if (f) {
-        if (!f.title) f.title = "Credit Card Payment Form";
-        if (!f.getAttribute("aria-label"))
-          f.setAttribute("aria-label", "Credit Card Payment Form");
-        f.style.display = "block";
-        f.style.visibility = "visible";
-        if (!f.style.minHeight) f.style.minHeight = "520px";
-      }
+    const isPaymentPage =
+      GLOBALVARS.currentPage === StorefrontPage.CHECKOUTPAYMENT ||
+      window.location.pathname.includes("/checkout/4-payment.php");
 
-      // Show the surcharge notice
+    if (isPaymentPage) {
+      // Show the modal (once per browser, persistent)
       initCreditCardFeeNotice({
         percentage: 3,
         storage: "local",
@@ -331,15 +275,17 @@ export function runSharedScript(options: OptionsParameter) {
         delayMs: 300,
       });
 
-      // Keep totals correct
+      // Ensure fee is computed and added into the grand total
       const run = () =>
         updateCcFeeAndGrandTotal({
           rate: 0.03,
-          includeTaxInFee: true,
+          includeTaxInFee: true, // ✅ include tax in surcharge
         });
 
+      // Initial run after DOM has settled a bit
       setTimeout(run, 350);
 
+      // Recompute whenever any of these numbers change
       const idsToWatch = ["subPrice", "taxPrice", "shipPrice"];
       const targets = idsToWatch
         .map((id) => document.getElementById(id))
@@ -349,6 +295,7 @@ export function runSharedScript(options: OptionsParameter) {
         __ccFeeObserver.disconnect();
         __ccFeeObserver = null;
       }
+
       if (targets.length) {
         __ccFeeObserver = new MutationObserver(() => run());
         targets.forEach((el) =>
@@ -361,6 +308,7 @@ export function runSharedScript(options: OptionsParameter) {
       }
     }
   } catch (e) {
+    // Never let this break checkout
     console.warn("CC fee notice or calc error:", e);
   }
 }
