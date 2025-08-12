@@ -41,9 +41,10 @@ export function calculateCreditCardFees<T extends FeeShipmentLike>(
 
 export interface CreditCardFeeNoticeOptions {
   percentage?: number;
-  message?: string; // {PERCENT} placeholder allowed
+  message?: string;
   acceptText?: string;
   iframeSelector?: string | null;
+  iframeTitle?: string; // 👈 NEW
   delayMs?: number;
   zIndex?: number;
   storage?: "session" | "local" | null;
@@ -61,6 +62,7 @@ export function initCreditCardFeeNotice(
     message = "⚠️ In an effort to keep overall cost down, a {PERCENT}% surcharge will be added to all credit card transactions.",
     acceptText = "Accept",
     iframeSelector = "#load_payment",
+    iframeTitle = "Credit Card Payment Form", // 👈 NEW default
     delayMs = 300,
     zIndex = 99999,
     storage = "session",
@@ -81,6 +83,18 @@ export function initCreditCardFeeNotice(
 
   const MODAL_ID = "cc-fee-notice-modal";
   const alreadyThere = () => !!document.getElementById(MODAL_ID);
+
+  // 👇 helper: ensure the iframe has an accessible name
+  const ensureIframeAccessibleName = () => {
+    if (!iframeSelector) return;
+    const frame = document.querySelector(
+      iframeSelector
+    ) as HTMLIFrameElement | null;
+    if (!frame) return;
+    if (!frame.title) frame.title = iframeTitle; // fixes “Frames must have an accessible name”
+    if (!frame.getAttribute("aria-label"))
+      frame.setAttribute("aria-label", iframeTitle);
+  };
 
   const showModal = () => {
     if (alreadyThere()) return;
@@ -150,6 +164,7 @@ export function initCreditCardFeeNotice(
     }
     const el = document.querySelector(iframeSelector) as HTMLElement | null;
     if (el && el.offsetParent !== null) {
+      ensureIframeAccessibleName(); // 👈 set title once visible
       showModal();
       return;
     }
@@ -157,6 +172,11 @@ export function initCreditCardFeeNotice(
   };
 
   setTimeout(() => requestAnimationFrame(waitForTarget), delayMs);
+
+  // 👇 Bonus: iframes sometimes swap/reload—keep them titled
+  const bodyObserver = new MutationObserver(() => ensureIframeAccessibleName());
+  bodyObserver.observe(document.body, { childList: true, subtree: true });
+  // (Optional) disconnect later if you want
 }
 
 /* ─────────────────────────────────────────────────────────────
