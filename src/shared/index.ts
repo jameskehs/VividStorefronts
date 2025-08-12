@@ -44,7 +44,7 @@ export interface CreditCardFeeNoticeOptions {
   message?: string;
   acceptText?: string;
   iframeSelector?: string | null;
-  iframeTitle?: string; // 👈 NEW
+  iframeTitle?: string; // NEW
   delayMs?: number;
   zIndex?: number;
   storage?: "session" | "local" | null;
@@ -62,7 +62,7 @@ export function initCreditCardFeeNotice(
     message = "⚠️ In an effort to keep overall cost down, a {PERCENT}% surcharge will be added to all credit card transactions.",
     acceptText = "Accept",
     iframeSelector = "#load_payment",
-    iframeTitle = "Credit Card Payment Form", // 👈 NEW default
+    iframeTitle = "Credit Card Payment Form", // NEW default
     delayMs = 300,
     zIndex = 99999,
     storage = "session",
@@ -84,7 +84,7 @@ export function initCreditCardFeeNotice(
   const MODAL_ID = "cc-fee-notice-modal";
   const alreadyThere = () => !!document.getElementById(MODAL_ID);
 
-  // 👇 helper: ensure the iframe has an accessible name
+  // Ensure the iframe has an accessible name
   const ensureIframeAccessibleName = () => {
     if (!iframeSelector) return;
     const frame = document.querySelector(
@@ -164,7 +164,7 @@ export function initCreditCardFeeNotice(
     }
     const el = document.querySelector(iframeSelector) as HTMLElement | null;
     if (el && el.offsetParent !== null) {
-      ensureIframeAccessibleName(); // 👈 set title once visible
+      ensureIframeAccessibleName(); // set title once visible
       showModal();
       return;
     }
@@ -173,29 +173,46 @@ export function initCreditCardFeeNotice(
 
   setTimeout(() => requestAnimationFrame(waitForTarget), delayMs);
 
-  // 👇 Bonus: iframes sometimes swap/reload—keep them titled
+  // If iframe reloads/swaps — keep it titled
   const bodyObserver = new MutationObserver(() => ensureIframeAccessibleName());
   bodyObserver.observe(document.body, { childList: true, subtree: true });
-  // (Optional) disconnect later if you want
+}
+
+/* ─────────────────────────────────────────────────────────────
+   NAN shim for buggy PHP pages
+────────────────────────────────────────────────────────────── */
+
+function installNaNShimEarly(): void {
+  const g = window as unknown as Record<string, any>;
+  if (typeof g.NAN === "undefined") {
+    g.NAN = Number.NaN;
+  }
+  const handler = (ev: ErrorEvent) => {
+    if (
+      typeof g.NAN === "undefined" &&
+      /NAN is not defined/i.test(ev.message || "")
+    ) {
+      g.NAN = Number.NaN;
+      ev.preventDefault();
+      window.removeEventListener("error", handler, true);
+    }
+  };
+  window.addEventListener("error", handler, true);
 }
 
 /* ─────────────────────────────────────────────────────────────
    Front-end CC fee calculation & grand total update
-   - Includes tax in fee base (subtotal + shipping + tax)
 ────────────────────────────────────────────────────────────── */
 
 export interface CcFeeCalcOptions {
-  /** 0.03 means 3% */
   rate?: number;
-  /** If true, include tax in the fee base */
   includeTaxInFee?: boolean;
-  /** DOM IDs for targets (without #) */
   ids?: {
-    subtotal?: string; // default: subPrice
-    tax?: string; // default: taxPrice
-    shipping?: string; // default: shipPrice
-    fee?: string; // default: ccConvFee
-    grand?: string; // default: grandPrice
+    subtotal?: string;
+    tax?: string;
+    shipping?: string;
+    fee?: string;
+    grand?: string;
   };
 }
 
@@ -203,7 +220,7 @@ export function updateCcFeeAndGrandTotal(opts: CcFeeCalcOptions = {}): void {
   if (typeof window === "undefined" || typeof document === "undefined") return;
 
   const rate = opts.rate ?? 0.03;
-  const includeTaxInFee = opts.includeTaxInFee ?? true; // <- default TRUE now
+  const includeTaxInFee = opts.includeTaxInFee ?? true;
   const ids = {
     subtotal: opts.ids?.subtotal ?? "subPrice",
     tax: opts.ids?.tax ?? "taxPrice",
@@ -231,7 +248,6 @@ export function updateCcFeeAndGrandTotal(opts: CcFeeCalcOptions = {}): void {
   const tax = readNumber(ids.tax);
   const shipping = readNumber(ids.shipping);
 
-  // Includes tax in fee base when includeTaxInFee = true
   const feeBase = subtotal + shipping + (includeTaxInFee ? tax : 0);
   const fee = round2(feeBase * rate);
   writeMoney(ids.fee, fee);
@@ -279,14 +295,24 @@ export function runSharedScript(options: OptionsParameter) {
     options.enableDropdown && loadDropdownMenu();
   }
 
-  // 🔔 AUTO-TRIGGER the CC fee notice and correct fee on the payment step
   try {
     const isPaymentPage =
       GLOBALVARS.currentPage === StorefrontPage.CHECKOUTPAYMENT ||
       window.location.pathname.includes("/checkout/4-payment.php");
 
     if (isPaymentPage) {
-      // Show the modal (once per browser, persistent)
+      installNaNShimEarly(); // 👈 Run NAN shim first
+
+      // Immediate iframe title safeguard
+      const f = document.getElementById(
+        "load_payment"
+      ) as HTMLIFrameElement | null;
+      if (f && !f.title) {
+        f.title = "Credit Card Payment Form";
+        if (!f.getAttribute("aria-label"))
+          f.setAttribute("aria-label", "Credit Card Payment Form");
+      }
+
       initCreditCardFeeNotice({
         percentage: 3,
         storage: "local",
@@ -295,17 +321,14 @@ export function runSharedScript(options: OptionsParameter) {
         delayMs: 300,
       });
 
-      // Ensure fee is computed and added into the grand total
       const run = () =>
         updateCcFeeAndGrandTotal({
           rate: 0.03,
-          includeTaxInFee: true, // ✅ include tax in surcharge
+          includeTaxInFee: true,
         });
 
-      // Initial run after DOM has settled a bit
       setTimeout(run, 350);
 
-      // Recompute whenever any of these numbers change
       const idsToWatch = ["subPrice", "taxPrice", "shipPrice"];
       const targets = idsToWatch
         .map((id) => document.getElementById(id))
@@ -328,15 +351,7 @@ export function runSharedScript(options: OptionsParameter) {
       }
     }
   } catch (e) {
-    // Never let this break checkout
     console.warn("CC fee notice or calc error:", e);
-  }
-  // Extra safety: set title immediately if frame is already there
-  const f = document.getElementById("load_payment") as HTMLIFrameElement | null;
-  if (f && !f.title) {
-    f.title = "Credit Card Payment Form";
-    if (!f.getAttribute("aria-label"))
-      f.setAttribute("aria-label", "Credit Card Payment Form");
   }
 }
 
