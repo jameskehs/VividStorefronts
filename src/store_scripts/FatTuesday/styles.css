@@ -1,0 +1,24 @@
+.tableSiteBanner img {
+  height: 100px;
+}
+
+#pricing-table,
+#pricing-table tr,
+#pricing-table th,
+#pricing-table td {
+  border: 1px solid black;
+}
+
+#pricing-table th,
+#pricing-table td {
+  padding: 4px;
+}
+#pricing-table {
+  margin: 0 auto;
+  border-collapse: collapse;
+  width: auto;
+}
+#pricing-table th {
+  background-color: #ff51be !important;
+  color: white;
+}
