@@ -16,7 +16,7 @@
 #pricing-table {
   margin: 0 auto;
   border-collapse: collapse;
-  width: auto;
+  width: 400px;
 }
 #pricing-table th {
   background-color: #ff51be !important;
