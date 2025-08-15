@@ -126,7 +126,7 @@ table.tableMain {
 /* === HOVER === */
 #menu li a:hover {
   transform: scale(1.15);
-  color: #fff;
+  color: #fff !important;
 }
 
 /* === REMOVE ALL UNDERLINES === */
