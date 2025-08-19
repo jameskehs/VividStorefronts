@@ -276,3 +276,11 @@ img#productImage {
   padding: 12px;
   border: none;
 }
+
+#products {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-gap: 1px;
+  justify-content: center; /* centers items if fewer than max */
+}
