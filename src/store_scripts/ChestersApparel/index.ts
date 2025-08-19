@@ -102,15 +102,20 @@ function convertMenuTextToIcons(): void {
         );
         const iconClass = matchedKey ? iconMap[matchedKey] : "";
 
+        // ✅ Override the CATALOG link's href
+        if (matchedKey === "CATALOG") {
+          link.setAttribute("href", "/catalog/?g=3829&y=9146");
+        }
+
         if (iconClass) {
           const countMatch = rawText?.match(/\((\d+)\)/)?.[1];
 
           link.innerHTML = `
-    <span class="icon-wrap">
-      <i class="fa ${iconClass}"></i>
-      ${countMatch ? `<span class="badge">${countMatch}</span>` : ""}
-    </span>
-  `;
+            <span class="icon-wrap">
+              <i class="fa ${iconClass}"></i>
+              ${countMatch ? `<span class="badge">${countMatch}</span>` : ""}
+            </span>
+          `;
           link.setAttribute("title", rawText || "");
         }
       }
