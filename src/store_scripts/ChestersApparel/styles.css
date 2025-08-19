@@ -284,3 +284,8 @@ img#productImage {
   grid-gap: 1px;
   justify-content: center; /* centers items if fewer than max */
 }
+
+.parentSubcategoryCell {
+  height: 300px;
+  overflow: hidden;
+}
