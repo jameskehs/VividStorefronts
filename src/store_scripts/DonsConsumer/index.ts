@@ -104,7 +104,7 @@ function convertMenuTextToIcons(): void {
 
         // ✅ Override the CATALOG link's href
         if (matchedKey === "CATALOG") {
-          link.setAttribute("href", "/catalog/?g=3829&y=9146");
+          link.setAttribute("href", "/catalog/?g=3830&y=9150");
         }
 
         if (iconClass) {
