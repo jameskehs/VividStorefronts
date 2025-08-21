@@ -148,11 +148,24 @@ export function initCreditCardFeeNotice(
       showModal();
       return;
     }
-    const el = document.querySelector(iframeSelector) as HTMLElement | null;
+
+    const el = document.querySelector(
+      iframeSelector
+    ) as HTMLIFrameElement | null;
+
+    // If the iframe is present and visible…
     if (el && el.offsetParent !== null) {
+      // NEW: only show the modal once the iframe actually has a URL (tokenized)
+      const src = el.getAttribute("src") || "";
+      if (!src || src === "about:blank") {
+        requestAnimationFrame(waitForTarget);
+        return;
+      }
       showModal();
       return;
     }
+
+    // Keep waiting until the iframe is visible on the page
     requestAnimationFrame(waitForTarget);
   };
 
