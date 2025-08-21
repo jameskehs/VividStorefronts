@@ -273,7 +273,7 @@ img#productImage {
 }
 
 .catalogTbl {
-  background-color: #fff;
+  background-color: transparent;
   border-radius: 0px;
   padding: 12px;
   border: none;
