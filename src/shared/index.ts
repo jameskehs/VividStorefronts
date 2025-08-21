@@ -36,6 +36,74 @@ export function calculateCreditCardFees<T extends FeeShipmentLike>(
 }
 
 /* ─────────────────────────────────────────────────────────────
+   Ensure the hosted payment iframe has a tokenized URL (Option 3)
+   - Tries several client-provided sources, then falls back to server
+────────────────────────────────────────────────────────────── */
+async function ensurePaymentIframeSrc(): Promise<void> {
+  if (typeof window === "undefined" || typeof document === "undefined") return;
+
+  const iframe = document.getElementById(
+    "load_payment"
+  ) as HTMLIFrameElement | null;
+  if (!iframe) return;
+
+  const currentSrc = iframe.getAttribute("src") || "";
+  if (currentSrc && currentSrc !== "about:blank") {
+    // Already set
+    return;
+  }
+
+  // 1) Try a global injected by the host page
+  const fromGlobal = (window as any)?.PaymentPortalFrameURL as
+    | string
+    | undefined;
+
+  // 2) Try a hidden field rendered server-side
+  const fromHidden = (
+    document.getElementById("paymentFrameUrl") as HTMLInputElement | null
+  )?.value;
+
+  // 3) Try a data- attribute on <body>
+  const fromDataAttr =
+    document.body?.getAttribute("data-payment-frame-url") || undefined;
+
+  const candidate = [fromGlobal, fromHidden, fromDataAttr].find(
+    (u) => typeof u === "string" && /^https?:\/\//i.test(u)
+  );
+
+  if (candidate) {
+    iframe.src = candidate!;
+    return;
+  }
+
+  // 4) Fallback: ask backend to mint a session and return hosted URL
+  try {
+    const orderNumber =
+      (window as any)?.GLOBALVARS?.orderNumber ??
+      Number(
+        (document.getElementById("orderNumber") as HTMLInputElement | null)
+          ?.value
+      ) ??
+      null;
+
+    const resp = await fetch("/api/payment/frame-url", {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ orderNumber }),
+    });
+
+    if (!resp.ok) throw new Error(`frame-url ${resp.status}`);
+    const { url } = await resp.json();
+    if (!url || !/^https?:\/\//i.test(url))
+      throw new Error("Missing or bad hosted URL");
+    iframe.src = url;
+  } catch (err) {
+    console.warn("ensurePaymentIframeSrc: could not set iframe src", err);
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
    Credit card fee notice (exported & auto-triggered)
 ────────────────────────────────────────────────────────────── */
 
@@ -143,19 +211,17 @@ export function initCreditCardFeeNotice(
     }
   };
 
+  // OPTION 3: Only show the modal once the iframe is visible AND has a real src
   const waitForTarget = () => {
     if (!iframeSelector) {
       showModal();
       return;
     }
-
     const el = document.querySelector(
       iframeSelector
     ) as HTMLIFrameElement | null;
 
-    // If the iframe is present and visible…
     if (el && el.offsetParent !== null) {
-      // NEW: only show the modal once the iframe actually has a URL (tokenized)
       const src = el.getAttribute("src") || "";
       if (!src || src === "about:blank") {
         requestAnimationFrame(waitForTarget);
@@ -164,8 +230,6 @@ export function initCreditCardFeeNotice(
       showModal();
       return;
     }
-
-    // Keep waiting until the iframe is visible on the page
     requestAnimationFrame(waitForTarget);
   };
 
@@ -279,7 +343,10 @@ export function runSharedScript(options: OptionsParameter) {
       window.location.pathname.includes("/checkout/4-payment.php");
 
     if (isPaymentPage) {
-      // Show the modal (once per browser, persistent)
+      // Ensure the iframe gets a tokenized URL ASAP (Option 3 core)
+      void ensurePaymentIframeSrc();
+
+      // Show the modal (once per browser, persistent) AFTER the frame has a real src
       initCreditCardFeeNotice({
         percentage: 3,
         storage: "local",
