@@ -1,12 +1,5 @@
-body {
-  background-image: url("../user/images/dons/white-wood-background-plank.jpg");
-  background-repeat: repeat;
-  background-position: center;
-  background-size: cover;
-}
-
 .tableSiteBanner img {
-  height: 80px;
+  height: 100px;
 }
 
 #loginWrapper {
