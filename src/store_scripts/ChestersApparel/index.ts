@@ -55,6 +55,17 @@ export function main() {
     init();
   }
 
+  // ✅ Show message at top if CART page
+  if (GLOBALVARS.currentPage === StorefrontPage.CART) {
+    const cartMessage = document.createElement("div");
+    cartMessage.innerHTML = `
+      <div style="background: #fff; color: #ff0000ff; padding: 10px; text-align: center; font-weight: bold;">
+        Budget Guidance: $450 limit for new employees. $250/year for existing employees.
+      </div>
+    `;
+    document.body.insertBefore(cartMessage, document.body.firstChild);
+  }
+
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTSHIPPING) {
     $("#continueTbl .smallbody").eq(1)
       .html(`<span class="red">*</span> Delivery time listed includes 1 to 2 days to process order plus shipping.
