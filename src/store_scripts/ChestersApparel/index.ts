@@ -69,6 +69,7 @@ export function main() {
         banner.style.fontWeight = "bold";
         banner.style.border = "1px solid transparent";
         banner.style.margin = "8px 0";
+        banner.style.fontSize = "1.4em";
 
         // Message text (change as needed)
         banner.textContent =
