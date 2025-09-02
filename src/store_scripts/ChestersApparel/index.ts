@@ -47,6 +47,48 @@ export function main() {
         clearInterval(interval);
       }, 10000);
     }
+
+    // ===== CART BANNER (single-insert + positioned under login bar) =====
+    if (GLOBALVARS.currentPage === StorefrontPage.CART) {
+      const ensureCartBanner = () => {
+        // If already inserted, stop.
+        if (document.getElementById("cart-guidance-banner")) return true;
+
+        // Find the first .tableMain (this sits just below the login bar in your markup)
+        const tableMain = document.querySelector(".tableMain");
+        if (!tableMain) return false; // not ready yet
+
+        // Build the banner
+        const banner = document.createElement("div");
+        banner.id = "cart-guidance-banner";
+        banner.setAttribute("role", "status");
+        banner.style.background = "#fff";
+        banner.style.color = "#ff0000ff";
+        banner.style.padding = "10px";
+        banner.style.textAlign = "center";
+        banner.style.fontWeight = "bold";
+        banner.style.border = "1px solid transparent";
+        banner.style.margin = "8px 0";
+
+        // Message text (change as needed)
+        banner.textContent =
+          "Budget Guidance: $450 limit for new employees. $250/year for existing employees.";
+
+        // Insert directly before .tableMain (i.e., below the login bar)
+        const parent = tableMain.parentElement || tableMain;
+        parent.insertBefore(banner, tableMain);
+        return true;
+      };
+
+      // Try immediately, then retry briefly in case layout scripts render late
+      let attempts = 0;
+      const tryInsert = () => {
+        if (ensureCartBanner()) return;
+        if (++attempts < 25) setTimeout(tryInsert, 150);
+      };
+      tryInsert();
+    }
+    // ===================================================================
   }
 
   if (document.readyState === "loading") {
@@ -55,21 +97,13 @@ export function main() {
     init();
   }
 
-  // ✅ Show message at top if CART page
-  if (GLOBALVARS.currentPage === StorefrontPage.CART) {
-    const cartMessage = document.createElement("div");
-    cartMessage.innerHTML = `
-      <div style="background: #fff; color: #ff0000ff; padding: 10px; text-align: center; font-weight: bold;">
-        Budget Guidance: $450 limit for new employees. $250/year for existing employees.
-      </div>
-    `;
-    document.body.insertBefore(cartMessage, document.body.firstChild);
-  }
-
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTSHIPPING) {
-    $("#continueTbl .smallbody").eq(1)
-      .html(`<span class="red">*</span> Delivery time listed includes 1 to 2 days to process order plus shipping.
-      Please note we do not process orders on weekends or holidays.`);
+    $("#continueTbl .smallbody")
+      .eq(1)
+      .html(
+        `<span class="red">*</span> Delivery time listed includes 1 to 2 days to process order plus shipping.
+      Please note we do not process orders on weekends or holidays.`
+      );
 
     monitorResidentialToastAndBlockPage();
   }
@@ -82,6 +116,7 @@ export function main() {
     GLOBALVARS.currentPage === StorefrontPage.CHECKOUTPAYMENT ||
     window.location.pathname.includes("/checkout/4-payment.php")
   ) {
+    // (intentionally blank)
   }
 }
 
