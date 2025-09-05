@@ -53,6 +53,34 @@ export function main() {
     setTimeout(() => observer.disconnect(), durationMs);
   }
 
+  // --- NEW: hide .buttonContainer only on the Cart page ---
+  function hideCartButtonsOnce(): boolean {
+    let changed = false;
+    const nodes = document.querySelectorAll<HTMLElement>(".buttonContainer");
+    nodes.forEach((el) => {
+      if (el.style.display !== "none") {
+        el.style.display = "none";
+        changed = true;
+      }
+    });
+    return changed;
+  }
+
+  function watchAndHideCartButtons(durationMs = 8000) {
+    // Run immediately
+    hideCartButtonsOnce();
+
+    // Observe for dynamic updates (cart often re-renders)
+    const observer = new MutationObserver(() => {
+      hideCartButtonsOnce();
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    // Stop after a short window to avoid overhead
+    setTimeout(() => observer.disconnect(), durationMs);
+  }
+  // --- END NEW ---
+
   function init() {
     const isAddToCartPage = () => {
       const page = GLOBALVARS?.currentPage?.trim().toLowerCase() || "";
@@ -60,6 +88,18 @@ export function main() {
         page.includes("add to cart") ||
         window.location.pathname.includes("/cart/3-edit.php")
       );
+    };
+
+    // NEW: precise Cart page detection (not add-to-cart)
+    const isCartPage = () => {
+      const pageLower = GLOBALVARS?.currentPage?.trim().toLowerCase() || "";
+      const isExplicitCartPath =
+        window.location.pathname.includes("/cart/index.php");
+      const isNamedCartPage = pageLower.includes("cart page");
+      // Avoid add-to-cart path
+      const isAddToCartPath =
+        window.location.pathname.includes("/cart/3-edit.php");
+      return (isExplicitCartPath || isNamedCartPage) && !isAddToCartPath;
     };
 
     // Always try to hide AVAILABLE row on relevant pages
@@ -71,6 +111,11 @@ export function main() {
 
     if (isAddToCartPage() || onCheckoutPage) {
       watchAndHideAvailableQty(12000);
+    }
+
+    // NEW: Hide .buttonContainer ONLY on the Cart page
+    if (isCartPage()) {
+      watchAndHideCartButtons(8000);
     }
 
     // === Existing image swap logic for Add to Cart ===
