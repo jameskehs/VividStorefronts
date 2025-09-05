@@ -300,3 +300,7 @@ img#productImage {
   background: #fff;
   border-radius: 0px;
 }
+
+#cartForm {
+  background-color: #fff;
+}
