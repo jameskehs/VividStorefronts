@@ -53,34 +53,6 @@ export function main() {
     setTimeout(() => observer.disconnect(), durationMs);
   }
 
-  // --- NEW: hide .buttonContainer only on the Cart page ---
-  function hideCartButtonsOnce(): boolean {
-    let changed = false;
-    const nodes = document.querySelectorAll<HTMLElement>(".buttonContainer");
-    nodes.forEach((el) => {
-      if (el.style.display !== "none") {
-        el.style.display = "none";
-        changed = true;
-      }
-    });
-    return changed;
-  }
-
-  function watchAndHideCartButtons(durationMs = 8000) {
-    // Run immediately
-    hideCartButtonsOnce();
-
-    // Observe for dynamic updates (cart often re-renders)
-    const observer = new MutationObserver(() => {
-      hideCartButtonsOnce();
-    });
-    observer.observe(document.body, { childList: true, subtree: true });
-
-    // Stop after a short window to avoid overhead
-    setTimeout(() => observer.disconnect(), durationMs);
-  }
-  // --- END NEW ---
-
   function init() {
     const isAddToCartPage = () => {
       const page = GLOBALVARS?.currentPage?.trim().toLowerCase() || "";
@@ -88,18 +60,6 @@ export function main() {
         page.includes("add to cart") ||
         window.location.pathname.includes("/cart/3-edit.php")
       );
-    };
-
-    // NEW: precise Cart page detection (not add-to-cart)
-    const isCartPage = () => {
-      const pageLower = GLOBALVARS?.currentPage?.trim().toLowerCase() || "";
-      const isExplicitCartPath =
-        window.location.pathname.includes("/cart/3-edit.php");
-      const isNamedCartPage = pageLower.includes("cart page");
-      // Avoid add-to-cart path
-      const isAddToCartPath =
-        window.location.pathname.includes("/cart/3-edit.php");
-      return (isExplicitCartPath || isNamedCartPage) && !isAddToCartPath;
     };
 
     // Always try to hide AVAILABLE row on relevant pages
@@ -113,10 +73,25 @@ export function main() {
       watchAndHideAvailableQty(12000);
     }
 
-    // NEW: Hide .buttonContainer ONLY on the Cart page
-    if (isCartPage()) {
-      watchAndHideCartButtons(8000);
+    // --- Hide .buttonContainer ONLY on the Add to Cart page ---
+    if (isAddToCartPage()) {
+      // 1) Inject CSS so any future re-renders stay hidden
+      if (!document.getElementById("hideButtonsOnATC")) {
+        const style = document.createElement("style");
+        style.id = "hideButtonsOnATC";
+        style.textContent = `
+          /* Be precise so we don't accidentally hide other pages' buttons */
+          #productImageCol .buttonContainer { display: none !important; }
+        `;
+        document.head.appendChild(style);
+      }
+
+      // 2) Also hide any existing nodes immediately (in case CSS arrives a tick later)
+      document
+        .querySelectorAll<HTMLElement>("#productImageCol .buttonContainer")
+        .forEach((el) => (el.style.display = "none"));
     }
+    // --- End Add to Cart hide ---
 
     // === Existing image swap logic for Add to Cart ===
     if (isAddToCartPage()) {
