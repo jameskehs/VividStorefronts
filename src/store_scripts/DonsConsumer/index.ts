@@ -94,7 +94,7 @@ export function main() {
     const isCartPage = () => {
       const pageLower = GLOBALVARS?.currentPage?.trim().toLowerCase() || "";
       const isExplicitCartPath =
-        window.location.pathname.includes("/cart/index.php");
+        window.location.pathname.includes("/cart/3-edit.php");
       const isNamedCartPage = pageLower.includes("cart page");
       // Avoid add-to-cart path
       const isAddToCartPath =
