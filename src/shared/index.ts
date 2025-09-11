@@ -332,94 +332,75 @@ function enforceIntegerQuantityOnCartEdit(): void {
 
 /* ─────────────────────────────────────────────────────────────
    Hide "Add to Cart" ONLY when "Return to Cart" is visible
-   (safe: no global overrides, no :has() CSS)
+   (lightweight: CSS once + childList observer; no attribute loops)
 ────────────────────────────────────────────────────────────── */
 function toggleAddToCartWhenReturnPresent(): void {
   try {
-    const update = () => {
-      const container =
-        document.getElementById("checkoutProceedButtonContainer") ||
-        document.getElementById("proceedToOrder") ||
-        document.getElementById("editForm") ||
-        document.body;
+    // 1) Inject robust CSS once (no :has, just general-sibling)
+    const STYLE_ID = "vi-hide-add-when-return-lite";
+    if (!document.getElementById(STYLE_ID)) {
+      const style = document.createElement("style");
+      style.id = STYLE_ID;
+      style.type = "text/css";
+      style.textContent = `
+/* Hide Add button only when a Return button appears before it in the same container */
+#checkoutProceedButtonContainer #returnToCartButton ~ #addToCartButton,
+#checkoutProceedButtonContainer #returnToCartButton ~ button[name="add_cart"],
+#proceedToOrder #returnToCartButton ~ #addToCartButton,
+#proceedToOrder #returnToCartButton ~ button[name="add_cart"] {
+  display: none !important;
+  pointer-events: none !important;
+}
+`.trim();
+      document.head.appendChild(style);
+    }
 
+    // 2) Keep hidden inputs in sync (no style toggling here)
+    const container =
+      document.getElementById("checkoutProceedButtonContainer") ||
+      document.getElementById("proceedToOrder") ||
+      document.getElementById("editForm") ||
+      document.body;
+
+    const syncFlags = () => {
       const returnBtn =
         container.querySelector<HTMLButtonElement>("#returnToCartButton") ||
         container.querySelector<HTMLButtonElement>(
           'button[name="cart_return"]'
         );
 
-      const addBtns = Array.from(
-        container.querySelectorAll<HTMLButtonElement>(
-          '#addToCartButton, button[name="add_cart"]'
-        )
+      const showAddFlag = container.querySelector<HTMLInputElement>(
+        'input[name="showAddToCart"]'
+      );
+
+      const actionInput = container.querySelector<HTMLInputElement>(
+        'input[name="cartButtonType"]'
       );
 
       const returnVisible = !!(returnBtn && returnBtn.offsetParent !== null);
 
-      // Flip visibility of Add buttons
-      addBtns.forEach((btn) => {
-        if (returnVisible) {
-          btn.setAttribute("data-vi-hidden", "1");
-          btn.disabled = true;
-          btn.style.setProperty("display", "none", "important");
-          btn.style.setProperty("pointer-events", "none", "important");
-          btn.setAttribute("aria-hidden", "true");
-          btn.setAttribute("tabindex", "-1");
-        } else {
-          if (btn.getAttribute("data-vi-hidden") === "1") {
-            btn.disabled = false;
-            btn.style.removeProperty("display");
-            btn.style.removeProperty("pointer-events");
-            btn.removeAttribute("aria-hidden");
-            btn.removeAttribute("tabindex");
-            btn.removeAttribute("data-vi-hidden");
-          }
-        }
-      });
-
-      // Keep hidden inputs aligned (optional but nice)
-      const actionInput = document.querySelector<HTMLInputElement>(
-        'input[name="cartButtonType"]'
-      );
-      const showAddFlag = document.querySelector<HTMLInputElement>(
-        'input[name="showAddToCart"]'
-      );
       if (returnVisible) {
-        if (actionInput) actionInput.value = "return";
-        if (showAddFlag) showAddFlag.value = "0";
+        if (showAddFlag && showAddFlag.value !== "0") showAddFlag.value = "0";
+        if (actionInput && actionInput.value !== "return")
+          actionInput.value = "return";
       } else {
-        if (showAddFlag) showAddFlag.value = "1";
+        if (showAddFlag && showAddFlag.value !== "1") showAddFlag.value = "1";
+        // don't force cartButtonType when Return isn't visible
       }
     };
 
-    // Run once now
-    update();
+    // Initial run
+    syncFlags();
 
-    // A few quick follow-ups to catch late renders
-    let i = 0;
-    const iv = setInterval(() => {
-      update();
-      if (++i >= 20) clearInterval(iv); // ~5s total at 250ms
-    }, 250);
-
-    // Observe the area for dynamic changes
-    const host =
-      document.getElementById("checkoutProceedButtonContainer") ||
-      document.getElementById("proceedToOrder") ||
-      document.getElementById("editForm") ||
-      document.body;
-
-    const mo = new MutationObserver(() => update());
-    mo.observe(host, {
-      childList: true,
-      subtree: true,
-      attributes: true,
-      characterData: true,
-      attributeFilter: ["style", "class", "hidden", "disabled"],
+    // 3) Observe ONLY childList changes within the container (no attribute loops)
+    const mo = new MutationObserver(() => {
+      // debounce to the next frame to collapse bursts
+      cancelAnimationFrame((mo as any).__raf || 0);
+      (mo as any).__raf = requestAnimationFrame(syncFlags);
     });
+    mo.observe(container, { childList: true, subtree: true });
   } catch (e) {
-    console.warn("toggleAddToCartWhenReturnPresent() error:", e);
+    console.warn("toggleAddToCartWhenReturnPresent (lite) error:", e);
   }
 }
 
