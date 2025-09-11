@@ -332,52 +332,98 @@ function enforceIntegerQuantityOnCartEdit(): void {
 
 /* ─────────────────────────────────────────────────────────────
    Hide "Add to Cart" ONLY when "Return to Cart" exists/visible
+   — robust (handles late renders & aggressive CSS)
 ────────────────────────────────────────────────────────────── */
 function toggleAddToCartWhenReturnPresent(): void {
+  const STYLE_ID = "hide-add-to-cart-when-return-present";
+
+  const ensureStyle = () => {
+    let styleEl = document.getElementById(STYLE_ID) as HTMLStyleElement | null;
+    if (!styleEl) {
+      styleEl = document.createElement("style");
+      styleEl.id = STYLE_ID;
+      styleEl.type = "text/css";
+      document.head.appendChild(styleEl);
+    }
+    return styleEl;
+  };
+
+  const setHidden = (hidden: boolean) => {
+    // target both id and name variants
+    const addButtons = Array.from(
+      document.querySelectorAll<HTMLButtonElement>(
+        '#addToCartButton, button[name="add_cart"]'
+      )
+    );
+
+    // enforce via attributes + inline style
+    addButtons.forEach((btn) => {
+      if (hidden) {
+        btn.hidden = true;
+        btn.disabled = true;
+        btn.style.setProperty("display", "none", "important");
+        btn.style.setProperty("pointer-events", "none", "important");
+        btn.setAttribute("aria-hidden", "true");
+        btn.setAttribute("tabindex", "-1");
+        // trap clicks just in case
+        btn.onclick = (e: MouseEvent) => {
+          e.preventDefault();
+          e.stopImmediatePropagation();
+          return false as unknown as any;
+        };
+      } else {
+        btn.hidden = false;
+        btn.disabled = false;
+        btn.style.removeProperty("display");
+        btn.style.removeProperty("pointer-events");
+        btn.removeAttribute("aria-hidden");
+        btn.removeAttribute("tabindex");
+        // do not restore onclick; leave native handlers
+      }
+    });
+
+    // also enforce via a CSS rule (beats theme rules)
+    const styleEl = ensureStyle();
+    styleEl.textContent = hidden
+      ? `
+/* auto-added by shared script: hide add-to-cart when return button is present */
+#addToCartButton,
+button[name="add_cart"] { display: none !important; pointer-events: none !important; }
+      `.trim()
+      : ""; // clear to allow showing again if Return disappears
+  };
+
   const apply = () => {
-    const addBtn = document.getElementById(
-      "addToCartButton"
-    ) as HTMLButtonElement | null;
     const returnBtn = document.getElementById(
       "returnToCartButton"
     ) as HTMLButtonElement | null;
+
+    // "visible" = exists and rendered (not display:none and in layout)
+    const returnVisible = !!(returnBtn && returnBtn.offsetParent !== null);
+
+    // flip visibility of Add buttons
+    setHidden(returnVisible);
+
+    // align hidden inputs if present
     const actionInput = document.querySelector<HTMLInputElement>(
       'input[name="cartButtonType"]'
     );
     const showAddFlag = document.querySelector<HTMLInputElement>(
       'input[name="showAddToCart"]'
     );
-
-    const returnVisible = !!(returnBtn && returnBtn.offsetParent !== null);
-
-    if (addBtn) {
-      if (returnVisible) {
-        addBtn.style.display = "none";
-        addBtn.disabled = true;
-        addBtn.setAttribute("tabindex", "-1");
-        addBtn.setAttribute("aria-hidden", "true");
-        addBtn.onclick = (e: MouseEvent) => {
-          e.preventDefault();
-          e.stopImmediatePropagation();
-          return false as unknown as any;
-        };
-        if (actionInput) actionInput.value = "return";
-        if (showAddFlag) showAddFlag.value = "0";
-      } else {
-        addBtn.style.display = "";
-        addBtn.disabled = false;
-        addBtn.removeAttribute("tabindex");
-        addBtn.removeAttribute("aria-hidden");
-        if (showAddFlag) showAddFlag.value = "1";
-        // don't force cartButtonType here; let native behavior apply
-      }
+    if (returnVisible) {
+      if (actionInput) actionInput.value = "return";
+      if (showAddFlag) showAddFlag.value = "0";
+    } else {
+      if (showAddFlag) showAddFlag.value = "1";
+      // don't force cartButtonType here
     }
   };
 
   // Run once now
   apply();
 
-  // Watch for dynamic changes
+  // Watch the area for dynamic changes (including style/class flips)
   const host =
     document.getElementById("checkoutProceedButtonContainer") ||
     document.getElementById("proceedToOrder") ||
@@ -390,7 +436,8 @@ function toggleAddToCartWhenReturnPresent(): void {
       childList: true,
       subtree: true,
       attributes: true,
-      attributeFilter: ["style", "class"],
+      characterData: true,
+      attributeFilter: ["style", "class", "hidden", "disabled"],
     });
   } catch {
     // no-op
@@ -764,7 +811,7 @@ export function runSharedScript(options: OptionsParameter) {
 
     if (path.includes("/cart/3-edit.php")) {
       enforceIntegerQuantityOnCartEdit();
-      toggleAddToCartWhenReturnPresent(); // hide Add only when Return is visible
+      toggleAddToCartWhenReturnPresent(); // ← conditional hide with strong CSS
     }
 
     // ✅ Also apply to /cart/index.php and any page with ?task=updateItem
