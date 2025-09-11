@@ -123,6 +123,96 @@ function getPaymentMethod(): string | null {
 }
 
 /* ─────────────────────────────────────────────────────────────
+   NEW: Force integer quantities on /cart/3-edit.php
+────────────────────────────────────────────────────────────── */
+
+function enforceIntegerQuantityOnCartEdit(): void {
+  const apply = (input: HTMLInputElement) => {
+    try {
+      // Make it a number field with integer-only UX
+      input.setAttribute("type", "number");
+      input.setAttribute("step", "1");
+      input.setAttribute("min", "1");
+      input.inputMode = "numeric";
+
+      // Normalize any default like "1.00" -> "1"
+      const start = Math.max(1, Math.floor(Number(input.value || "1") || 1));
+      input.value = String(start);
+
+      const sanitize = () => {
+        const n = Math.max(1, Math.floor(Number(input.value || "1") || 1));
+        // Only set if different to avoid double firing onchange
+        if (input.value !== String(n)) input.value = String(n);
+      };
+
+      // Block decimal/exponent characters at the source
+      input.addEventListener("keydown", (e: KeyboardEvent) => {
+        const blocked =
+          e.key === "." || e.key === "," || e.key.toLowerCase() === "e";
+        if (blocked) e.preventDefault();
+      });
+
+      // Scrub on input/blur/change (preserves existing inline onchange handlers)
+      input.addEventListener("input", sanitize);
+      input.addEventListener("blur", sanitize);
+      input.addEventListener("change", sanitize);
+
+      // Clean pasted content
+      input.addEventListener("paste", (e: ClipboardEvent) => {
+        const t = e.clipboardData?.getData("text") ?? "";
+        const digits = t.replace(/[^\d]/g, "");
+        if (digits !== t) {
+          e.preventDefault();
+          const n = Math.max(1, Math.floor(Number(digits || "1") || 1));
+          input.value = String(n);
+          // Let the page's inline onchange fire naturally when focus changes
+        }
+      });
+    } catch (err) {
+      console.warn("Quantity integer enforcement error:", err);
+    }
+  };
+
+  const findQuantityInput = (): HTMLInputElement | null => {
+    // Primary ID (from your markup)
+    const byId = document.getElementById("quantity") as HTMLInputElement | null;
+    if (byId) return byId;
+
+    // Fallbacks
+    return (
+      document.querySelector<HTMLInputElement>(
+        '#quantityCol input[name="quantity"]'
+      ) ||
+      document.querySelector<HTMLInputElement>(
+        'input#quantity[name="quantity"]'
+      ) ||
+      null
+    );
+  };
+
+  const init = () => {
+    const input = findQuantityInput();
+    if (input) apply(input);
+  };
+
+  // Run once now
+  init();
+
+  // Re-run if the form/quantity area re-renders
+  const host =
+    document.getElementById("quantityCol") ||
+    document.getElementById("editForm") ||
+    document.body;
+
+  try {
+    const mo = new MutationObserver(() => init());
+    mo.observe(host, { childList: true, subtree: true });
+  } catch {
+    // no-op
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
    Authorize.Net Accept Hosted loader (auto-POST token into iframe)
 ────────────────────────────────────────────────────────────── */
 
@@ -457,6 +547,74 @@ export function updateCcFeeAndGrandTotal(opts: CcFeeCalcOptions = {}): void {
 }
 
 /* ─────────────────────────────────────────────────────────────
+   Hide "Add to Cart" on /cart/3-edit.php (keep "Return to Cart")
+────────────────────────────────────────────────────────────── */
+function hideAddToCartOnCartEdit(): void {
+  const apply = () => {
+    // Button
+    const addBtn = document.getElementById(
+      "addToCartButton"
+    ) as HTMLButtonElement | null;
+    if (addBtn) {
+      // Hide and disable for safety; also remove from tab order and a11y tree
+      addBtn.style.display = "none";
+      addBtn.disabled = true;
+      addBtn.setAttribute("tabindex", "-1");
+      addBtn.setAttribute("aria-hidden", "true");
+      // Remove click handlers in case styles get overridden
+      addBtn.onclick = (e: MouseEvent) => {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        return false as unknown as any;
+      };
+    }
+
+    // Ensure server-side action defaults to "return"
+    const actionInput = document.querySelector<HTMLInputElement>(
+      'input[name="cartButtonType"]'
+    );
+    if (actionInput) actionInput.value = "return";
+
+    // If your page uses showAddToCart flag, set it to 0/false
+    const showAddFlag = document.querySelector<HTMLInputElement>(
+      'input[name="showAddToCart"]'
+    );
+    if (showAddFlag) showAddFlag.value = "0";
+
+    // Guard against Enter key accidentally triggering a submit that would try to add
+    const form = document.getElementById("editForm") as HTMLFormElement | null;
+    if (form) {
+      form.addEventListener("keydown", (e: KeyboardEvent) => {
+        if (e.key === "Enter") {
+          // Let the form submit, but ensure it’s the "return" action
+          if (actionInput) actionInput.value = "return";
+        }
+      });
+      form.addEventListener("submit", () => {
+        if (actionInput) actionInput.value = "return";
+      });
+    }
+  };
+
+  // Run once now
+  apply();
+
+  // Re-apply if the button area re-renders
+  const host =
+    document.getElementById("checkoutProceedButtonContainer") ||
+    document.getElementById("proceedToOrder") ||
+    document.getElementById("editForm") ||
+    document.body;
+
+  try {
+    const mo = new MutationObserver(() => apply());
+    mo.observe(host, { childList: true, subtree: true });
+  } catch {
+    // no-op
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
    Shared storefront bootstrap
 ────────────────────────────────────────────────────────────── */
 
@@ -493,6 +651,20 @@ export function runSharedScript(options: OptionsParameter) {
 
   if (GLOBALVARS.currentPage === StorefrontPage.CATALOG) {
     options.enableDropdown && loadDropdownMenu();
+  }
+
+  // ✅ Apply integer-only quantity on all Add-To-Cart pages
+  try {
+    if (
+      (window.location.pathname || "")
+        .toLowerCase()
+        .includes("/cart/3-edit.php")
+    ) {
+      enforceIntegerQuantityOnCartEdit();
+      hideAddToCartOnCartEdit();
+    }
+  } catch (e) {
+    console.warn("Quantity integer hook error:", e);
   }
 
   try {
