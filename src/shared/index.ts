@@ -36,16 +36,100 @@ export function calculateCreditCardFees<T extends FeeShipmentLike>(
 }
 
 /* ─────────────────────────────────────────────────────────────
-   Ensure the hosted payment iframe has a tokenized URL (Option 3)
+   Payment helpers: robust detection, scraping, and iframe finding
+────────────────────────────────────────────────────────────── */
+
+function isPaymentStep(): boolean {
+  const p = (window.location.pathname || "").toLowerCase();
+  return (
+    p.includes("/checkout/4-payment.php") ||
+    p.includes("/checkout/6-payment.php") ||
+    p.includes("/checkout/6-payment_new.php") ||
+    p.includes("/checkout/6-payment_new.php") || // keep both cases for safety
+    p.includes("/checkout/payment.php") ||
+    (window as any)?.GLOBALVARS?.currentPage === StorefrontPage.CHECKOUTPAYMENT
+  );
+}
+
+function findPaymentIframe(): HTMLIFrameElement | null {
+  return (
+    (document.getElementById("load_payment") as HTMLIFrameElement) ||
+    (document.querySelector("#paywithnewcard iframe") as HTMLIFrameElement) ||
+    (document.querySelector(
+      'iframe[name="load_payment"]'
+    ) as HTMLIFrameElement) ||
+    null
+  );
+}
+
+function getOrderNumberFromDOM(): number | null {
+  // Try some common ids
+  const ids = ["orderNumber", "orderNo", "orderID", "orderId"];
+  for (const id of ids) {
+    const el = document.getElementById(id) as
+      | HTMLInputElement
+      | HTMLElement
+      | null;
+    if (!el) continue;
+    const raw = (el as HTMLInputElement).value ?? el.textContent ?? "";
+    const n = Number(String(raw).replace(/[^\d]/g, ""));
+    if (Number.isFinite(n) && n > 0) return n;
+  }
+
+  // Try common input names
+  const nameCandidates = [
+    "orderNumber",
+    "order_no",
+    "order_id",
+    "ordernumber",
+    "orderno",
+  ];
+  for (const nm of nameCandidates) {
+    const el = document.querySelector<HTMLInputElement>(`input[name="${nm}"]`);
+    if (el) {
+      const n = Number((el.value || "").replace(/[^\d]/g, ""));
+      if (Number.isFinite(n) && n > 0) return n;
+    }
+  }
+
+  // Fuzzy: e.g., "Order # 123456" somewhere in checkout summary
+  const scope =
+    document.querySelector("#checkoutSummary, #orderSummary, .ui-box, table") ||
+    document.body;
+  const m = (scope.textContent || "").match(
+    /order\s*(?:number|no\.?|#)\s*[:\-]?\s*(\d{3,})/i
+  );
+  if (m) {
+    const n = Number(m[1]);
+    if (Number.isFinite(n) && n > 0) return n;
+  }
+
+  return null;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Ensure the hosted payment iframe has a tokenized URL (Option 3++)
    - Tries several client-provided sources, then falls back to server
+   - Works even if iframe appears later
 ────────────────────────────────────────────────────────────── */
 async function ensurePaymentIframeSrc(): Promise<void> {
   if (typeof window === "undefined" || typeof document === "undefined") return;
 
-  const iframe = document.getElementById(
-    "load_payment"
-  ) as HTMLIFrameElement | null;
-  if (!iframe) return;
+  // Wait up to ~5s for iframe to exist (some themes inject late)
+  let iframe = findPaymentIframe();
+  if (!iframe) {
+    await new Promise<void>((resolve) => {
+      const started = Date.now();
+      const t = setInterval(() => {
+        iframe = findPaymentIframe();
+        if (iframe || Date.now() - started > 5000) {
+          clearInterval(t);
+          resolve();
+        }
+      }, 50);
+    });
+    if (!iframe) return;
+  }
 
   const currentSrc = iframe.getAttribute("src") || "";
   if (currentSrc && currentSrc !== "about:blank") {
@@ -53,54 +137,88 @@ async function ensurePaymentIframeSrc(): Promise<void> {
     return;
   }
 
-  // 1) Try a global injected by the host page
+  // 1) Client-provided sources
   const fromGlobal = (window as any)?.PaymentPortalFrameURL as
     | string
     | undefined;
-
-  // 2) Try a hidden field rendered server-side
   const fromHidden = (
     document.getElementById("paymentFrameUrl") as HTMLInputElement | null
   )?.value;
-
-  // 3) Try a data- attribute on <body>
   const fromDataAttr =
     document.body?.getAttribute("data-payment-frame-url") || undefined;
 
-  const candidate = [fromGlobal, fromHidden, fromDataAttr].find(
-    (u) => typeof u === "string" && /^https?:\/\//i.test(u)
-  );
+  const firstValid = (...urls: (string | undefined)[]) =>
+    urls.find((u) => typeof u === "string" && /^https?:\/\//i.test(String(u)));
 
-  if (candidate) {
-    iframe.src = candidate!;
+  let hostedUrl = firstValid(fromGlobal, fromHidden, fromDataAttr);
+
+  // 2) Backend fallback if none provided
+  if (!hostedUrl) {
+    const orderNumber =
+      (window as any)?.GLOBALVARS?.orderNumber ?? getOrderNumberFromDOM();
+
+    try {
+      const resp = await fetch("/api/payment/frame-url", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderNumber: orderNumber ?? null }),
+      });
+
+      if (resp.ok) {
+        const data = await resp.json();
+        if (data?.url && /^https?:\/\//i.test(data.url)) {
+          hostedUrl = data.url;
+        } else {
+          console.warn(
+            "[payment] /api/payment/frame-url returned no usable url"
+          );
+        }
+      } else {
+        console.warn(`[payment] /api/payment/frame-url HTTP ${resp.status}`);
+      }
+    } catch (e) {
+      console.warn("[payment] /api/payment/frame-url fetch failed", e);
+    }
+  }
+
+  if (!hostedUrl) {
+    console.warn(
+      "[payment] No tokenized URL found. Provide one of: window.PaymentPortalFrameURL, " +
+        '<input id="paymentFrameUrl">, <body data-payment-frame-url>, or implement /api/payment/frame-url.'
+    );
     return;
   }
 
-  // 4) Fallback: ask backend to mint a session and return hosted URL
-  try {
-    const orderNumber =
-      (window as any)?.GLOBALVARS?.orderNumber ??
-      Number(
-        (document.getElementById("orderNumber") as HTMLInputElement | null)
-          ?.value
-      ) ??
-      null;
+  // 3) Set src and retry once if the token is invalid/expired
+  let retried = false;
+  const onError = async () => {
+    iframe?.removeEventListener("error", onError);
+    if (retried) return;
+    retried = true;
 
-    const resp = await fetch("/api/payment/frame-url", {
-      method: "POST",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ orderNumber }),
-    });
+    try {
+      const orderNumber =
+        (window as any)?.GLOBALVARS?.orderNumber ?? getOrderNumberFromDOM();
+      const r = await fetch("/api/payment/frame-url", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderNumber: orderNumber ?? null }),
+      });
+      const j = await r.json();
+      if (j?.url && /^https?:\/\//i.test(j.url)) {
+        iframe!.src = j.url;
+      } else {
+        console.warn("[payment] retry mint returned no url");
+      }
+    } catch (e) {
+      console.warn("[payment] retry mint failed", e);
+    }
+  };
 
-    if (!resp.ok) throw new Error(`frame-url ${resp.status}`);
-    const { url } = await resp.json();
-    if (!url || !/^https?:\/\//i.test(url))
-      throw new Error("Missing or bad hosted URL");
-    iframe.src = url;
-  } catch (err) {
-    console.warn("ensurePaymentIframeSrc: could not set iframe src", err);
-  }
+  iframe.addEventListener("error", onError, { once: true });
+  iframe.src = hostedUrl;
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -211,7 +329,7 @@ export function initCreditCardFeeNotice(
     }
   };
 
-  // OPTION 3: Only show the modal once the iframe is visible AND has a real src
+  // Only show the modal once the iframe is visible AND has a real src
   const waitForTarget = () => {
     if (!iframeSelector) {
       showModal();
@@ -338,15 +456,11 @@ export function runSharedScript(options: OptionsParameter) {
 
   // 🔔 AUTO-TRIGGER the CC fee notice and correct fee on the payment step
   try {
-    const isPaymentPage =
-      GLOBALVARS.currentPage === StorefrontPage.CHECKOUTPAYMENT ||
-      window.location.pathname.includes("/checkout/4-payment.php");
-
-    if (isPaymentPage) {
-      // Ensure the iframe gets a tokenized URL ASAP (Option 3 core)
+    if (isPaymentStep()) {
+      // Ensure the iframe gets a tokenized URL ASAP (handles late-injected iframes)
       void ensurePaymentIframeSrc();
 
-      // Show the modal (once per browser, persistent) AFTER the frame has a real src
+      // Show the modal AFTER the frame has a real src
       initCreditCardFeeNotice({
         percentage: 3,
         storage: "local",
