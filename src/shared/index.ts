@@ -123,6 +123,41 @@ function getPaymentMethod(): string | null {
 }
 
 /* ─────────────────────────────────────────────────────────────
+   Displayed qty normalization (e.g., <strong class="jobQty">2.00</strong>)
+────────────────────────────────────────────────────────────── */
+function normalizeDisplayedQuantities(root: ParentNode = document): void {
+  const selectors = [
+    ".jobQty",
+    "td.jobQtyCell strong",
+    ".qtyDisplay",
+    ".cartQty",
+    "[data-qty-display]",
+  ].join(",");
+
+  const els = root.querySelectorAll<HTMLElement>(selectors);
+  els.forEach((el) => {
+    const raw = (el.textContent || "").trim();
+
+    // skip prices or empty text
+    if (!raw || raw.includes("$")) return;
+
+    // pure numeric strings (allow commas/decimals)
+    if (/^\s*[\d.,]+\s*$/.test(raw)) {
+      const n = Math.max(1, Math.floor(Number(raw.replace(/,/g, "")) || 1));
+      el.textContent = String(n);
+      return;
+    }
+
+    // embedded numbers like "Qty: 2.00" (avoid long IDs)
+    el.textContent = raw.replace(/(\d+(?:[.,]\d+)?)/g, (m) => {
+      if (m.length > 6) return m; // likely an ID
+      const n = Math.max(1, Math.floor(Number(m.replace(/,/g, "")) || 1));
+      return String(n);
+    });
+  });
+}
+
+/* ─────────────────────────────────────────────────────────────
    Integer-only quantities on /cart/index.php & ?task=updateItem
 ────────────────────────────────────────────────────────────── */
 function enforceIntegerQuantitiesOnCart(): void {
@@ -136,14 +171,13 @@ function enforceIntegerQuantitiesOnCart(): void {
       input.setAttribute("min", "1");
       input.inputMode = "numeric";
 
-      // normalize any existing "1.00" -> "1"
-      const start = Math.max(1, Math.floor(Number(input.value || "1") || 1));
-      input.value = String(start);
-
       const sanitize = () => {
         const n = Math.max(1, Math.floor(Number(input.value || "1") || 1));
         if (input.value !== String(n)) input.value = String(n);
       };
+
+      // normalize any existing "1.00" -> "1"
+      sanitize();
 
       input.addEventListener("keydown", (e: KeyboardEvent) => {
         const k = e.key.toLowerCase();
@@ -167,6 +201,7 @@ function enforceIntegerQuantitiesOnCart(): void {
   };
 
   const applyAll = (root: ParentNode = document) => {
+    // inputs
     const candidates = root.querySelectorAll<HTMLInputElement>(
       [
         'input[name="quantity"]',
@@ -179,12 +214,15 @@ function enforceIntegerQuantitiesOnCart(): void {
       ].join(",")
     );
     candidates.forEach(applyToInput);
+
+    // displayed qtys
+    normalizeDisplayedQuantities(root);
   };
 
   // run now
   applyAll();
 
-  // observe typical cart containers for re-renders
+  // observe typical cart containers for re-renders & text updates
   const host =
     document.getElementById("cartTable") ||
     document.getElementById("cartForm") ||
@@ -193,48 +231,46 @@ function enforceIntegerQuantitiesOnCart(): void {
 
   try {
     const mo = new MutationObserver((muts) => {
+      let textChanged = false;
       for (const m of muts) {
-        if (m.addedNodes && m.addedNodes.length) {
+        if (m.type === "childList" && m.addedNodes?.length) {
           m.addedNodes.forEach((n) => {
             if (n instanceof HTMLElement) applyAll(n);
           });
         }
+        if (m.type === "characterData") textChanged = true;
       }
+      if (textChanged) normalizeDisplayedQuantities(host!);
     });
-    mo.observe(host, { childList: true, subtree: true });
+    mo.observe(host!, { childList: true, subtree: true, characterData: true });
   } catch {
     // no-op
   }
 }
 
 /* ─────────────────────────────────────────────────────────────
-   NEW: Force integer quantities on /cart/3-edit.php
+   Force integer quantity on /cart/3-edit.php
 ────────────────────────────────────────────────────────────── */
-
 function enforceIntegerQuantityOnCartEdit(): void {
   const apply = (input: HTMLInputElement) => {
     try {
-      // Make it a number field with integer-only UX
       input.setAttribute("type", "number");
       input.setAttribute("step", "1");
       input.setAttribute("min", "1");
       input.inputMode = "numeric";
 
-      // Normalize any default like "1.00" -> "1"
-      const start = Math.max(1, Math.floor(Number(input.value || "1") || 1));
-      input.value = String(start);
-
       const sanitize = () => {
         const n = Math.max(1, Math.floor(Number(input.value || "1") || 1));
-        // Only set if different to avoid double firing onchange
         if (input.value !== String(n)) input.value = String(n);
       };
 
+      // Normalize any default like "1.00" -> "1"
+      sanitize();
+
       // Block decimal/exponent characters at the source
       input.addEventListener("keydown", (e: KeyboardEvent) => {
-        const blocked =
-          e.key === "." || e.key === "," || e.key.toLowerCase() === "e";
-        if (blocked) e.preventDefault();
+        const k = e.key.toLowerCase();
+        if (k === "." || k === "," || k === "e") e.preventDefault();
       });
 
       // Scrub on input/blur/change (preserves existing inline onchange handlers)
@@ -250,7 +286,6 @@ function enforceIntegerQuantityOnCartEdit(): void {
           e.preventDefault();
           const n = Math.max(1, Math.floor(Number(digits || "1") || 1));
           input.value = String(n);
-          // Let the page's inline onchange fire naturally when focus changes
         }
       });
     } catch (err) {
@@ -259,11 +294,9 @@ function enforceIntegerQuantityOnCartEdit(): void {
   };
 
   const findQuantityInput = (): HTMLInputElement | null => {
-    // Primary ID (from your markup)
     const byId = document.getElementById("quantity") as HTMLInputElement | null;
     if (byId) return byId;
 
-    // Fallbacks
     return (
       document.querySelector<HTMLInputElement>(
         '#quantityCol input[name="quantity"]'
@@ -298,6 +331,73 @@ function enforceIntegerQuantityOnCartEdit(): void {
 }
 
 /* ─────────────────────────────────────────────────────────────
+   Hide "Add to Cart" ONLY when "Return to Cart" exists/visible
+────────────────────────────────────────────────────────────── */
+function toggleAddToCartWhenReturnPresent(): void {
+  const apply = () => {
+    const addBtn = document.getElementById(
+      "addToCartButton"
+    ) as HTMLButtonElement | null;
+    const returnBtn = document.getElementById(
+      "returnToCartButton"
+    ) as HTMLButtonElement | null;
+    const actionInput = document.querySelector<HTMLInputElement>(
+      'input[name="cartButtonType"]'
+    );
+    const showAddFlag = document.querySelector<HTMLInputElement>(
+      'input[name="showAddToCart"]'
+    );
+
+    const returnVisible = !!(returnBtn && returnBtn.offsetParent !== null);
+
+    if (addBtn) {
+      if (returnVisible) {
+        addBtn.style.display = "none";
+        addBtn.disabled = true;
+        addBtn.setAttribute("tabindex", "-1");
+        addBtn.setAttribute("aria-hidden", "true");
+        addBtn.onclick = (e: MouseEvent) => {
+          e.preventDefault();
+          e.stopImmediatePropagation();
+          return false as unknown as any;
+        };
+        if (actionInput) actionInput.value = "return";
+        if (showAddFlag) showAddFlag.value = "0";
+      } else {
+        addBtn.style.display = "";
+        addBtn.disabled = false;
+        addBtn.removeAttribute("tabindex");
+        addBtn.removeAttribute("aria-hidden");
+        if (showAddFlag) showAddFlag.value = "1";
+        // don't force cartButtonType here; let native behavior apply
+      }
+    }
+  };
+
+  // Run once now
+  apply();
+
+  // Watch for dynamic changes
+  const host =
+    document.getElementById("checkoutProceedButtonContainer") ||
+    document.getElementById("proceedToOrder") ||
+    document.getElementById("editForm") ||
+    document.body;
+
+  try {
+    const mo = new MutationObserver(() => apply());
+    mo.observe(host, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ["style", "class"],
+    });
+  } catch {
+    // no-op
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
    Authorize.Net Accept Hosted loader (auto-POST token into iframe)
 ────────────────────────────────────────────────────────────── */
 
@@ -305,22 +405,17 @@ async function mountAuthorizeNetAcceptHosted(): Promise<void> {
   const iframe = findPaymentIframe();
   if (!iframe) return;
 
-  // If it already has something meaningful, bail
   const currentSrc = iframe.getAttribute("src") || "";
   if (currentSrc && currentSrc !== "about:blank") return;
 
-  // 1) get order number best-effort
   const orderNumber =
     (window as any)?.GLOBALVARS?.orderNumber ?? getOrderNumberFromDOM();
 
-  // 2) call backend to mint Accept Hosted token
-  //    Expected response: { token: "..." }
   const { index: csrfIndex, token: csrfToken } = getCsrf();
 
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
   };
-  // Include CSRF if your backend expects them in headers; if not, they’re harmless.
   if (csrfIndex) headers["X-CSRF-INDEX"] = csrfIndex;
   if (csrfToken) headers["X-CSRF-TOKEN"] = csrfToken;
 
@@ -343,8 +438,6 @@ async function mountAuthorizeNetAcceptHosted(): Promise<void> {
     return;
   }
 
-  // 3) POST the token to the Accept Hosted payment URL, targeting the iframe.
-  //    (Authorize.Net supports POSTing { token } to this endpoint.)
   const form = document.createElement("form");
   form.method = "POST";
   form.action = "https://accept.authorize.net/payment/payment";
@@ -360,8 +453,7 @@ async function mountAuthorizeNetAcceptHosted(): Promise<void> {
   document.body.appendChild(form);
   form.submit();
 
-  // Optional: set a placeholder src so our “modal waiter” will proceed after first load
-  iframe.setAttribute("src", "about:blank"); // not required; the form target controls load
+  iframe.setAttribute("src", "about:blank");
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -375,7 +467,6 @@ async function mountGenericHostedFrame(): Promise<void> {
   const currentSrc = iframe.getAttribute("src") || "";
   if (currentSrc && currentSrc !== "about:blank") return;
 
-  // 1) client-provided sources
   const fromGlobal = (window as any)?.PaymentPortalFrameURL as
     | string
     | undefined;
@@ -390,7 +481,6 @@ async function mountGenericHostedFrame(): Promise<void> {
 
   let hostedUrl = firstValid(fromGlobal, fromHidden, fromDataAttr);
 
-  // 2) backend fallback if none provided
   if (!hostedUrl) {
     const orderNumber =
       (window as any)?.GLOBALVARS?.orderNumber ?? getOrderNumberFromDOM();
@@ -428,7 +518,6 @@ async function mountGenericHostedFrame(): Promise<void> {
     return;
   }
 
-  // set src (retry-once handled by gateway if needed)
   const onError = () => {
     iframe?.removeEventListener("error", onError);
     console.warn("[payment] iframe load error (token might be expired)");
@@ -545,7 +634,7 @@ export function initCreditCardFeeNotice(
     }
   };
 
-  // Only show the modal once the iframe is visible AND has a real session (src or posted token)
+  // Only show the modal once the iframe is visible AND has a real session
   const waitForTarget = () => {
     if (!iframeSelector) {
       showModal();
@@ -557,8 +646,6 @@ export function initCreditCardFeeNotice(
 
     if (el && el.offsetParent !== null) {
       const src = el.getAttribute("src") || "";
-      // For Accept Hosted we POST into the frame; src may remain about:blank until load.
-      // We’ll simply wait a tick longer if src is empty/about:blank.
       if (!src || src === "about:blank") {
         requestAnimationFrame(waitForTarget);
         return;
@@ -670,13 +757,14 @@ export function runSharedScript(options: OptionsParameter) {
     options.enableDropdown && loadDropdownMenu();
   }
 
-  // ✅ Integer-only quantity on Add-To-Cart page
+  // ✅ Quantity & button behavior on cart pages
   try {
     const path = (window.location.pathname || "").toLowerCase();
     const params = new URLSearchParams(window.location.search);
 
     if (path.includes("/cart/3-edit.php")) {
       enforceIntegerQuantityOnCartEdit();
+      toggleAddToCartWhenReturnPresent(); // hide Add only when Return is visible
     }
 
     // ✅ Also apply to /cart/index.php and any page with ?task=updateItem
@@ -687,7 +775,7 @@ export function runSharedScript(options: OptionsParameter) {
       enforceIntegerQuantitiesOnCart();
     }
   } catch (e) {
-    console.warn("Quantity hooks error:", e);
+    console.warn("Quantity/Add-to-Cart hooks error:", e);
   }
 
   try {
