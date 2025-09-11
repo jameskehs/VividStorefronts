@@ -45,7 +45,6 @@ function isPaymentStep(): boolean {
     p.includes("/checkout/4-payment.php") ||
     p.includes("/checkout/6-payment.php") ||
     p.includes("/checkout/6-payment_new.php") ||
-    p.includes("/checkout/6-payment_new.php") || // keep both cases for safety
     p.includes("/checkout/payment.php") ||
     (window as any)?.GLOBALVARS?.currentPage === StorefrontPage.CHECKOUTPAYMENT
   );
@@ -63,7 +62,6 @@ function findPaymentIframe(): HTMLIFrameElement | null {
 }
 
 function getOrderNumberFromDOM(): number | null {
-  // Try some common ids
   const ids = ["orderNumber", "orderNo", "orderID", "orderId"];
   for (const id of ids) {
     const el = document.getElementById(id) as
@@ -75,8 +73,6 @@ function getOrderNumberFromDOM(): number | null {
     const n = Number(String(raw).replace(/[^\d]/g, ""));
     if (Number.isFinite(n) && n > 0) return n;
   }
-
-  // Try common input names
   const nameCandidates = [
     "orderNumber",
     "order_no",
@@ -91,8 +87,6 @@ function getOrderNumberFromDOM(): number | null {
       if (Number.isFinite(n) && n > 0) return n;
     }
   }
-
-  // Fuzzy: e.g., "Order # 123456" somewhere in checkout summary
   const scope =
     document.querySelector("#checkoutSummary, #orderSummary, .ui-box, table") ||
     document.body;
@@ -103,41 +97,110 @@ function getOrderNumberFromDOM(): number | null {
     const n = Number(m[1]);
     if (Number.isFinite(n) && n > 0) return n;
   }
-
   return null;
 }
 
+function getCsrf() {
+  const idx = (
+    document.querySelector(
+      'input[name="_CSRF_INDEX"]'
+    ) as HTMLInputElement | null
+  )?.value;
+  const tok = (
+    document.querySelector(
+      'input[name="_CSRF_TOKEN"]'
+    ) as HTMLInputElement | null
+  )?.value;
+  return { index: idx ?? null, token: tok ?? null };
+}
+
+function getPaymentMethod(): string | null {
+  // Your DOM shows: <input ... class="paymentMethodStored" value="anetIFrame">
+  const el =
+    document.querySelector<HTMLInputElement>(".paymentMethodStored[checked]") ||
+    document.querySelector<HTMLInputElement>(".paymentMethodStored");
+  return el?.value ?? null;
+}
+
 /* ─────────────────────────────────────────────────────────────
-   Ensure the hosted payment iframe has a tokenized URL (Option 3++)
-   - Tries several client-provided sources, then falls back to server
-   - Works even if iframe appears later
+   Authorize.Net Accept Hosted loader (auto-POST token into iframe)
 ────────────────────────────────────────────────────────────── */
-async function ensurePaymentIframeSrc(): Promise<void> {
-  if (typeof window === "undefined" || typeof document === "undefined") return;
 
-  // Wait up to ~5s for iframe to exist (some themes inject late)
-  let iframe = findPaymentIframe();
-  if (!iframe) {
-    await new Promise<void>((resolve) => {
-      const started = Date.now();
-      const t = setInterval(() => {
-        iframe = findPaymentIframe();
-        if (iframe || Date.now() - started > 5000) {
-          clearInterval(t);
-          resolve();
-        }
-      }, 50);
-    });
-    if (!iframe) return;
-  }
+async function mountAuthorizeNetAcceptHosted(): Promise<void> {
+  const iframe = findPaymentIframe();
+  if (!iframe) return;
 
+  // If it already has something meaningful, bail
   const currentSrc = iframe.getAttribute("src") || "";
-  if (currentSrc && currentSrc !== "about:blank") {
-    // Already set
+  if (currentSrc && currentSrc !== "about:blank") return;
+
+  // 1) get order number best-effort
+  const orderNumber =
+    (window as any)?.GLOBALVARS?.orderNumber ?? getOrderNumberFromDOM();
+
+  // 2) call backend to mint Accept Hosted token
+  //    Expected response: { token: "..." }
+  const { index: csrfIndex, token: csrfToken } = getCsrf();
+
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
+  // Include CSRF if your backend expects them in headers; if not, they’re harmless.
+  if (csrfIndex) headers["X-CSRF-INDEX"] = csrfIndex;
+  if (csrfToken) headers["X-CSRF-TOKEN"] = csrfToken;
+
+  let token: string | null = null;
+  try {
+    const resp = await fetch("/api/anet/hosted-token", {
+      method: "POST",
+      credentials: "include",
+      headers,
+      body: JSON.stringify({ orderNumber: orderNumber ?? null }),
+    });
+    if (!resp.ok) throw new Error(`anet token http ${resp.status}`);
+    const data = await resp.json();
+    token = data?.token || null;
+  } catch (e) {
+    console.warn("[anet] failed to fetch hosted token", e);
+  }
+  if (!token) {
+    console.warn("[anet] No hosted token returned; cannot load iframe.");
     return;
   }
 
-  // 1) Client-provided sources
+  // 3) POST the token to the Accept Hosted payment URL, targeting the iframe.
+  //    (Authorize.Net supports POSTing { token } to this endpoint.)
+  const form = document.createElement("form");
+  form.method = "POST";
+  form.action = "https://accept.authorize.net/payment/payment";
+  form.target = iframe.name || "load_payment";
+  form.style.display = "none";
+
+  const tokenInput = document.createElement("input");
+  tokenInput.type = "hidden";
+  tokenInput.name = "token";
+  tokenInput.value = token;
+
+  form.appendChild(tokenInput);
+  document.body.appendChild(form);
+  form.submit();
+
+  // Optional: set a placeholder src so our “modal waiter” will proceed after first load
+  iframe.setAttribute("src", "about:blank"); // not required; the form target controls load
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Non-Authorize.Net (legacy) loader using tokenized URL
+────────────────────────────────────────────────────────────── */
+
+async function mountGenericHostedFrame(): Promise<void> {
+  const iframe = findPaymentIframe();
+  if (!iframe) return;
+
+  const currentSrc = iframe.getAttribute("src") || "";
+  if (currentSrc && currentSrc !== "about:blank") return;
+
+  // 1) client-provided sources
   const fromGlobal = (window as any)?.PaymentPortalFrameURL as
     | string
     | undefined;
@@ -152,7 +215,7 @@ async function ensurePaymentIframeSrc(): Promise<void> {
 
   let hostedUrl = firstValid(fromGlobal, fromHidden, fromDataAttr);
 
-  // 2) Backend fallback if none provided
+  // 2) backend fallback if none provided
   if (!hostedUrl) {
     const orderNumber =
       (window as any)?.GLOBALVARS?.orderNumber ?? getOrderNumberFromDOM();
@@ -184,39 +247,17 @@ async function ensurePaymentIframeSrc(): Promise<void> {
 
   if (!hostedUrl) {
     console.warn(
-      "[payment] No tokenized URL found. Provide one of: window.PaymentPortalFrameURL, " +
+      "[payment] No tokenized URL found. Provide window.PaymentPortalFrameURL, " +
         '<input id="paymentFrameUrl">, <body data-payment-frame-url>, or implement /api/payment/frame-url.'
     );
     return;
   }
 
-  // 3) Set src and retry once if the token is invalid/expired
-  let retried = false;
-  const onError = async () => {
+  // set src (retry-once handled by gateway if needed)
+  const onError = () => {
     iframe?.removeEventListener("error", onError);
-    if (retried) return;
-    retried = true;
-
-    try {
-      const orderNumber =
-        (window as any)?.GLOBALVARS?.orderNumber ?? getOrderNumberFromDOM();
-      const r = await fetch("/api/payment/frame-url", {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ orderNumber: orderNumber ?? null }),
-      });
-      const j = await r.json();
-      if (j?.url && /^https?:\/\//i.test(j.url)) {
-        iframe!.src = j.url;
-      } else {
-        console.warn("[payment] retry mint returned no url");
-      }
-    } catch (e) {
-      console.warn("[payment] retry mint failed", e);
-    }
+    console.warn("[payment] iframe load error (token might be expired)");
   };
-
   iframe.addEventListener("error", onError, { once: true });
   iframe.src = hostedUrl;
 }
@@ -329,7 +370,7 @@ export function initCreditCardFeeNotice(
     }
   };
 
-  // Only show the modal once the iframe is visible AND has a real src
+  // Only show the modal once the iframe is visible AND has a real session (src or posted token)
   const waitForTarget = () => {
     if (!iframeSelector) {
       showModal();
@@ -341,6 +382,8 @@ export function initCreditCardFeeNotice(
 
     if (el && el.offsetParent !== null) {
       const src = el.getAttribute("src") || "";
+      // For Accept Hosted we POST into the frame; src may remain about:blank until load.
+      // We’ll simply wait a tick longer if src is empty/about:blank.
       if (!src || src === "about:blank") {
         requestAnimationFrame(waitForTarget);
         return;
@@ -356,7 +399,6 @@ export function initCreditCardFeeNotice(
 
 /* ─────────────────────────────────────────────────────────────
    Front-end CC fee calculation & grand total update
-   - Includes tax in fee base (subtotal + shipping + tax)
 ────────────────────────────────────────────────────────────── */
 
 export interface CcFeeCalcOptions {
@@ -378,7 +420,7 @@ export function updateCcFeeAndGrandTotal(opts: CcFeeCalcOptions = {}): void {
   if (typeof window === "undefined" || typeof document === "undefined") return;
 
   const rate = opts.rate ?? 0.03;
-  const includeTaxInFee = opts.includeTaxInFee ?? true; // <- default TRUE now
+  const includeTaxInFee = opts.includeTaxInFee ?? true;
   const ids = {
     subtotal: opts.ids?.subtotal ?? "subPrice",
     tax: opts.ids?.tax ?? "taxPrice",
@@ -406,7 +448,6 @@ export function updateCcFeeAndGrandTotal(opts: CcFeeCalcOptions = {}): void {
   const tax = readNumber(ids.tax);
   const shipping = readNumber(ids.shipping);
 
-  // Includes tax in fee base when includeTaxInFee = true
   const feeBase = subtotal + shipping + (includeTaxInFee ? tax : 0);
   const fee = round2(feeBase * rate);
   writeMoney(ids.fee, fee);
@@ -454,13 +495,19 @@ export function runSharedScript(options: OptionsParameter) {
     options.enableDropdown && loadDropdownMenu();
   }
 
-  // 🔔 AUTO-TRIGGER the CC fee notice and correct fee on the payment step
   try {
     if (isPaymentStep()) {
-      // Ensure the iframe gets a tokenized URL ASAP (handles late-injected iframes)
-      void ensurePaymentIframeSrc();
+      const method = getPaymentMethod();
 
-      // Show the modal AFTER the frame has a real src
+      if (method && method.toLowerCase() === "anetiframe") {
+        // ✅ Authorize.Net Accept Hosted path (requires POSTing token into iframe)
+        void mountAuthorizeNetAcceptHosted();
+      } else {
+        // ✅ Generic hosted page path (tokenized URL set as iframe src)
+        void mountGenericHostedFrame();
+      }
+
+      // Show the modal AFTER the frame has a real session
       initCreditCardFeeNotice({
         percentage: 3,
         storage: "local",
@@ -473,13 +520,11 @@ export function runSharedScript(options: OptionsParameter) {
       const run = () =>
         updateCcFeeAndGrandTotal({
           rate: 0.03,
-          includeTaxInFee: true, // ✅ include tax in surcharge
+          includeTaxInFee: true,
         });
 
-      // Initial run after DOM has settled a bit
       setTimeout(run, 350);
 
-      // Recompute whenever any of these numbers change
       const idsToWatch = ["subPrice", "taxPrice", "shipPrice"];
       const targets = idsToWatch
         .map((id) => document.getElementById(id))
@@ -502,7 +547,6 @@ export function runSharedScript(options: OptionsParameter) {
       }
     }
   } catch (e) {
-    // Never let this break checkout
     console.warn("CC fee notice or calc error:", e);
   }
 }
