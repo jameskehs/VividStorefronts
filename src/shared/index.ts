@@ -123,6 +123,91 @@ function getPaymentMethod(): string | null {
 }
 
 /* ─────────────────────────────────────────────────────────────
+   Integer-only quantities on /cart/index.php & ?task=updateItem
+────────────────────────────────────────────────────────────── */
+function enforceIntegerQuantitiesOnCart(): void {
+  const applyToInput = (input: HTMLInputElement) => {
+    if ((input as any).__intApplied) return; // avoid double-binding
+    (input as any).__intApplied = true;
+
+    try {
+      input.setAttribute("type", "number");
+      input.setAttribute("step", "1");
+      input.setAttribute("min", "1");
+      input.inputMode = "numeric";
+
+      // normalize any existing "1.00" -> "1"
+      const start = Math.max(1, Math.floor(Number(input.value || "1") || 1));
+      input.value = String(start);
+
+      const sanitize = () => {
+        const n = Math.max(1, Math.floor(Number(input.value || "1") || 1));
+        if (input.value !== String(n)) input.value = String(n);
+      };
+
+      input.addEventListener("keydown", (e: KeyboardEvent) => {
+        const k = e.key.toLowerCase();
+        if (k === "." || k === "," || k === "e") e.preventDefault();
+      });
+      input.addEventListener("input", sanitize);
+      input.addEventListener("blur", sanitize);
+      input.addEventListener("change", sanitize);
+      input.addEventListener("paste", (e: ClipboardEvent) => {
+        const t = e.clipboardData?.getData("text") ?? "";
+        const digits = t.replace(/[^\d]/g, "");
+        if (digits !== t) {
+          e.preventDefault();
+          const n = Math.max(1, Math.floor(Number(digits || "1") || 1));
+          input.value = String(n);
+        }
+      });
+    } catch (err) {
+      console.warn("Cart qty integer enforcement error:", err);
+    }
+  };
+
+  const applyAll = (root: ParentNode = document) => {
+    const candidates = root.querySelectorAll<HTMLInputElement>(
+      [
+        'input[name="quantity"]',
+        'input[name^="quantity"]',
+        'input[name*="qty"]',
+        "input#quantity",
+        '#quantityCol input[name="quantity"]',
+        "input.quantity",
+        "input.qty",
+      ].join(",")
+    );
+    candidates.forEach(applyToInput);
+  };
+
+  // run now
+  applyAll();
+
+  // observe typical cart containers for re-renders
+  const host =
+    document.getElementById("cartTable") ||
+    document.getElementById("cartForm") ||
+    document.querySelector(".cart, #content, #main") ||
+    document.body;
+
+  try {
+    const mo = new MutationObserver((muts) => {
+      for (const m of muts) {
+        if (m.addedNodes && m.addedNodes.length) {
+          m.addedNodes.forEach((n) => {
+            if (n instanceof HTMLElement) applyAll(n);
+          });
+        }
+      }
+    });
+    mo.observe(host, { childList: true, subtree: true });
+  } catch {
+    // no-op
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
    NEW: Force integer quantities on /cart/3-edit.php
 ────────────────────────────────────────────────────────────── */
 
@@ -547,74 +632,6 @@ export function updateCcFeeAndGrandTotal(opts: CcFeeCalcOptions = {}): void {
 }
 
 /* ─────────────────────────────────────────────────────────────
-   Hide "Add to Cart" on /cart/3-edit.php (keep "Return to Cart")
-────────────────────────────────────────────────────────────── */
-function hideAddToCartOnCartEdit(): void {
-  const apply = () => {
-    // Button
-    const addBtn = document.getElementById(
-      "addToCartButton"
-    ) as HTMLButtonElement | null;
-    if (addBtn) {
-      // Hide and disable for safety; also remove from tab order and a11y tree
-      addBtn.style.display = "none";
-      addBtn.disabled = true;
-      addBtn.setAttribute("tabindex", "-1");
-      addBtn.setAttribute("aria-hidden", "true");
-      // Remove click handlers in case styles get overridden
-      addBtn.onclick = (e: MouseEvent) => {
-        e.preventDefault();
-        e.stopImmediatePropagation();
-        return false as unknown as any;
-      };
-    }
-
-    // Ensure server-side action defaults to "return"
-    const actionInput = document.querySelector<HTMLInputElement>(
-      'input[name="cartButtonType"]'
-    );
-    if (actionInput) actionInput.value = "return";
-
-    // If your page uses showAddToCart flag, set it to 0/false
-    const showAddFlag = document.querySelector<HTMLInputElement>(
-      'input[name="showAddToCart"]'
-    );
-    if (showAddFlag) showAddFlag.value = "0";
-
-    // Guard against Enter key accidentally triggering a submit that would try to add
-    const form = document.getElementById("editForm") as HTMLFormElement | null;
-    if (form) {
-      form.addEventListener("keydown", (e: KeyboardEvent) => {
-        if (e.key === "Enter") {
-          // Let the form submit, but ensure it’s the "return" action
-          if (actionInput) actionInput.value = "return";
-        }
-      });
-      form.addEventListener("submit", () => {
-        if (actionInput) actionInput.value = "return";
-      });
-    }
-  };
-
-  // Run once now
-  apply();
-
-  // Re-apply if the button area re-renders
-  const host =
-    document.getElementById("checkoutProceedButtonContainer") ||
-    document.getElementById("proceedToOrder") ||
-    document.getElementById("editForm") ||
-    document.body;
-
-  try {
-    const mo = new MutationObserver(() => apply());
-    mo.observe(host, { childList: true, subtree: true });
-  } catch {
-    // no-op
-  }
-}
-
-/* ─────────────────────────────────────────────────────────────
    Shared storefront bootstrap
 ────────────────────────────────────────────────────────────── */
 
@@ -653,18 +670,24 @@ export function runSharedScript(options: OptionsParameter) {
     options.enableDropdown && loadDropdownMenu();
   }
 
-  // ✅ Apply integer-only quantity on all Add-To-Cart pages
+  // ✅ Integer-only quantity on Add-To-Cart page
   try {
-    if (
-      (window.location.pathname || "")
-        .toLowerCase()
-        .includes("/cart/3-edit.php")
-    ) {
+    const path = (window.location.pathname || "").toLowerCase();
+    const params = new URLSearchParams(window.location.search);
+
+    if (path.includes("/cart/3-edit.php")) {
       enforceIntegerQuantityOnCartEdit();
-      hideAddToCartOnCartEdit();
+    }
+
+    // ✅ Also apply to /cart/index.php and any page with ?task=updateItem
+    if (
+      path.includes("/cart/index.php") ||
+      params.get("task") === "updateItem"
+    ) {
+      enforceIntegerQuantitiesOnCart();
     }
   } catch (e) {
-    console.warn("Quantity integer hook error:", e);
+    console.warn("Quantity hooks error:", e);
   }
 
   try {
