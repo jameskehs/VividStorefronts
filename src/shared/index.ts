@@ -331,11 +331,11 @@ function enforceIntegerQuantityOnCartEdit(): void {
 }
 
 /* ─────────────────────────────────────────────────────────────
-   Hide "Add to Cart" ONLY when "Return to Cart" is visible
-   Robust: strong CSS, DOM toggles, and setAction guard
+   Hide "Add to Cart" ONLY when "Return to Cart" exists/visible
+   — robust (handles late renders & aggressive CSS)
 ────────────────────────────────────────────────────────────── */
 function toggleAddToCartWhenReturnPresent(): void {
-  const STYLE_ID = "vi-hide-add-when-return-present";
+  const STYLE_ID = "hide-add-to-cart-when-return-present";
 
   const ensureStyle = () => {
     let styleEl = document.getElementById(STYLE_ID) as HTMLStyleElement | null;
@@ -348,56 +348,24 @@ function toggleAddToCartWhenReturnPresent(): void {
     return styleEl;
   };
 
-  // 1) Strong CSS that wins vs later theme rules
-  const setCssHidden = (enable: boolean) => {
-    const styleEl = ensureStyle();
-    styleEl.textContent = enable
-      ? `
-/* Hide Add button when Return button is in the same container */
-#checkoutProceedButtonContainer #returnToCartButton ~ #addToCartButton,
-#checkoutProceedButtonContainer #returnToCartButton ~ button[name="add_cart"] {
-  display: none !important;
-  pointer-events: none !important;
-}
-
-/* Extra: common fallbacks if markup changes slightly */
-#proceedToOrder #checkoutProceedButtonContainer:has(#returnToCartButton) #addToCartButton,
-#proceedToOrder #checkoutProceedButtonContainer:has(#returnToCartButton) button[name="add_cart"] {
-  display: none !important;
-  pointer-events: none !important;
-}
-      `.trim()
-      : "";
-  };
-
-  const returnVisible = () => {
-    const btn = document.getElementById(
-      "returnToCartButton"
-    ) as HTMLButtonElement | null;
-    return !!(btn && btn.offsetParent !== null);
-  };
-
-  const getAddButtons = () =>
-    Array.from(
+  const setHidden = (hidden: boolean) => {
+    // target both id and name variants
+    const addButtons = Array.from(
       document.querySelectorAll<HTMLButtonElement>(
         '#addToCartButton, button[name="add_cart"]'
       )
     );
 
-  // 2) DOM toggle (inline + attributes)
-  const applyDomToggle = () => {
-    const hide = returnVisible();
-    const addButtons = getAddButtons();
-
+    // enforce via attributes + inline style
     addButtons.forEach((btn) => {
-      if (hide) {
+      if (hidden) {
         btn.hidden = true;
         btn.disabled = true;
         btn.style.setProperty("display", "none", "important");
         btn.style.setProperty("pointer-events", "none", "important");
         btn.setAttribute("aria-hidden", "true");
         btn.setAttribute("tabindex", "-1");
-        // Click trap (defense-in-depth)
+        // trap clicks just in case
         btn.onclick = (e: MouseEvent) => {
           e.preventDefault();
           e.stopImmediatePropagation();
@@ -410,69 +378,52 @@ function toggleAddToCartWhenReturnPresent(): void {
         btn.style.removeProperty("pointer-events");
         btn.removeAttribute("aria-hidden");
         btn.removeAttribute("tabindex");
-        // don’t restore onclick; native handlers will exist already
+        // do not restore onclick; leave native handlers
       }
     });
 
-    // keep server hints consistent
+    // also enforce via a CSS rule (beats theme rules)
+    const styleEl = ensureStyle();
+    styleEl.textContent = hidden
+      ? `
+/* auto-added by shared script: hide add-to-cart when return button is present */
+#addToCartButton,
+button[name="add_cart"] { display: none !important; pointer-events: none !important; }
+      `.trim()
+      : ""; // clear to allow showing again if Return disappears
+  };
+
+  const apply = () => {
+    const returnBtn = document.getElementById(
+      "returnToCartButton"
+    ) as HTMLButtonElement | null;
+
+    // "visible" = exists and rendered (not display:none and in layout)
+    const returnVisible = !!(returnBtn && returnBtn.offsetParent !== null);
+
+    // flip visibility of Add buttons
+    setHidden(returnVisible);
+
+    // align hidden inputs if present
     const actionInput = document.querySelector<HTMLInputElement>(
       'input[name="cartButtonType"]'
     );
     const showAddFlag = document.querySelector<HTMLInputElement>(
       'input[name="showAddToCart"]'
     );
-    if (hide) {
+    if (returnVisible) {
       if (actionInput) actionInput.value = "return";
       if (showAddFlag) showAddFlag.value = "0";
     } else {
       if (showAddFlag) showAddFlag.value = "1";
+      // don't force cartButtonType here
     }
-
-    // CSS on/off (so we only hide when Return actually exists)
-    setCssHidden(hide);
   };
 
-  // 3) Guard setAction so add_cart can't sneak through
-  try {
-    const w = window as any;
-    if (!w.__viPatchedSetAction) {
-      const original = w.setAction;
-      w.setAction = function patchedSetAction(action: string, evt?: Event) {
-        try {
-          if (String(action).toLowerCase() === "add_cart" && returnVisible()) {
-            // flip to "return" when Return button is visible
-            action = "return";
-          }
-        } catch {}
-        return typeof original === "function"
-          ? original.call(this, action, evt)
-          : true;
-      };
-      w.__viPatchedSetAction = true;
-    }
-  } catch {
-    /* no-op if setAction not present */
-  }
+  // Run once now
+  apply();
 
-  // Run now
-  applyDomToggle();
-
-  // Re-apply shortly (catches very-late renderers)
-  let rafCount = 0;
-  const rafLoop = () => {
-    applyDomToggle();
-    if (++rafCount < 5) requestAnimationFrame(rafLoop);
-  };
-  requestAnimationFrame(rafLoop);
-
-  // And periodically for a bit (in case of delayed ajax swaps)
-  const t0 = Date.now();
-  const interval = setInterval(() => {
-    applyDomToggle();
-    if (Date.now() - t0 > 8000) clearInterval(interval);
-  }, 300);
-
-  // Observe for DOM/style changes in the button area
+  // Watch the area for dynamic changes (including style/class flips)
   const host =
     document.getElementById("checkoutProceedButtonContainer") ||
     document.getElementById("proceedToOrder") ||
@@ -480,7 +431,7 @@ function toggleAddToCartWhenReturnPresent(): void {
     document.body;
 
   try {
-    const mo = new MutationObserver(() => applyDomToggle());
+    const mo = new MutationObserver(() => apply());
     mo.observe(host, {
       childList: true,
       subtree: true,
