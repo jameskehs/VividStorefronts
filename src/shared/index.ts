@@ -743,6 +743,42 @@ export function updateCcFeeAndGrandTotal(opts: CcFeeCalcOptions = {}): void {
 }
 
 /* ─────────────────────────────────────────────────────────────
+   Targeted login-assistance email updater for 4-checkout
+   (no scanning over arbitrary divs)
+────────────────────────────────────────────────────────────── */
+function updateLoginAssistanceMessage(): void {
+  const path = (window.location.pathname || "").toLowerCase();
+  if (!path.includes("/checkout/4-checkout.php")) return;
+
+  const container = document.querySelector("#login-container");
+  if (!container) return;
+
+  // Find mailto links inside #login-container (usually only the assistance block)
+  const links =
+    container.querySelectorAll<HTMLAnchorElement>('a[href^="mailto:"]');
+  let updated = false;
+
+  links.forEach((link) => {
+    const nearestDiv = link.closest("div");
+    const text = (nearestDiv?.textContent || "").toLowerCase();
+
+    // Only touch the "If you have trouble logging in" assistance block
+    if (text.includes("if you have trouble logging in")) {
+      link.href = "mailto:loginrequests@vividink.com";
+      link.textContent = "loginrequests@vividink.com";
+      updated = true;
+    }
+  });
+
+  // Fallback: if we didn't match by phrase but there's exactly one mailto in this container, update it.
+  if (!updated && links.length === 1) {
+    const link = links[0];
+    link.href = "mailto:loginrequests@vividink.com";
+    link.textContent = "loginrequests@vividink.com";
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
    Shared storefront bootstrap
 ────────────────────────────────────────────────────────────── */
 
@@ -772,8 +808,18 @@ export function runSharedScript(options: OptionsParameter) {
   changeSupportText(
     "If you are having issues accessing your account, please contact our support team:",
     "Phone: 225-751-7297",
-    '<a href="mailto:loginrequest@vividink.com">Email: loginrequest@vividink.com</a>'
+    '<a href="mailto:loginrequests@vividink.com">Email: loginrequests@vividink.com</a>'
   );
+
+  // ✅ Only affect the 4-checkout login assistance block, without scanning every div
+  try {
+    updateLoginAssistanceMessage();
+    // A couple of gentle retries in case the page paints late
+    setTimeout(updateLoginAssistanceMessage, 100);
+    setTimeout(updateLoginAssistanceMessage, 400);
+  } catch (e) {
+    console.warn("updateLoginAssistanceMessage error:", e);
+  }
 
   AddImagePickerSelectionToMemo();
 
