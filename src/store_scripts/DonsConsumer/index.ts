@@ -53,6 +53,177 @@ export function main() {
     setTimeout(() => observer.disconnect(), durationMs);
   }
 
+  /**
+   * USPS first: Reorder rows in #shipping_method_table so USPS options appear first.
+   * Does NOT change the current selection by default.
+   */
+  function prioritizeUSPSRows() {
+    const AUTO_SELECT_USPS = false; // set to true if you want USPS auto-selected when present
+
+    const table = document.querySelector<HTMLTableElement>(
+      "#shipping_method_table"
+    );
+    if (!table) return;
+
+    const tbody = table.tBodies?.[0] || table.querySelector("tbody");
+    if (!tbody) return;
+
+    // Collect rows; keep track of special rows that should stay at the very top in original order.
+    const allRows = Array.from(
+      tbody.querySelectorAll<HTMLTableRowElement>("tr")
+    );
+    if (allRows.length === 0) return;
+
+    const specialRowIds = new Set(["tbdShippingRow", "loadShippingRow"]);
+    const specialRows: HTMLTableRowElement[] = [];
+    const carrierRows: HTMLTableRowElement[] = [];
+
+    for (const row of allRows) {
+      const id = row.id || "";
+      if (specialRowIds.has(id)) {
+        specialRows.push(row);
+      } else {
+        carrierRows.push(row);
+      }
+    }
+
+    // Partition carrierRows into USPS vs non-USPS using the radio input's data-carriertype
+    const uspsRows: HTMLTableRowElement[] = [];
+    const otherRows: HTMLTableRowElement[] = [];
+
+    for (const row of carrierRows) {
+      // ignore hidden rows
+      if (row.style.display === "none") {
+        otherRows.push(row);
+        continue;
+      }
+      const radio = row.querySelector<HTMLInputElement>(
+        "input[type='radio'][name='shipMethod']"
+      );
+      const carrierType =
+        radio?.getAttribute("data-carriertype")?.trim().toUpperCase() || "";
+      if (carrierType === "USPS") {
+        uspsRows.push(row);
+      } else {
+        otherRows.push(row);
+      }
+    }
+
+    if (uspsRows.length === 0) {
+      // Nothing to do if USPS not present
+      return;
+    }
+
+    // Remember currently checked value to preserve selection after reordering.
+    const checkedRadio = tbody.querySelector<HTMLInputElement>(
+      "input[type='radio'][name='shipMethod']:checked"
+    );
+    const checkedValue = checkedRadio?.value ?? null;
+
+    // Rebuild order: special rows (in original order) + USPS rows + other rows
+    const newOrder = [...specialRows, ...uspsRows, ...otherRows];
+
+    // Only rewrite DOM if order actually changes to avoid flicker
+    const changed =
+      newOrder.length !== allRows.length ||
+      newOrder.some((row, i) => row !== allRows[i]);
+
+    if (changed) {
+      // Detach all, then append in new order
+      const frag = document.createDocumentFragment();
+      newOrder.forEach((r) => frag.appendChild(r));
+      tbody.appendChild(frag);
+
+      // Reapply zebra striping classes (o/e) to carrier rows only (keep special rows as-is)
+      reapplyZebraStriping(tbody, specialRowIds);
+
+      // Restore previous selection (if it existed)
+      if (checkedValue) {
+        const newChecked = tbody.querySelector<HTMLInputElement>(
+          `input[type='radio'][name='shipMethod'][value='${CSS.escape(
+            checkedValue
+          )}']`
+        );
+        if (newChecked && !newChecked.checked) {
+          newChecked.checked = true;
+        }
+      }
+
+      // Optionally auto-select the first USPS row
+      if (AUTO_SELECT_USPS) {
+        const firstUSPS = uspsRows[0].querySelector<HTMLInputElement>(
+          "input[type='radio'][name='shipMethod']"
+        );
+        if (firstUSPS && !firstUSPS.checked) {
+          // Some sites rely on onclick handlers to recompute totals, so trigger click if present.
+          firstUSPS.click();
+        }
+      }
+    }
+  }
+
+  function reapplyZebraStriping(
+    tbody: HTMLTableSectionElement,
+    specialRowIds: Set<string>
+  ) {
+    let toggle = 0; // 0 => 'o', 1 => 'e'
+    const rows = Array.from(tbody.querySelectorAll<HTMLTableRowElement>("tr"));
+    rows.forEach((row) => {
+      if (specialRowIds.has(row.id)) {
+        return; // keep special rows untouched
+      }
+      row.classList.remove("o", "e");
+      row.classList.add(toggle % 2 === 0 ? "o" : "e");
+      toggle++;
+    });
+  }
+
+  /**
+   * Start observing the shipping table so when the platform re-renders options,
+   * USPS rows get bubbled to the top again.
+   */
+  function observeShippingTable() {
+    const table = document.querySelector("#shipping_method_table");
+    if (!table) return;
+
+    // Run once immediately (in case rows are already there)
+    prioritizeUSPSRows();
+
+    const observer = new MutationObserver(() => {
+      prioritizeUSPSRows();
+    });
+
+    observer.observe(table, {
+      childList: true,
+      subtree: true,
+    });
+
+    // Graceful stop after a short window (adjust if your page reflows longer)
+    setTimeout(() => observer.disconnect(), 15000);
+  }
+
+  function whenShippingTableReady(cb: () => void, timeoutMs = 12000) {
+    const start = Date.now();
+    const poll = () => {
+      const table = document.querySelector("#shipping_method_table tbody");
+      const hasOptions =
+        !!table &&
+        table.querySelectorAll("input[type='radio'][name='shipMethod']")
+          .length > 0;
+
+      if (hasOptions) {
+        cb();
+        return;
+      }
+      if (Date.now() - start > timeoutMs) {
+        // Give up silently
+        return;
+      }
+      setTimeout(poll, 150);
+    };
+    poll();
+  }
+
   function init() {
     const isAddToCartPage = () => {
       const page = GLOBALVARS?.currentPage?.trim().toLowerCase() || "";
@@ -71,6 +242,16 @@ export function main() {
 
     if (isAddToCartPage() || onCheckoutPage) {
       watchAndHideAvailableQty(12000);
+    }
+
+    // USPS prioritization only on the shipping step
+    if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTSHIPPING) {
+      whenShippingTableReady(() => {
+        // One more immediate pass in case the table appeared between polls
+        prioritizeUSPSRows();
+        // Then observe for subsequent re-renders (ajax loads, rate recalcs, etc.)
+        observeShippingTable();
+      });
     }
 
     // --- Hide .buttonContainer ONLY on the Add to Cart page ---
