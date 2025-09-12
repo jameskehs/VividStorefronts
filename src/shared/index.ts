@@ -334,8 +334,7 @@ function toggleAddToCartWhenReturnPresent(): void {
 }
 
 /* ─────────────────────────────────────────────────────────────
-   Front-end CC fee calculation & grand total update
-   (kept; unrelated to token issue)
+   Front-end CC fee calculation & grand total update (no UI)
 ────────────────────────────────────────────────────────────── */
 export interface CcFeeCalcOptions {
   /** 0.03 means 3% */
@@ -427,9 +426,6 @@ function updateLoginAssistanceMessage(): void {
 /* ─────────────────────────────────────────────────────────────
    Shared storefront bootstrap
 ────────────────────────────────────────────────────────────── */
-
-let __ccFeeObserver: MutationObserver | null = null;
-
 export function runSharedScript(options: OptionsParameter) {
   console.log("Hello from the shared script!");
 
