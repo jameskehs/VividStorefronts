@@ -426,58 +426,87 @@ function toggleAddToCartWhenReturnPresent(): void {
 ────────────────────────────────────────────────────────────── */
 
 async function mountAuthorizeNetAcceptHosted(): Promise<void> {
-  const iframe = findPaymentIframe();
+  const iframe = document.getElementById(
+    "load_payment"
+  ) as HTMLIFrameElement | null;
   if (!iframe) return;
 
-  const currentSrc = iframe.getAttribute("src") || "";
-  if (currentSrc && currentSrc !== "about:blank") return;
+  const mintAndPost = async () => {
+    const orderNumber =
+      (window as any)?.GLOBALVARS?.orderNumber ||
+      Number(
+        (document.getElementById("orderNumber") as HTMLInputElement | null)
+          ?.value
+      ) ||
+      null;
 
-  const orderNumber =
-    (window as any)?.GLOBALVARS?.orderNumber ?? getOrderNumberFromDOM();
+    // (Optional) scrape grand total; or let backend set amount server-side
+    const grandRaw = (
+      document.getElementById("grandPrice")?.textContent || ""
+    ).replace(/[^0-9.]/g, "");
+    const amount = Number(grandRaw || 0) || 0;
 
-  const { index: csrfIndex, token: csrfToken } = getCsrf();
-
-  const headers: Record<string, string> = {
-    "Content-Type": "application/json",
-  };
-  if (csrfIndex) headers["X-CSRF-INDEX"] = csrfIndex;
-  if (csrfToken) headers["X-CSRF-TOKEN"] = csrfToken;
-
-  let token: string | null = null;
-  try {
-    const resp = await fetch("/api/anet/hosted-token", {
+    const r = await fetch("/api/anet/hosted-token", {
       method: "POST",
       credentials: "include",
-      headers,
-      body: JSON.stringify({ orderNumber: orderNumber ?? null }),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        orderNumber,
+        amount,
+        returnUrl: location.origin + "/checkout/complete",
+      }),
     });
-    if (!resp.ok) throw new Error(`anet token http ${resp.status}`);
-    const data = await resp.json();
-    token = data?.token || null;
+    const j = await r.json();
+    if (!r.ok || !j?.token) throw new Error("No ANet token");
+
+    // POST token into iframe
+    const form = document.createElement("form");
+    form.method = "POST";
+    form.action = "https://accept.authorize.net/payment/payment";
+    form.target = iframe.name || "load_payment";
+    form.style.display = "none";
+    const inp = document.createElement("input");
+    inp.type = "hidden";
+    inp.name = "token";
+    inp.value = j.token;
+    form.appendChild(inp);
+    document.body.appendChild(form);
+    form.submit();
+  };
+
+  let retried = false;
+
+  const onError = async () => {
+    iframe.removeEventListener("error", onError);
+    if (retried) return;
+    retried = true;
+    try {
+      await mintAndPost();
+    } catch (e) {
+      console.warn("[anet] retry failed", e);
+    }
+  };
+
+  iframe.addEventListener("error", onError, { once: true });
+
+  // Watchdog: if nothing seems to load in 10s, try a fresh token once
+  const timeout = setTimeout(async () => {
+    if (retried) return;
+    retried = true;
+    try {
+      await mintAndPost();
+    } catch (e) {
+      console.warn("[anet] watchdog retry failed", e);
+    }
+  }, 10000);
+
+  iframe.addEventListener("load", () => clearTimeout(timeout), { once: true });
+
+  try {
+    await mintAndPost();
   } catch (e) {
-    console.warn("[anet] failed to fetch hosted token", e);
+    console.warn("[anet] initial token failed", e);
   }
-  if (!token) {
-    console.warn("[anet] No hosted token returned; cannot load iframe.");
-    return;
-  }
-
-  const form = document.createElement("form");
-  form.method = "POST";
-  form.action = "https://accept.authorize.net/payment/payment";
-  form.target = iframe.name || "load_payment";
-  form.style.display = "none";
-
-  const tokenInput = document.createElement("input");
-  tokenInput.type = "hidden";
-  tokenInput.name = "token";
-  tokenInput.value = token;
-
-  form.appendChild(tokenInput);
-  document.body.appendChild(form);
-  form.submit();
-
-  iframe.setAttribute("src", "about:blank");
 }
 
 /* ─────────────────────────────────────────────────────────────
