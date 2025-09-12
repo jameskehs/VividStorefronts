@@ -36,93 +36,6 @@ export function calculateCreditCardFees<T extends FeeShipmentLike>(
 }
 
 /* ─────────────────────────────────────────────────────────────
-   Payment helpers: robust detection, scraping, and iframe finding
-────────────────────────────────────────────────────────────── */
-
-function isPaymentStep(): boolean {
-  const p = (window.location.pathname || "").toLowerCase();
-  return (
-    p.includes("/checkout/4-payment.php") ||
-    p.includes("/checkout/6-payment.php") ||
-    p.includes("/checkout/6-payment_new.php") ||
-    p.includes("/checkout/payment.php") ||
-    (window as any)?.GLOBALVARS?.currentPage === StorefrontPage.CHECKOUTPAYMENT
-  );
-}
-
-function findPaymentIframe(): HTMLIFrameElement | null {
-  return (
-    (document.getElementById("load_payment") as HTMLIFrameElement) ||
-    (document.querySelector("#paywithnewcard iframe") as HTMLIFrameElement) ||
-    (document.querySelector(
-      'iframe[name="load_payment"]'
-    ) as HTMLIFrameElement) ||
-    null
-  );
-}
-
-function getOrderNumberFromDOM(): number | null {
-  const ids = ["orderNumber", "orderNo", "orderID", "orderId"];
-  for (const id of ids) {
-    const el = document.getElementById(id) as
-      | HTMLInputElement
-      | HTMLElement
-      | null;
-    if (!el) continue;
-    const raw = (el as HTMLInputElement).value ?? el.textContent ?? "";
-    const n = Number(String(raw).replace(/[^\d]/g, ""));
-    if (Number.isFinite(n) && n > 0) return n;
-  }
-  const nameCandidates = [
-    "orderNumber",
-    "order_no",
-    "order_id",
-    "ordernumber",
-    "orderno",
-  ];
-  for (const nm of nameCandidates) {
-    const el = document.querySelector<HTMLInputElement>(`input[name="${nm}"]`);
-    if (el) {
-      const n = Number((el.value || "").replace(/[^\d]/g, ""));
-      if (Number.isFinite(n) && n > 0) return n;
-    }
-  }
-  const scope =
-    document.querySelector("#checkoutSummary, #orderSummary, .ui-box, table") ||
-    document.body;
-  const m = (scope.textContent || "").match(
-    /order\s*(?:number|no\.?|#)\s*[:\-]?\s*(\d{3,})/i
-  );
-  if (m) {
-    const n = Number(m[1]);
-    if (Number.isFinite(n) && n > 0) return n;
-  }
-  return null;
-}
-
-function getCsrf() {
-  const idx = (
-    document.querySelector(
-      'input[name="_CSRF_INDEX"]'
-    ) as HTMLInputElement | null
-  )?.value;
-  const tok = (
-    document.querySelector(
-      'input[name="_CSRF_TOKEN"]'
-    ) as HTMLInputElement | null
-  )?.value;
-  return { index: idx ?? null, token: tok ?? null };
-}
-
-function getPaymentMethod(): string | null {
-  // Your DOM shows: <input ... class="paymentMethodStored" value="anetIFrame">
-  const el =
-    document.querySelector<HTMLInputElement>(".paymentMethodStored[checked]") ||
-    document.querySelector<HTMLInputElement>(".paymentMethodStored");
-  return el?.value ?? null;
-}
-
-/* ─────────────────────────────────────────────────────────────
    Displayed qty normalization (e.g., <strong class="jobQty">2.00</strong>)
 ────────────────────────────────────────────────────────────── */
 function normalizeDisplayedQuantities(root: ParentNode = document): void {
@@ -332,7 +245,6 @@ function enforceIntegerQuantityOnCartEdit(): void {
 
 /* ─────────────────────────────────────────────────────────────
    Hide "Add to Cart" ONLY when "Return to Cart" is visible
-   (no :has, no global overrides, no attribute observer loops)
 ────────────────────────────────────────────────────────────── */
 function toggleAddToCartWhenReturnPresent(): void {
   try {
@@ -422,300 +334,9 @@ function toggleAddToCartWhenReturnPresent(): void {
 }
 
 /* ─────────────────────────────────────────────────────────────
-   Authorize.Net Accept Hosted loader (auto-POST token into iframe)
-────────────────────────────────────────────────────────────── */
-
-async function mountAuthorizeNetAcceptHosted(): Promise<void> {
-  const iframe = document.getElementById(
-    "load_payment"
-  ) as HTMLIFrameElement | null;
-  if (!iframe) return;
-
-  const mintAndPost = async () => {
-    const orderNumber =
-      (window as any)?.GLOBALVARS?.orderNumber ||
-      Number(
-        (document.getElementById("orderNumber") as HTMLInputElement | null)
-          ?.value
-      ) ||
-      null;
-
-    // (Optional) scrape grand total; or let backend set amount server-side
-    const grandRaw = (
-      document.getElementById("grandPrice")?.textContent || ""
-    ).replace(/[^0-9.]/g, "");
-    const amount = Number(grandRaw || 0) || 0;
-
-    const r = await fetch("/api/anet/hosted-token", {
-      method: "POST",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        orderNumber,
-        amount,
-        returnUrl: location.origin + "/checkout/complete",
-      }),
-    });
-    const j = await r.json();
-    if (!r.ok || !j?.token) throw new Error("No ANet token");
-
-    // POST token into iframe
-    const form = document.createElement("form");
-    form.method = "POST";
-    form.action = "https://accept.authorize.net/payment/payment";
-    form.target = iframe.name || "load_payment";
-    form.style.display = "none";
-    const inp = document.createElement("input");
-    inp.type = "hidden";
-    inp.name = "token";
-    inp.value = j.token;
-    form.appendChild(inp);
-    document.body.appendChild(form);
-    form.submit();
-  };
-
-  let retried = false;
-
-  const onError = async () => {
-    iframe.removeEventListener("error", onError);
-    if (retried) return;
-    retried = true;
-    try {
-      await mintAndPost();
-    } catch (e) {
-      console.warn("[anet] retry failed", e);
-    }
-  };
-
-  iframe.addEventListener("error", onError, { once: true });
-
-  // Watchdog: if nothing seems to load in 10s, try a fresh token once
-  const timeout = setTimeout(async () => {
-    if (retried) return;
-    retried = true;
-    try {
-      await mintAndPost();
-    } catch (e) {
-      console.warn("[anet] watchdog retry failed", e);
-    }
-  }, 10000);
-
-  iframe.addEventListener("load", () => clearTimeout(timeout), { once: true });
-
-  try {
-    await mintAndPost();
-  } catch (e) {
-    console.warn("[anet] initial token failed", e);
-  }
-}
-
-/* ─────────────────────────────────────────────────────────────
-   Non-Authorize.Net (legacy) loader using tokenized URL
-────────────────────────────────────────────────────────────── */
-
-async function mountGenericHostedFrame(): Promise<void> {
-  const iframe = findPaymentIframe();
-  if (!iframe) return;
-
-  const currentSrc = iframe.getAttribute("src") || "";
-  if (currentSrc && currentSrc !== "about:blank") return;
-
-  const fromGlobal = (window as any)?.PaymentPortalFrameURL as
-    | string
-    | undefined;
-  const fromHidden = (
-    document.getElementById("paymentFrameUrl") as HTMLInputElement | null
-  )?.value;
-  const fromDataAttr =
-    document.body?.getAttribute("data-payment-frame-url") || undefined;
-
-  const firstValid = (...urls: (string | undefined)[]) =>
-    urls.find((u) => typeof u === "string" && /^https?:\/\//i.test(String(u)));
-
-  let hostedUrl = firstValid(fromGlobal, fromHidden, fromDataAttr);
-
-  if (!hostedUrl) {
-    const orderNumber =
-      (window as any)?.GLOBALVARS?.orderNumber ?? getOrderNumberFromDOM();
-
-    try {
-      const resp = await fetch("/api/payment/frame-url", {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ orderNumber: orderNumber ?? null }),
-      });
-
-      if (resp.ok) {
-        const data = await resp.json();
-        if (data?.url && /^https?:\/\//i.test(data.url)) {
-          hostedUrl = data.url;
-        } else {
-          console.warn(
-            "[payment] /api/payment/frame-url returned no usable url"
-          );
-        }
-      } else {
-        console.warn(`[payment] /api/payment/frame-url HTTP ${resp.status}`);
-      }
-    } catch (e) {
-      console.warn("[payment] /api/payment/frame-url fetch failed", e);
-    }
-  }
-
-  if (!hostedUrl) {
-    console.warn(
-      "[payment] No tokenized URL found. Provide window.PaymentPortalFrameURL, " +
-        '<input id="paymentFrameUrl">, <body data-payment-frame-url>, or implement /api/payment/frame-url.'
-    );
-    return;
-  }
-
-  const onError = () => {
-    iframe?.removeEventListener("error", onError);
-    console.warn("[payment] iframe load error (token might be expired)");
-  };
-  iframe.addEventListener("error", onError, { once: true });
-  iframe.src = hostedUrl;
-}
-
-/* ─────────────────────────────────────────────────────────────
-   Credit card fee notice (exported & auto-triggered)
-────────────────────────────────────────────────────────────── */
-
-export interface CreditCardFeeNoticeOptions {
-  percentage?: number;
-  message?: string; // {PERCENT} placeholder allowed
-  acceptText?: string;
-  iframeSelector?: string | null;
-  delayMs?: number;
-  zIndex?: number;
-  storage?: "session" | "local" | null;
-  storageKey?: string;
-  condition?: () => boolean;
-}
-
-export function initCreditCardFeeNotice(
-  opts: CreditCardFeeNoticeOptions = {}
-): void {
-  if (typeof window === "undefined" || typeof document === "undefined") return;
-
-  const {
-    percentage = 3,
-    message = "⚠️ In an effort to keep overall cost down, a {PERCENT}% surcharge will be added to all credit card transactions.",
-    acceptText = "Accept",
-    iframeSelector = "#load_payment",
-    delayMs = 300,
-    zIndex = 99999,
-    storage = "session",
-    storageKey = "cc-fee-notice-accepted",
-    condition,
-  } = opts;
-
-  if (condition && !condition()) return;
-
-  const storageObj =
-    storage === "local"
-      ? window.localStorage
-      : storage === "session"
-      ? window.sessionStorage
-      : null;
-
-  if (storageObj && storageObj.getItem(storageKey) === "true") return;
-
-  const MODAL_ID = "cc-fee-notice-modal";
-  const alreadyThere = () => !!document.getElementById(MODAL_ID);
-
-  const showModal = () => {
-    if (alreadyThere()) return;
-
-    const overlay = document.createElement("div");
-    overlay.id = MODAL_ID;
-    Object.assign(overlay.style, {
-      position: "fixed",
-      top: "0",
-      left: "0",
-      width: "100vw",
-      height: "100vh",
-      backgroundColor: "rgba(0, 0, 0, 0.4)",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      zIndex: String(zIndex),
-    });
-
-    const box = document.createElement("div");
-    Object.assign(box.style, {
-      backgroundColor: "#ffffff",
-      border: "1px solid #ffffff",
-      color: "#000000",
-      padding: "24px",
-      borderRadius: "8px",
-      fontSize: "1.05rem",
-      fontWeight: "bold",
-      maxWidth: "420px",
-      boxShadow: "0 0 20px rgba(0,0,0,0.2)",
-      position: "relative",
-      textAlign: "center",
-    });
-
-    box.innerHTML = `
-      <div style="margin-bottom: 1em;">
-        ${message.replace("{PERCENT}", String(percentage))}
-      </div>
-      <button id="cc-fee-close-btn" style="
-        background-color: #dadada;
-        color: black;
-        border: none;
-        padding: 6px 18px;
-        border-radius: 4px;
-        cursor: pointer;
-      ">${acceptText}</button>
-    `;
-
-    overlay.appendChild(box);
-    document.body.appendChild(overlay);
-
-    const closeBtn = box.querySelector(
-      "#cc-fee-close-btn"
-    ) as HTMLButtonElement | null;
-    if (closeBtn) {
-      closeBtn.onclick = () => {
-        if (storageObj) storageObj.setItem(storageKey, "true");
-        overlay.remove();
-      };
-    }
-  };
-
-  // Only show the modal once the iframe is visible AND has a real session
-  const waitForTarget = () => {
-    if (!iframeSelector) {
-      showModal();
-      return;
-    }
-    const el = document.querySelector(
-      iframeSelector
-    ) as HTMLIFrameElement | null;
-
-    if (el && el.offsetParent !== null) {
-      const src = el.getAttribute("src") || "";
-      if (!src || src === "about:blank") {
-        requestAnimationFrame(waitForTarget);
-        return;
-      }
-      showModal();
-      return;
-    }
-    requestAnimationFrame(waitForTarget);
-  };
-
-  setTimeout(() => requestAnimationFrame(waitForTarget), delayMs);
-}
-
-/* ─────────────────────────────────────────────────────────────
    Front-end CC fee calculation & grand total update
+   (kept; unrelated to token issue)
 ────────────────────────────────────────────────────────────── */
-
 export interface CcFeeCalcOptions {
   /** 0.03 means 3% */
   rate?: number;
@@ -773,7 +394,6 @@ export function updateCcFeeAndGrandTotal(opts: CcFeeCalcOptions = {}): void {
 
 /* ─────────────────────────────────────────────────────────────
    Targeted login-assistance email updater for 4-checkout
-   (no scanning over arbitrary divs)
 ────────────────────────────────────────────────────────────── */
 function updateLoginAssistanceMessage(): void {
   const path = (window.location.pathname || "").toLowerCase();
@@ -782,7 +402,6 @@ function updateLoginAssistanceMessage(): void {
   const container = document.querySelector("#login-container");
   if (!container) return;
 
-  // Find mailto links inside #login-container (usually only the assistance block)
   const links =
     container.querySelectorAll<HTMLAnchorElement>('a[href^="mailto:"]');
   let updated = false;
@@ -791,7 +410,6 @@ function updateLoginAssistanceMessage(): void {
     const nearestDiv = link.closest("div");
     const text = (nearestDiv?.textContent || "").toLowerCase();
 
-    // Only touch the "If you have trouble logging in" assistance block
     if (text.includes("if you have trouble logging in")) {
       link.href = "mailto:loginrequests@vividink.com";
       link.textContent = "loginrequests@vividink.com";
@@ -799,7 +417,6 @@ function updateLoginAssistanceMessage(): void {
     }
   });
 
-  // Fallback: if we didn't match by phrase but there's exactly one mailto in this container, update it.
   if (!updated && links.length === 1) {
     const link = links[0];
     link.href = "mailto:loginrequests@vividink.com";
@@ -840,10 +457,9 @@ export function runSharedScript(options: OptionsParameter) {
     '<a href="mailto:loginrequests@vividink.com">Email: loginrequests@vividink.com</a>'
   );
 
-  // ✅ Only affect the 4-checkout login assistance block, without scanning every div
+  // Login help text tweaks (scoped)
   try {
     updateLoginAssistanceMessage();
-    // A couple of gentle retries in case the page paints late
     setTimeout(updateLoginAssistanceMessage, 100);
     setTimeout(updateLoginAssistanceMessage, 400);
   } catch (e) {
@@ -856,17 +472,16 @@ export function runSharedScript(options: OptionsParameter) {
     options.enableDropdown && loadDropdownMenu();
   }
 
-  // ✅ Quantity & button behavior on cart pages
+  // Cart page behaviors
   try {
     const path = (window.location.pathname || "").toLowerCase();
     const params = new URLSearchParams(window.location.search);
 
     if (path.includes("/cart/3-edit.php")) {
       enforceIntegerQuantityOnCartEdit();
-      toggleAddToCartWhenReturnPresent(); // ← conditional hide with strong CSS
+      toggleAddToCartWhenReturnPresent();
     }
 
-    // ✅ Also apply to /cart/index.php and any page with ?task=updateItem
     if (
       path.includes("/cart/index.php") ||
       params.get("task") === "updateItem"
@@ -877,59 +492,23 @@ export function runSharedScript(options: OptionsParameter) {
     console.warn("Quantity/Add-to-Cart hooks error:", e);
   }
 
+  // Note: we intentionally do NOT touch the payment iframe anymore.
   try {
-    if (isPaymentStep()) {
-      const method = getPaymentMethod();
-
-      if (method && method.toLowerCase() === "anetiframe") {
-        // ✅ Authorize.Net Accept Hosted path (requires POSTing token into iframe)
-        void mountAuthorizeNetAcceptHosted();
-      } else {
-        // ✅ Generic hosted page path (tokenized URL set as iframe src)
-        void mountGenericHostedFrame();
-      }
-
-      // Show the modal AFTER the frame has a real session
-      initCreditCardFeeNotice({
-        percentage: 3,
-        storage: "local",
-        storageKey: "cc-fee-accepted",
-        iframeSelector: "#load_payment",
-        delayMs: 300,
-      });
-
-      // Ensure fee is computed and added into the grand total
-      const run = () =>
-        updateCcFeeAndGrandTotal({
-          rate: 0.03,
-          includeTaxInFee: true,
-        });
-
-      setTimeout(run, 350);
-
-      const idsToWatch = ["subPrice", "taxPrice", "shipPrice"];
-      const targets = idsToWatch
-        .map((id) => document.getElementById(id))
-        .filter(Boolean) as HTMLElement[];
-
-      if (__ccFeeObserver) {
-        __ccFeeObserver.disconnect();
-        __ccFeeObserver = null;
-      }
-
-      if (targets.length) {
-        __ccFeeObserver = new MutationObserver(() => run());
-        targets.forEach((el) =>
-          __ccFeeObserver!.observe(el, {
-            childList: true,
-            subtree: true,
-            characterData: true,
-          })
-        );
-      }
+    const p = (window.location.pathname || "").toLowerCase();
+    if (
+      p.includes("/checkout/4-payment.php") ||
+      p.includes("/checkout/6-payment.php") ||
+      p.includes("/checkout/6-payment_new.php") ||
+      p.includes("/checkout/payment.php")
+    ) {
+      console.log(
+        "[payment] Skipping iframe/token handling in frontend; awaiting platform-provided hosted token/URL."
+      );
+      // If you still want to compute/display the fee client-side, you can call updateCcFeeAndGrandTotal() here.
+      // setTimeout(() => updateCcFeeAndGrandTotal({ rate: 0.03, includeTaxInFee: true }), 350);
     }
   } catch (e) {
-    console.warn("CC fee notice or calc error:", e);
+    console.warn("Payment step note error:", e);
   }
 }
 
