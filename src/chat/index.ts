@@ -1,8 +1,16 @@
 import { initChatWidget } from "./chatWidget";
+import type { InitChatOptions } from "./types";
 
-export function mountVividChat() {
+export function mountVividChat(opts: InitChatOptions = {}) {
   document.addEventListener("DOMContentLoaded", () => {
-    // Attach to all pages by default
-    initChatWidget({ apiBase: "/api/ai", debug: false });
+    initChatWidget({
+      apiBase: "https://ai-chat-bot-1xm4.onrender.com/api/ai",
+      debug: false,
+      ...opts,
+    });
   });
 }
+
+// (optional) re-export for convenience
+export { initChatWidget } from "./chatWidget";
+export type { InitChatOptions } from "./types";

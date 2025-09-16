@@ -70,3 +70,10 @@ export function initChatWidget(opts: InitChatOptions = {}) {
   const footer = document.createElement("footer");
   const ta = document.createElement("textarea");
 }
+
+function svgChatIcon(): string {
+  throw new Error("Function not implemented.");
+}
+function inferBusinessFromHost(): string | undefined {
+  throw new Error("Function not implemented.");
+}
