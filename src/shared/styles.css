@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap");
 /* 
 .poppins-regular {
   font-family: "Poppins", sans-serif;
@@ -94,7 +94,7 @@ div.anchorCatalog {
 
 #menu li a:before,
 #menu li.menuG a:before {
-  content: '';
+  content: "";
   position: absolute;
   right: 15px;
   left: 15px;
@@ -155,7 +155,7 @@ ul.TreeControl li#active {
 
 * {
   box-sizing: border-box;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-weight: 500;
   font-style: normal;
 }
@@ -259,7 +259,7 @@ table.tableMain {
   margin: 16px auto;
 }
 
-#searchbar input[type='text'] {
+#searchbar input[type="text"] {
   width: 27px;
 }
 
@@ -562,3 +562,8 @@ img#productImage {
 <p class='prod_sku'>FLY_INV_0007</p>
 </div>
 */
+
+#vivid-chat-widget .bubble,
+#vivid-chat-widget .send {
+  background: #d71f28;
+} /* your red */
