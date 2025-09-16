@@ -3,7 +3,9 @@ import { GLOBALVARS } from "../../index";
 import { applyPromoCode } from "../../shared/ApplyPromoCode";
 import { persistDiscountedTotals } from "../../shared/persistDiscountedTotals";
 import { monitorResidentialToastAndBlockPage } from "../../shared/BlockOnResidentialToast";
-import "./chat/index";
+import { mountVividChat } from "../../chat/index";
+
+mountVividChat();
 
 export function main() {
   function init() {
