@@ -7,6 +7,16 @@ import {
   StylingParameterMetadata,
 } from "./types/StylingParameter";
 
+import { initChatWidget } from "./chat/chatWidget";
+
+document.addEventListener("DOMContentLoaded", () => {
+  initChatWidget({
+    apiBase: "https://ai-chat-bot-1xm4.onrender.com/api/ai",
+    debug: true, // turn off after you see it working
+  });
+  console.log("[VividChat] direct mount called");
+});
+
 // Declare global state object
 export const GLOBALVARS: GlobalState = {
   currentPage: null,
