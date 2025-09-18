@@ -164,72 +164,90 @@ function enforceIntegerQuantitiesOnCart(): void {
 /* ─────────────────────────────────────────────────────────────
    Force integer quantity on /cart/3-edit.php
 ────────────────────────────────────────────────────────────── */
-/*function enforceIntegerQuantityOnCartEdit(): void {
-  const apply = (input: HTMLInputElement) => {
-    try {
-      input.setAttribute("type", "number");
-      input.setAttribute("step", "1");
-      input.setAttribute("min", "1");
-      input.inputMode = "numeric";
+function enforceIntegerQuantityOnCartEdit(): void {
+  // Attach once per element
+  const ENFORCED = "data-int-enforced";
 
-      const sanitize = () => {
-        const n = Math.max(1, Math.floor(Number(input.value || "1") || 1));
-        if (input.value !== String(n)) input.value = String(n);
-      };
-
-      // Normalize any default like "1.00" -> "1"
-      sanitize();
-
-      // Block decimal/exponent characters at the source
-      input.addEventListener("keydown", (e: KeyboardEvent) => {
-        const k = e.key.toLowerCase();
-        if (k === "." || k === "," || k === "e") e.preventDefault();
-      });
-
-      // Scrub on input/blur/change (preserves existing inline onchange handlers)
-      input.addEventListener("input", sanitize);
-      input.addEventListener("blur", sanitize);
-      input.addEventListener("change", sanitize);
-
-      // Clean pasted content
-      input.addEventListener("paste", (e: ClipboardEvent) => {
-        const t = e.clipboardData?.getData("text") ?? "";
-        const digits = t.replace(/[^\d]/g, "");
-        if (digits !== t) {
-          e.preventDefault();
-          const n = Math.max(1, Math.floor(Number(digits || "1") || 1));
-          input.value = String(n);
-        }
-      });
-    } catch (err) {
-      console.warn("Quantity integer enforcement error:", err);
-    }
+  const isLocked = (input: HTMLInputElement) => {
+    if (!input) return true;
+    if (input.type?.toLowerCase() === "hidden") return true;
+    if (input.disabled || input.readOnly) return true;
+    if (input.closest("fieldset[disabled]")) return true;
+    if (input.getAttribute("aria-disabled") === "true") return true;
+    return false;
   };
 
-  const findQuantityInput = (): HTMLInputElement | null => {
-    const byId = document.getElementById("quantity") as HTMLInputElement | null;
-    if (byId) return byId;
+  const applyIntegerOnly = (input: HTMLInputElement) => {
+    if (input.hasAttribute(ENFORCED)) return; // already done
+    input.setAttribute(ENFORCED, "1");
 
+    // Make sure we're not accidentally changing a locked field's type
+    if (input.type.toLowerCase() !== "number")
+      input.setAttribute("type", "number");
+
+    input.setAttribute("step", "1");
+    input.setAttribute("min", "1");
+    input.inputMode = "numeric";
+
+    const sanitize = () => {
+      const n = Math.max(1, Math.floor(Number(input.value || "1") || 1));
+      if (input.value !== String(n)) input.value = String(n);
+    };
+
+    // Normalize any default like "1.00" -> "1"
+    sanitize();
+
+    // Block decimal/exponent characters
+    input.addEventListener("keydown", (e: KeyboardEvent) => {
+      const k = e.key.toLowerCase();
+      if (k === "." || k === "," || k === "e") e.preventDefault();
+    });
+
+    // Scrub on input/blur/change
+    input.addEventListener("input", sanitize);
+    input.addEventListener("blur", sanitize);
+    input.addEventListener("change", sanitize);
+
+    // Clean pasted content
+    input.addEventListener("paste", (e: ClipboardEvent) => {
+      const t = e.clipboardData?.getData("text") ?? "";
+      const digits = t.replace(/[^\d]/g, "");
+      if (digits !== t) {
+        e.preventDefault();
+        const n = Math.max(1, Math.floor(Number(digits || "1") || 1));
+        input.value = String(n);
+      }
+    });
+  };
+
+  // Prefer an actually editable input (i.e., not type="hidden")
+  const findEditableQuantityInput = (): HTMLInputElement | null => {
     return (
       document.querySelector<HTMLInputElement>(
-        '#quantityCol input[name="quantity"]'
+        '#quantityCol input[name="quantity"]:not([type="hidden"]):not([readonly]):not([disabled])'
       ) ||
       document.querySelector<HTMLInputElement>(
-        'input#quantity[name="quantity"]'
+        'input#quantity[name="quantity"]:not([type="hidden"]):not([readonly]):not([disabled])'
       ) ||
       null
     );
   };
 
   const init = () => {
-    const input = findQuantityInput();
-    if (input) apply(input);
+    // If backend locks it, do nothing (respect server setting)
+    const editable = findEditableQuantityInput();
+    if (!editable) return;
+
+    // Safety check: bail if some parent lock exists
+    if (isLocked(editable)) return;
+
+    applyIntegerOnly(editable);
   };
 
   // Run once now
   init();
 
-  // Re-run if the form/quantity area re-renders
+  // Re-run on DOM changes; still respects backend lock each time
   const host =
     document.getElementById("quantityCol") ||
     document.getElementById("editForm") ||
@@ -237,11 +255,11 @@ function enforceIntegerQuantitiesOnCart(): void {
 
   try {
     const mo = new MutationObserver(() => init());
-    mo.observe(host, { childList: true, subtree: true });
+    mo.observe(host, { childList: true, subtree: true, attributes: true });
   } catch {
     // no-op
   }
-}*/
+}
 
 /* ─────────────────────────────────────────────────────────────
    Hide "Add to Cart" ONLY when "Return to Cart" is visible
@@ -474,7 +492,7 @@ export function runSharedScript(options: OptionsParameter) {
     const params = new URLSearchParams(window.location.search);
 
     if (path.includes("/cart/3-edit.php")) {
-      //enforceIntegerQuantityOnCartEdit();
+      enforceIntegerQuantityOnCartEdit();
       toggleAddToCartWhenReturnPresent();
     }
 
