@@ -164,7 +164,7 @@ function enforceIntegerQuantitiesOnCart(): void {
 /* ─────────────────────────────────────────────────────────────
    Force integer quantity on /cart/3-edit.php
 ────────────────────────────────────────────────────────────── */
-function enforceIntegerQuantityOnCartEdit(): void {
+/*function enforceIntegerQuantityOnCartEdit(): void {
   const apply = (input: HTMLInputElement) => {
     try {
       input.setAttribute("type", "number");
@@ -241,7 +241,7 @@ function enforceIntegerQuantityOnCartEdit(): void {
   } catch {
     // no-op
   }
-}
+}*/
 
 /* ─────────────────────────────────────────────────────────────
    Hide "Add to Cart" ONLY when "Return to Cart" is visible
@@ -474,7 +474,7 @@ export function runSharedScript(options: OptionsParameter) {
     const params = new URLSearchParams(window.location.search);
 
     if (path.includes("/cart/3-edit.php")) {
-      enforceIntegerQuantityOnCartEdit();
+      //enforceIntegerQuantityOnCartEdit();
       toggleAddToCartWhenReturnPresent();
     }
 
