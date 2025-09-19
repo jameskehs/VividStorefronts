@@ -269,3 +269,7 @@ img#productImage {
 #searchbar {
   display: none;
 }
+
+.TCbullet a[alt="PRE-SALE Shirts"] {
+  color: #ff0000 !important;
+}
