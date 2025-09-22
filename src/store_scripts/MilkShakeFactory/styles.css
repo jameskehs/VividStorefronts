@@ -266,6 +266,11 @@ img#productImage {
   width: 400px;
 }
 
+.list-style-buttons {
+  display: inline;
+  margin-bottom: 10px;
+}
+
 #searchbar {
   display: none;
 }
