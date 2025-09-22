@@ -265,3 +265,7 @@ table#catalogTblheader {
 img#productImage {
   width: 400px;
 }
+
+#searchbar {
+  display: none;
+}
