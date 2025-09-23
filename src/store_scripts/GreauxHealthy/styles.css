@@ -243,26 +243,20 @@ table.tableMain {
 
 #home-search-btn {
   position: absolute;
-  right: 6px;
+  right: 10px;
   top: 50%;
   transform: translateY(-50%);
-  height: 36px; /* slightly smaller than input height */
-  width: 36px;
+  height: 24px;
+  width: 24px;
   border: none;
-  background: #f4f4f4;
-  border-radius: 50%;
+  background: none; /* No background */
+  border-radius: 0; /* No rounded shape */
+  box-shadow: none; /* No shadow */
+  padding: 0;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  padding: 0;
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  transition: background 0.2s ease;
-  margin: 0px !important;
-}
-
-#home-search-btn:hover {
-  background: #e5e5e5;
 }
 
 #home-search-btn svg {
@@ -270,6 +264,7 @@ table.tableMain {
   width: 18px;
   fill: #555;
   display: block;
+  pointer-events: none; /* prevent accidental blocking */
 }
 
 #pricing-table,
