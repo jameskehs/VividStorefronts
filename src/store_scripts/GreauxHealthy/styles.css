@@ -226,7 +226,7 @@ table.tableMain {
   align-items: center;
   justify-content: center;
   margin: 0 24px;
-  width: 300px;
+  width: 350px;
 }
 
 #home-search-input {
@@ -248,7 +248,7 @@ table.tableMain {
   transform: translateY(-50%);
   height: 24px;
   width: 24px;
-  border: none;
+  border: none !important;
   background: none; /* No background */
   border-radius: 0; /* No rounded shape */
   box-shadow: none; /* No shadow */
@@ -265,6 +265,17 @@ table.tableMain {
   fill: #555;
   display: block;
   pointer-events: none; /* prevent accidental blocking */
+}
+
+#home-search-btn:hover {
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+#home-search-btn:hover svg {
+  fill: #555 !important;
+  transform: none !important;
 }
 
 #pricing-table,
