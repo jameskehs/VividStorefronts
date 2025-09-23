@@ -8,6 +8,7 @@ import { initChatWidget } from "../../chat/chatWidget";
 
 document.addEventListener("DOMContentLoaded", () => {
   initChatWidget({
+    title: "Vivid Assistant",
     apiBase: "https://ai-chat-bot-1xm4.onrender.com/api/ai",
     debug: true, // leave on until we confirm
   });
