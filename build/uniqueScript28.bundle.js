@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkvivid_storefronts=self.webpackChunkvivid_storefronts||[]).push([[8069],{4696:(e,s,n)=>{n.r(s),n.d(s,{main:()=>o});var r=n(2507),c=n(7999);function o(){console.log(c.U.currentPage),c.U.currentPage===r.c.ADDTOCART&&$(".colorSwatches").css("display","none")}}}]);
