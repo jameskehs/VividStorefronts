@@ -317,7 +317,11 @@ table#catalogTblheader {
 }
 
 img#productImage {
-  width: 400px;
+  max-width: 600px;
+  width: auto;
+  background-color: #fff;
+  padding: 12px;
+  border-radius: 10px;
 }
 
 .list-style-buttons {
