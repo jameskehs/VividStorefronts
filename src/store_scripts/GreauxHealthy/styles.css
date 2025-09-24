@@ -329,7 +329,14 @@ img#productImage {
   display: none;
 }
 
+/* default elsewhere */
 .h3,
 h3 {
-  font-size: 16px;
+  font-size: 13px;
 }
+
+/* only on /catalog */
+.page-catalog .h3,
+.page-catalog h3 {
+  font-size: 16px;
+} /* add !important if something overrides it */
