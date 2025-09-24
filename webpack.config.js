@@ -4,30 +4,39 @@ const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = {
   mode: "production",
-  entry: {
-    main: "./src/index.ts", // existing storefront bundle
-    demosite: "./src/store_scripts/DemoSite/index.ts", // ✅ your chatbot init lives here
-  },
+  entry: "./src/index.ts",
   module: {
     rules: [
-      { test: /\.ts?$/, use: "ts-loader", exclude: /node_modules/ },
-      { test: /\.css$/i, use: ["style-loader", "css-loader"] },
+      {
+        test: /\.ts?$/,
+        use: "ts-loader",
+        exclude: /node_modules/,
+      },
+      {
+        test: /\.css$/i,
+        use: ["style-loader", "css-loader"],
+      },
     ],
   },
-  resolve: { extensions: [".tsx", ".ts", ".js"] },
-  output: {
-    filename: "[name].js", // emits main.js AND demosite.js
-    chunkFilename: "[name].bundle.js",
-    path: path.resolve(__dirname, "build"), // match where you upload
-    publicPath: "auto",
-    clean: true,
+
+  resolve: {
+    extensions: [".tsx", ".ts", ".js"],
   },
+  output: {
+    chunkFilename: "[name].bundle.js",
+    path: path.resolve(__dirname, "build"),
+  },
+
   optimization: {
-    splitChunks: { chunks: "all" },
+    splitChunks: {
+      chunks: "all",
+    },
     minimize: true,
     minimizer: [new TerserPlugin()],
   },
+
   plugins: [
+    // ...
     new CopyPlugin({
       patterns: [
         { from: "src/index.html", to: "" },
