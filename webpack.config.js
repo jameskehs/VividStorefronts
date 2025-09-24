@@ -5,7 +5,6 @@ const CopyPlugin = require("copy-webpack-plugin");
 module.exports = {
   mode: "production",
   entry: "./src/index.ts",
-  demosite: "./src/store_scripts/DemoSite/index.ts",
   module: {
     rules: [
       {
@@ -24,10 +23,8 @@ module.exports = {
     extensions: [".tsx", ".ts", ".js"],
   },
   output: {
-    filename: "[name].js",
     chunkFilename: "[name].bundle.js",
     path: path.resolve(__dirname, "build"),
-    clean: true,
   },
 
   optimization: {
