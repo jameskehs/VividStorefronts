@@ -428,16 +428,16 @@ function updateLoginAssistanceMessage(): void {
     const text = (nearestDiv?.textContent || "").toLowerCase();
 
     if (text.includes("if you have trouble logging in")) {
-      link.href = "mailto:loginrequests@vividink.com";
-      link.textContent = "loginrequests@vividink.com";
+      link.href = "mailto:dokshopbr@poweredbyprisma.com";
+      link.textContent = "dokshopbr@poweredbyprisma.com";
       updated = true;
     }
   });
 
   if (!updated && links.length === 1) {
     const link = links[0];
-    link.href = "mailto:loginrequests@vividink.com";
-    link.textContent = "loginrequests@vividink.com";
+    link.href = "mailto:dokshopbr@poweredbyprisma.com";
+    link.textContent = "dokshopbr@poweredbyprisma.com";
   }
 }
 
@@ -468,7 +468,7 @@ export function runSharedScript(options: OptionsParameter) {
   changeSupportText(
     "If you are having issues accessing your account, please contact our support team:",
     "Phone: 225-751-7297",
-    '<a href="mailto:loginrequests@vividink.com">Email: loginrequests@vividink.com</a>'
+    '<a href="mailto:dokshopbr@poweredbyprisma.com">Email: dokshopbr@poweredbyprisma.com</a>'
   );
 
   // Login help text tweaks (scoped)
