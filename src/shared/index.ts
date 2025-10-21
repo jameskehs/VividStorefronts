@@ -525,10 +525,10 @@ export function runSharedScript(options: OptionsParameter) {
         console.warn("fixPaymentIframeA11y error:", err);
       }
 
-      // --- Authorize.Net Accept Hosted: diagnostics for POST->iframe flow ---
+      // --- Safe submit for Accept Hosted: wait for token, then POST into iframe ---
       (() => {
         const IFRAME_ID = "load_payment";
-        const IFRAME_TARGET = "load_payment"; // must match <iframe name="load_payment">
+        const IFRAME_TARGET = "load_payment";
         const PAY_SCOPE = document.getElementById("paywithnewcard") || document;
 
         const iframe = document.getElementById(
@@ -538,22 +538,9 @@ export function runSharedScript(options: OptionsParameter) {
           console.warn("[payment] iframe #load_payment not found.");
           return;
         }
+        if (iframe.getAttribute("name") !== IFRAME_TARGET)
+          iframe.setAttribute("name", IFRAME_TARGET);
 
-        // 0) Attach a load handler to confirm navigation (even if <iframe src> stays empty)
-        iframe.addEventListener("load", () => {
-          let crossOrigin = false;
-          try {
-            // Will throw if cross-origin (which is expected for Authorize.Net)
-            void iframe.contentWindow?.location.href;
-          } catch {
-            crossOrigin = true;
-          }
-          console.info(
-            `[payment] iframe navigated${crossOrigin ? " (cross-origin)" : ""}.`
-          );
-        });
-
-        // 1) Find the POST form targeting the iframe
         const form =
           PAY_SCOPE.querySelector<HTMLFormElement>(
             `form[target="${IFRAME_TARGET}"]`
@@ -561,17 +548,9 @@ export function runSharedScript(options: OptionsParameter) {
           document.querySelector<HTMLFormElement>(
             `form[target="${IFRAME_TARGET}"]`
           );
-
         if (!form) {
-          console.warn(
-            '[payment] No form with target="load_payment" found. If this flow expects a POST into the iframe, the form is missing or renamed.'
-          );
+          console.warn('[payment] No form with target="load_payment" found.');
           return;
-        }
-
-        // Ensure the iframe's name matches (defensive)
-        if (iframe.getAttribute("name") !== IFRAME_TARGET) {
-          iframe.setAttribute("name", IFRAME_TARGET);
         }
 
         const method = (form.getAttribute("method") || "GET").toUpperCase();
@@ -582,57 +561,88 @@ export function runSharedScript(options: OptionsParameter) {
           }`
         );
 
-        // 2) Before submit, log the token-ish fields (length only, never the value)
+        // Token inputs Authorize.Net or other gateways might use
         const TOKEN_KEYS = ["token", "sessionToken", "ssl_txn_auth_token"];
-        const summarizeForm = (when: string) => {
-          try {
-            const pairs: string[] = [];
-            TOKEN_KEYS.forEach((k) => {
-              const input = form.querySelector<HTMLInputElement>(
-                `input[name="${k}"]`
-              );
-              if (input && typeof input.value === "string") {
-                const len = input.value.trim().length;
-                pairs.push(`${k} length=${len}`);
-              }
-            });
-            if (pairs.length) {
-              console.info(`[payment] ${when}: ${pairs.join(", ")}`);
-            } else {
-              console.warn(
-                `[payment] ${when}: no token-like input found on the form.`
-              );
-            }
-          } catch (e) {
-            console.warn("[payment] summarizeForm error:", e);
+
+        const getTokenLen = (): number => {
+          for (const k of TOKEN_KEYS) {
+            const el = form.querySelector<HTMLInputElement>(
+              `input[name="${k}"]`
+            );
+            if (el && typeof el.value === "string")
+              return el.value.trim().length;
           }
+          return 0;
         };
 
-        // Wrap native submit so we can log once
-        const SUBMIT_FLAG = "__vi_payment_logged__";
-        const nativeSubmit = form.submit.bind(form);
-        (form as any).submit = () => {
-          if (!(form as any)[SUBMIT_FLAG]) {
-            (form as any)[SUBMIT_FLAG] = true;
-            summarizeForm("before submit");
-          }
-          nativeSubmit();
-        };
-
-        // 3) If nothing else submits soon, submit once to kick off the hosted page
-        const tryAutoSubmit = () => {
-          if ((form as any)[SUBMIT_FLAG]) return;
-          console.info(
-            "[payment] Auto-submitting payment form → iframe (once)."
+        const showErrorBanner = (msg: string) => {
+          const host = document.querySelector(
+            "#paywithnewcard header, #paywithnewcard h1, #paywithnewcard h2, #paywithnewcard"
+          ) as HTMLElement | null;
+          const banner = document.createElement("div");
+          banner.id = "payment-token-error";
+          banner.setAttribute("role", "alert");
+          banner.style.background = "#ffeaea";
+          banner.style.border = "1px solid #e57373";
+          banner.style.color = "#b71c1c";
+          banner.style.padding = "10px 12px";
+          banner.style.margin = "10px 0";
+          banner.style.borderRadius = "6px";
+          banner.style.fontWeight = "600";
+          banner.textContent = msg;
+          (host?.parentElement || document.body).insertBefore(
+            banner,
+            host ? host.nextSibling : null
           );
-          summarizeForm("auto-submit");
-          (form as any)[SUBMIT_FLAG] = true;
-          nativeSubmit();
         };
 
-        // Give platform JS time to populate hidden fields
-        setTimeout(tryAutoSubmit, 150);
-        setTimeout(tryAutoSubmit, 600);
+        const nativeSubmit = form.submit.bind(form);
+        let submitted = false;
+
+        // If the iframe navigates, we’ll see load (even though <iframe src> stays empty for POST)
+        iframe.addEventListener("load", () => {
+          let crossOrigin = false;
+          try {
+            void iframe.contentWindow?.location.href;
+          } catch {
+            crossOrigin = true;
+          }
+          console.info(
+            `[payment] iframe navigated${crossOrigin ? " (cross-origin)" : ""}.`
+          );
+        });
+
+        // Poll for token up to 6s, then bail gracefully
+        const started = Date.now();
+        const MAX_MS = 6000;
+        const TICK_MS = 150;
+
+        const tick = () => {
+          const len = getTokenLen();
+          if (len > 0) {
+            if (!submitted) {
+              console.info(
+                `[payment] token ready (length=${len}). Submitting form → iframe.`
+              );
+              submitted = true;
+              nativeSubmit();
+            }
+            return;
+          }
+          if (Date.now() - started > MAX_MS) {
+            console.warn(
+              "[payment] token still empty after timeout; not submitting."
+            );
+            showErrorBanner(
+              "We couldn't initialize the secure payment form. Please refresh this page or contact support."
+            );
+            return;
+          }
+          setTimeout(tick, TICK_MS);
+        };
+
+        // Start the wait loop (gives any platform JS time to populate the hidden input)
+        tick();
       })();
 
       // Optional: recompute fee display here if desired
