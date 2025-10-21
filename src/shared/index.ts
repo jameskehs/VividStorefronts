@@ -457,8 +457,8 @@ export function runSharedScript(options: OptionsParameter) {
     $('button[title="Import address book"], button#saveAddressBook').remove();
 
   ChangeInventoryCountNoticeNEW(
-    "Inventory not available for the desired order quantity. Please contact your account manager at 225-751-7297, or by email at sales@poweredbyprisma.com",
-    "sales@poweredbyprisma.com"
+    "Inventory not available for the desired order quantity. Please contact your account manager at 225-751-7297, or by email at salesBR@poweredbyprisma.com",
+    "salesBR@poweredbyprisma.com"
   );
 
   ChangeCustomerServiceMessage(
