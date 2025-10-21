@@ -525,124 +525,49 @@ export function runSharedScript(options: OptionsParameter) {
         console.warn("fixPaymentIframeA11y error:", err);
       }
 
-      // --- Safe submit for Accept Hosted: wait for token, then POST into iframe ---
+      // Wait for Authorize.Net token, then POST form into iframe
       (() => {
-        const IFRAME_ID = "load_payment";
-        const IFRAME_TARGET = "load_payment";
-        const PAY_SCOPE = document.getElementById("paywithnewcard") || document;
-
+        const SCOPE = document.getElementById("paywithnewcard") || document;
         const iframe = document.getElementById(
-          IFRAME_ID
+          "load_payment"
         ) as HTMLIFrameElement | null;
-        if (!iframe) {
-          console.warn("[payment] iframe #load_payment not found.");
-          return;
-        }
-        if (iframe.getAttribute("name") !== IFRAME_TARGET)
-          iframe.setAttribute("name", IFRAME_TARGET);
-
         const form =
-          PAY_SCOPE.querySelector<HTMLFormElement>(
-            `form[target="${IFRAME_TARGET}"]`
-          ) ||
+          SCOPE.querySelector<HTMLFormElement>('form[target="load_payment"]') ||
           document.querySelector<HTMLFormElement>(
-            `form[target="${IFRAME_TARGET}"]`
+            'form[target="load_payment"]'
           );
-        if (!form) {
-          console.warn('[payment] No form with target="load_payment" found.');
-          return;
-        }
+        if (!iframe || !form) return;
+        if (iframe.getAttribute("name") !== "load_payment")
+          iframe.setAttribute("name", "load_payment");
 
-        const method = (form.getAttribute("method") || "GET").toUpperCase();
-        const action = form.getAttribute("action") || "";
-        console.info(
-          `[payment] Using form: method=${method}, action=${
-            action ? new URL(action, location.href).href : "(none)"
-          }`
-        );
+        const tokenInputs = ["token", "sessionToken", "ssl_txn_auth_token"];
 
-        // Token inputs Authorize.Net or other gateways might use
-        const TOKEN_KEYS = ["token", "sessionToken", "ssl_txn_auth_token"];
-
-        const getTokenLen = (): number => {
-          for (const k of TOKEN_KEYS) {
+        const getTokenLen = () => {
+          for (const k of tokenInputs) {
             const el = form.querySelector<HTMLInputElement>(
               `input[name="${k}"]`
             );
-            if (el && typeof el.value === "string")
-              return el.value.trim().length;
+            if (el?.value?.trim()) return el.value.trim().length;
           }
           return 0;
         };
 
-        const showErrorBanner = (msg: string) => {
-          const host = document.querySelector(
-            "#paywithnewcard header, #paywithnewcard h1, #paywithnewcard h2, #paywithnewcard"
-          ) as HTMLElement | null;
-          const banner = document.createElement("div");
-          banner.id = "payment-token-error";
-          banner.setAttribute("role", "alert");
-          banner.style.background = "#ffeaea";
-          banner.style.border = "1px solid #e57373";
-          banner.style.color = "#b71c1c";
-          banner.style.padding = "10px 12px";
-          banner.style.margin = "10px 0";
-          banner.style.borderRadius = "6px";
-          banner.style.fontWeight = "600";
-          banner.textContent = msg;
-          (host?.parentElement || document.body).insertBefore(
-            banner,
-            host ? host.nextSibling : null
-          );
-        };
-
-        const nativeSubmit = form.submit.bind(form);
+        const submit = form.submit.bind(form);
         let submitted = false;
-
-        // If the iframe navigates, we’ll see load (even though <iframe src> stays empty for POST)
-        iframe.addEventListener("load", () => {
-          let crossOrigin = false;
-          try {
-            void iframe.contentWindow?.location.href;
-          } catch {
-            crossOrigin = true;
-          }
-          console.info(
-            `[payment] iframe navigated${crossOrigin ? " (cross-origin)" : ""}.`
-          );
-        });
-
-        // Poll for token up to 6s, then bail gracefully
-        const started = Date.now();
+        const start = Date.now();
         const MAX_MS = 6000;
-        const TICK_MS = 150;
 
-        const tick = () => {
+        (function tick() {
+          if (submitted) return;
           const len = getTokenLen();
           if (len > 0) {
-            if (!submitted) {
-              console.info(
-                `[payment] token ready (length=${len}). Submitting form → iframe.`
-              );
-              submitted = true;
-              nativeSubmit();
-            }
+            submitted = true;
+            submit();
             return;
           }
-          if (Date.now() - started > MAX_MS) {
-            console.warn(
-              "[payment] token still empty after timeout; not submitting."
-            );
-            showErrorBanner(
-              "We couldn't initialize the secure payment form. Please refresh this page or contact support."
-            );
-            return;
-          }
-          setTimeout(tick, TICK_MS);
-        };
-
-        // Start the wait loop (gives any platform JS time to populate the hidden input)
-        tick();
+          if (Date.now() - start > MAX_MS) return; // give up silently in prod
+          setTimeout(tick, 150);
+        })();
       })();
 
       // Optional: recompute fee display here if desired
