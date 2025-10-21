@@ -4,6 +4,7 @@ import { AddImagePickerSelectionToMemo } from "./imagePickertoMemo";
 import { ChangeCustomerServiceMessage } from "./customerServiceMessage";
 import { changeSupportText } from "./changeSupportText";
 import { ChangeInventoryCountNoticeNEW } from "./inventoryCountNoticeNEW";
+import { fixPaymentIframeA11y } from "./fixPaymentIframeA11y";
 
 export interface FeeShipmentLike {
   taxableCcConvFee?: number | string | null | undefined;
@@ -507,6 +508,7 @@ export function runSharedScript(options: OptionsParameter) {
   }
 
   // Note: we intentionally do NOT touch the payment iframe anymore.
+  // Payment step: enforce accessible name on hosted iframe (Axe/Lighthouse fix)
   try {
     const p = (window.location.pathname || "").toLowerCase();
     if (
@@ -515,10 +517,15 @@ export function runSharedScript(options: OptionsParameter) {
       p.includes("/checkout/6-payment_new.php") ||
       p.includes("/checkout/payment.php")
     ) {
-      console.log(
-        "[payment] Skipping iframe/token handling in frontend; awaiting platform-provided hosted token/URL."
-      );
-      // If you still want to compute/display the fee client-side, you can call updateCcFeeAndGrandTotal() here.
+      try {
+        fixPaymentIframeA11y();
+        setTimeout(fixPaymentIframeA11y, 150);
+        setTimeout(fixPaymentIframeA11y, 600);
+      } catch (err) {
+        console.warn("fixPaymentIframeA11y error:", err);
+      }
+
+      // Optional: recompute fee display here if desired
       // setTimeout(() => updateCcFeeAndGrandTotal({ rate: 0.03, includeTaxInFee: true }), 350);
     }
   } catch (e) {
