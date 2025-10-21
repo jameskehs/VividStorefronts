@@ -53,6 +53,49 @@ export function calculateCreditCardFees<T extends FeeShipmentLike>(
 }
 
 /* ─────────────────────────────────────────────────────────────
+   CSRF helpers (robust even if specific window.tokens entry is missing)
+────────────────────────────────────────────────────────────── */
+function getAllTokenEntries(): Array<{
+  path: string;
+  index?: string;
+  token?: string;
+}> {
+  const out: Array<{ path: string; index?: string; token?: string }> = [];
+  const map = window.tokens || {};
+  for (const k of Object.keys(map)) {
+    out.push({ path: k, index: map[k]?.index, token: map[k]?.token });
+  }
+  return out;
+}
+
+/** Ensure window.tokens has an entry for each path (clone from the first good one). */
+function ensureAjaxTokenFor(paths: string[]): void {
+  if (!window.tokens) window.tokens = {};
+  const entries = getAllTokenEntries().filter((e) => e.index && e.token);
+  if (!entries.length) return; // nothing to clone from
+
+  const donor = entries[0]; // good-enough donor
+  for (const p of paths) {
+    if (
+      !window.tokens[p] ||
+      !(window.tokens[p].index && window.tokens[p].token)
+    ) {
+      window.tokens[p] = { index: donor.index, token: donor.token };
+    }
+  }
+}
+
+/** Extracts "/cart/ajax_newProductID.php" → "ajax_newProductID.php" */
+function basenameFromPath(p: string): string {
+  try {
+    const s = p.split("?")[0].split("#")[0];
+    return s.substring(s.lastIndexOf("/") + 1);
+  } catch {
+    return p;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
    CSRF: auto-attach Prisma/Dokshop token(s) to all jQuery AJAX
    – works even without PHP access
 ────────────────────────────────────────────────────────────── */
@@ -60,17 +103,37 @@ function attachGlobalAjaxCSRF(): void {
   const $ = window.jQuery || (window as any).$;
   if (!$ || !$.ajaxPrefilter) return;
 
+  // Proactively synthesize missing token entries for known cart endpoints
+  ensureAjaxTokenFor(["/cart/ajax_newProductID.php", "ajax_newProductID.php"]);
+
   $.ajaxPrefilter(function (options: any, _orig: any, jqXHR: JQueryXHR) {
     try {
       const base =
         (location as any).origin || location.protocol + "//" + location.host;
-      const url = new URL(options.url, base);
-      const path = url.pathname;
+      const u = new URL(options.url, base);
+      const path = u.pathname;
+      const baseName = basenameFromPath(path);
 
-      // Prefer platform-provided map
-      const t = (window.tokens && window.tokens[path]) || null;
+      // Try exact path → prefix → basename matches in window.tokens
+      const tokensMap = window.tokens || {};
+      let entry = tokensMap[path] || null;
 
-      // Fallbacks: meta or cookie (harmless if not present)
+      if (!entry) {
+        // prefix/suffix match (some maps store keys without full path or with different prefixes)
+        const byPrefix = Object.keys(tokensMap).find(
+          (k) => path.endsWith(k) || k.endsWith(path)
+        );
+        if (byPrefix) entry = tokensMap[byPrefix];
+      }
+      if (!entry) {
+        // basename match (e.g., "ajax_newProductID.php")
+        const byBase = Object.keys(tokensMap).find(
+          (k) => basenameFromPath(k) === baseName
+        );
+        if (byBase) entry = tokensMap[byBase];
+      }
+
+      // Fallbacks: meta/cookie if present
       const meta = document.querySelector(
         'meta[name="csrf-token"]'
       ) as HTMLMetaElement | null;
@@ -79,9 +142,9 @@ function attachGlobalAjaxCSRF(): void {
         (document.cookie.match(/(?:^|;\s*)csrftoken=([^;]+)/) || [])[1] || "";
 
       const kv: string[] = [];
-      if (t?.index && t?.token) {
-        kv.push("index=" + encodeURIComponent(t.index));
-        kv.push("token=" + encodeURIComponent(t.token));
+      if (entry?.index && entry?.token) {
+        kv.push("index=" + encodeURIComponent(entry.index));
+        kv.push("token=" + encodeURIComponent(entry.token));
       } else if (metaToken) {
         kv.push("csrf=" + encodeURIComponent(metaToken));
       } else if (cookieToken) {
@@ -431,6 +494,27 @@ function installCartClickGuard(): void {
 }
 
 /* ─────────────────────────────────────────────────────────────
+   Suppress the specific noisy inline "Assignment to constant variable" error
+   so it doesn’t break other scripts during DOM-ready.
+────────────────────────────────────────────────────────────── */
+function suppressKnownInlineConstError(): void {
+  window.addEventListener(
+    "error",
+    (ev: ErrorEvent) => {
+      if (
+        typeof ev.message === "string" &&
+        /Assignment to constant variable/i.test(ev.message)
+      ) {
+        ev.preventDefault?.();
+        return true;
+      }
+      return false;
+    },
+    true // capture
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────
    Hide "Add to Cart" ONLY when "Return to Cart" is visible
 ────────────────────────────────────────────────────────────── */
 function toggleAddToCartWhenReturnPresent(): void {
@@ -616,11 +700,12 @@ function updateLoginAssistanceMessage(): void {
 export function runSharedScript(options: OptionsParameter) {
   console.log("Hello from the shared script!");
 
-  // Always attach CSRF to jQuery AJAX (no backend access needed)
+  // Attach CSRF and suppress the noisy inline const error as early as we can
   try {
     attachGlobalAjaxCSRF();
+    suppressKnownInlineConstError();
   } catch (e) {
-    console.warn("attachGlobalAjaxCSRF error:", e);
+    console.warn("bootstrap guards error:", e);
   }
 
   $(".tableSiteBanner, #navWrapper").wrapAll(`<div id="logoLinks"></div>`);
