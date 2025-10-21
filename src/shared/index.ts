@@ -525,64 +525,110 @@ export function runSharedScript(options: OptionsParameter) {
         console.warn("fixPaymentIframeA11y error:", err);
       }
 
-      // --- Payment diagnostics: log iframe src & token length (no mutation) ---
+      // --- Payment diagnostics & auto-submit for form->iframe flow ---
       (() => {
+        const IFRAME_ID = "load_payment";
+        const IFRAME_TARGET = "load_payment"; // must match <iframe name="load_payment">
+        const PAY_SCOPE = document.getElementById("paywithnewcard") || document;
+
         const iframe = document.getElementById(
-          "load_payment"
+          IFRAME_ID
         ) as HTMLIFrameElement | null;
         if (!iframe) {
-          console.warn("[payment] #load_payment iframe not found.");
+          console.warn("[payment] iframe #load_payment not found.");
           return;
         }
 
-        const log = (label: string) => {
+        // 1) Log current state
+        const logIframe = (label: string) => {
+          const src = iframe.getAttribute("src") || "";
+          if (!src) {
+            console.warn(`[payment] ${label}: iframe has no src yet.`);
+            return;
+          }
           try {
-            const src = iframe.getAttribute("src") || "";
-            if (!src) {
-              console.warn(`[payment] ${label}: iframe has no src yet.`);
-              return;
-            }
-            let url: URL | null = null;
-            try {
-              url = new URL(src, window.location.href);
-            } catch {
-              /* keep null */
-            }
-            if (!url) {
-              console.warn(
-                `[payment] ${label}: iframe src is not a valid URL:`,
-                src
-              );
-              return;
-            }
-
+            const u = new URL(src, window.location.href);
             const keys = [
               "sessionToken",
               "token",
               "sessiontoken",
               "ssl_txn_auth_token",
             ];
-            const key = keys.find((k) => url!.searchParams.has(k));
-            if (!key) {
-              console.warn(
-                `[payment] ${label}: no token-like param on iframe src.`,
-                url.toString()
-              );
-              return;
-            }
-            const v = url.searchParams.get(key) || "";
+            const k = keys.find((x) => u.searchParams.has(x));
+            const len = k ? (u.searchParams.get(k) || "").length : 0;
             console.info(
-              `[payment] ${label}: token param=${key}, length=${v.length}, host=${url.host}, path=${url.pathname}`
+              `[payment] ${label}: host=${u.host}, path=${
+                u.pathname
+              }, tokenKey=${k ?? "none"}, tokenLen=${len}`
             );
-          } catch (e) {
-            console.warn("[payment] diagnostics error:", e);
+          } catch {
+            console.warn(
+              `[payment] ${label}: iframe src not a valid URL:`,
+              src
+            );
           }
         };
 
-        // observe first assignment + any later replacements
-        const mo = new MutationObserver(() => log("mutation"));
+        logIframe("initial");
+
+        // 2) Find the form intended to populate the iframe (POST target="load_payment")
+        const form =
+          PAY_SCOPE.querySelector<HTMLFormElement>(
+            `form[target="${IFRAME_TARGET}"]`
+          ) ||
+          document.querySelector<HTMLFormElement>(
+            `form[target="${IFRAME_TARGET}"]`
+          );
+
+        if (!form) {
+          console.warn(
+            '[payment] No form with target="load_payment" found. If this flow expects a POST into the iframe, that form is missing or renamed.'
+          );
+        } else {
+          // Helpful logs (no secrets): action URL, method, presence of typical token fields
+          const action = form.getAttribute("action") || "";
+          const method = (form.getAttribute("method") || "GET").toUpperCase();
+          const tokenInput = form.querySelector<HTMLInputElement>(
+            'input[name="sessionToken"],input[name="token"],input[name="ssl_txn_auth_token"]'
+          );
+          console.info(
+            `[payment] Found form: method=${method}, action=${
+              action ? new URL(action, location.href).href : "(none)"
+            }, tokenField=${tokenInput?.name ?? "none"}`
+          );
+
+          // 3) Auto-submit once if the iframe is still blank after a short grace period
+          //    Many platforms expect this submit to render the hosted payment page inside the iframe.
+          const SUBMIT_FLAG = "__vi_payment_autosubmitted__";
+          const trySubmit = () => {
+            if (iframe.getAttribute("src")) {
+              logIframe("pre-submit check (already has src)");
+              return;
+            }
+            if ((form as any)[SUBMIT_FLAG]) return; // guard
+            (form as any)[SUBMIT_FLAG] = true;
+
+            try {
+              console.info(
+                "[payment] Auto-submitting payment form → iframe (once)."
+              );
+              form.submit();
+            } catch (e) {
+              console.warn("[payment] Form submit failed:", e);
+            }
+          };
+
+          // Grace period to let any platform JS populate hidden fields
+          setTimeout(trySubmit, 150);
+          setTimeout(() => !iframe.getAttribute("src") && trySubmit(), 600);
+        }
+
+        // 4) Observe the iframe for when a src finally appears (via submit or platform JS)
+        const mo = new MutationObserver(() => logIframe("mutation"));
         mo.observe(iframe, { attributes: true, attributeFilter: ["src"] });
-        log("initial");
+
+        // Also log when it finishes loading (src assigned and navigated)
+        iframe.addEventListener("load", () => logIframe("load"));
       })();
 
       // Optional: recompute fee display here if desired
