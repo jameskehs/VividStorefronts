@@ -525,6 +525,66 @@ export function runSharedScript(options: OptionsParameter) {
         console.warn("fixPaymentIframeA11y error:", err);
       }
 
+      // --- Payment diagnostics: log iframe src & token length (no mutation) ---
+      (() => {
+        const iframe = document.getElementById(
+          "load_payment"
+        ) as HTMLIFrameElement | null;
+        if (!iframe) {
+          console.warn("[payment] #load_payment iframe not found.");
+          return;
+        }
+
+        const log = (label: string) => {
+          try {
+            const src = iframe.getAttribute("src") || "";
+            if (!src) {
+              console.warn(`[payment] ${label}: iframe has no src yet.`);
+              return;
+            }
+            let url: URL | null = null;
+            try {
+              url = new URL(src, window.location.href);
+            } catch {
+              /* keep null */
+            }
+            if (!url) {
+              console.warn(
+                `[payment] ${label}: iframe src is not a valid URL:`,
+                src
+              );
+              return;
+            }
+
+            const keys = [
+              "sessionToken",
+              "token",
+              "sessiontoken",
+              "ssl_txn_auth_token",
+            ];
+            const key = keys.find((k) => url!.searchParams.has(k));
+            if (!key) {
+              console.warn(
+                `[payment] ${label}: no token-like param on iframe src.`,
+                url.toString()
+              );
+              return;
+            }
+            const v = url.searchParams.get(key) || "";
+            console.info(
+              `[payment] ${label}: token param=${key}, length=${v.length}, host=${url.host}, path=${url.pathname}`
+            );
+          } catch (e) {
+            console.warn("[payment] diagnostics error:", e);
+          }
+        };
+
+        // observe first assignment + any later replacements
+        const mo = new MutationObserver(() => log("mutation"));
+        mo.observe(iframe, { attributes: true, attributeFilter: ["src"] });
+        log("initial");
+      })();
+
       // Optional: recompute fee display here if desired
       // setTimeout(() => updateCcFeeAndGrandTotal({ rate: 0.03, includeTaxInFee: true }), 350);
     }
