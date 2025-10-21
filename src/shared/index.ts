@@ -6,6 +6,22 @@ import { changeSupportText } from "./changeSupportText";
 import { ChangeInventoryCountNoticeNEW } from "./inventoryCountNoticeNEW";
 import { fixPaymentIframeA11y } from "./fixPaymentIframeA11y";
 
+/* ─────────────────────────────────────────────────────────────
+   Typings for platform-provided CSRF tokens map
+────────────────────────────────────────────────────────────── */
+declare global {
+  interface Window {
+    tokens?: Record<
+      string,
+      {
+        index?: string;
+        token?: string;
+      }
+    >;
+    jQuery?: JQueryStatic;
+  }
+}
+
 export interface FeeShipmentLike {
   taxableCcConvFee?: number | string | null | undefined;
   nonTaxableCcConvFee?: number | string | null | undefined;
@@ -34,6 +50,71 @@ export function calculateCreditCardFees<T extends FeeShipmentLike>(
   }
 
   return hasAny ? total : null;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   CSRF: auto-attach Prisma/Dokshop token(s) to all jQuery AJAX
+   – works even without PHP access
+────────────────────────────────────────────────────────────── */
+function attachGlobalAjaxCSRF(): void {
+  const $ = window.jQuery || (window as any).$;
+  if (!$ || !$.ajaxPrefilter) return;
+
+  $.ajaxPrefilter(function (options: any, _orig: any, jqXHR: JQueryXHR) {
+    try {
+      const base =
+        (location as any).origin || location.protocol + "//" + location.host;
+      const url = new URL(options.url, base);
+      const path = url.pathname;
+
+      // Prefer platform-provided map
+      const t = (window.tokens && window.tokens[path]) || null;
+
+      // Fallbacks: meta or cookie (harmless if not present)
+      const meta = document.querySelector(
+        'meta[name="csrf-token"]'
+      ) as HTMLMetaElement | null;
+      const metaToken = meta?.getAttribute("content") || "";
+      const cookieToken =
+        (document.cookie.match(/(?:^|;\s*)csrftoken=([^;]+)/) || [])[1] || "";
+
+      const kv: string[] = [];
+      if (t?.index && t?.token) {
+        kv.push("index=" + encodeURIComponent(t.index));
+        kv.push("token=" + encodeURIComponent(t.token));
+      } else if (metaToken) {
+        kv.push("csrf=" + encodeURIComponent(metaToken));
+      } else if (cookieToken) {
+        kv.push("csrf=" + encodeURIComponent(cookieToken));
+      }
+
+      if (!kv.length) return;
+
+      const add = kv.join("&");
+      const isPost = (options.type || "").toUpperCase() === "POST";
+
+      if (isPost) {
+        if (typeof options.data === "string" && options.data.length) {
+          options.data += "&" + add;
+        } else if (options.data && typeof options.data === "object") {
+          const params = new URLSearchParams(add);
+          const extra: Record<string, string> = {};
+          params.forEach((v, k) => (extra[k] = v));
+          options.data = { ...options.data, ...extra };
+        } else {
+          options.data = add;
+        }
+      } else {
+        options.url += (options.url.indexOf("?") >= 0 ? "&" : "?") + add;
+      }
+
+      if (metaToken && jqXHR?.setRequestHeader) {
+        jqXHR.setRequestHeader("X-CSRF-Token", metaToken);
+      }
+    } catch (e) {
+      console.warn("ajaxPrefilter CSRF attach failed:", e);
+    }
+  });
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -263,6 +344,93 @@ function enforceIntegerQuantityOnCartEdit(): void {
 }
 
 /* ─────────────────────────────────────────────────────────────
+   CART CLICK GUARD:
+   Stop buggy inline handler (the one that reassigns `const`)
+   and run a safe +/− quantity adjuster instead.
+────────────────────────────────────────────────────────────── */
+function installCartClickGuard(): void {
+  // Helper to find nearest quantity input in a cart row
+  const findQtyInput = (from: Element): HTMLInputElement | null => {
+    const row =
+      from.closest(".cart-row, tr, li, .itemRow, .cartItem, .productRow") ||
+      document;
+    return (
+      row.querySelector<HTMLInputElement>(
+        'input[type="number"].qty, input.qty, input[name*="qty"], input[name*="quantity"]'
+      ) || null
+    );
+  };
+
+  // A robust safe adjuster for +/- buttons (works off button text or data attrs)
+  const safeAdjust = (btn: Element) => {
+    const input = findQtyInput(btn);
+    if (!input) return;
+
+    const raw = parseInt(input.value || "1", 10);
+    const current = isFinite(raw) && raw > 0 ? raw : 1;
+
+    // Decide inc/dec: prefer data-action, else look at symbol/text
+    let action = (btn.getAttribute("data-action") || "").toLowerCase();
+    if (!action) {
+      const text = (btn.textContent || "").trim();
+      if (text === "+" || /increase|plus/i.test(text)) action = "inc";
+      else if (text === "−" || text === "-" || /decrease|minus/i.test(text))
+        action = "dec";
+    }
+
+    let next = current;
+    if (action === "inc") next = current + 1;
+    else if (action === "dec") next = Math.max(1, current - 1);
+
+    if (String(next) !== input.value) {
+      input.value = String(next);
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+      input.dispatchEvent(new Event("change", { bubbles: true }));
+    }
+  };
+
+  // Capture-phase click listener to guard cart buttons
+  document.addEventListener(
+    "click",
+    (ev) => {
+      const target = ev.target as Element | null;
+      if (!target) return;
+
+      const btn = target.closest(
+        'button, .qty-btn, .qtyPlus, .qtyMinus, [data-action="inc"], [data-action="dec"]'
+      ) as Element | null;
+      if (!btn) return;
+
+      // Only intervene on cart contexts
+      const inCart = !!(
+        btn.closest("#cart") ||
+        btn.closest(".cart") ||
+        btn.closest(".cart-container")
+      );
+      if (!inCart) return;
+
+      // Heuristic: if it LOOKS like a qty control, we handle it and stop others
+      const text = (btn.textContent || "").trim();
+      const looksLikeQty =
+        (btn as Element).matches(
+          '.qty-btn, .qtyPlus, .qtyMinus, [data-action="inc"], [data-action="dec"]'
+        ) || /^\s*[+\-]\s*$/.test(text);
+
+      if (looksLikeQty) {
+        ev.stopImmediatePropagation(); // prevent the buggy handler from running
+        ev.preventDefault();
+        try {
+          safeAdjust(btn);
+        } catch (e) {
+          console.warn("Safe qty adjust failed:", e);
+        }
+      }
+    },
+    true // capture
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────
    Hide "Add to Cart" ONLY when "Return to Cart" is visible
 ────────────────────────────────────────────────────────────── */
 function toggleAddToCartWhenReturnPresent(): void {
@@ -448,6 +616,13 @@ function updateLoginAssistanceMessage(): void {
 export function runSharedScript(options: OptionsParameter) {
   console.log("Hello from the shared script!");
 
+  // Always attach CSRF to jQuery AJAX (no backend access needed)
+  try {
+    attachGlobalAjaxCSRF();
+  } catch (e) {
+    console.warn("attachGlobalAjaxCSRF error:", e);
+  }
+
   $(".tableSiteBanner, #navWrapper").wrapAll(`<div id="logoLinks"></div>`);
 
   options.hideHomeLink && $(".linkH").remove();
@@ -501,6 +676,8 @@ export function runSharedScript(options: OptionsParameter) {
       path.includes("/cart/index.php") ||
       params.get("task") === "updateItem"
     ) {
+      // Guard against buggy inline handler (const reassignment) and keep UX intact
+      installCartClickGuard();
       enforceIntegerQuantitiesOnCart();
     }
   } catch (e) {
