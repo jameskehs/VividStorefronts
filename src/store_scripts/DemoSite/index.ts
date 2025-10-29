@@ -1,14 +1,14 @@
 import { StorefrontPage } from "../../enums/StorefrontPage.enum";
 import { GLOBALVARS } from "../../index";
-import { applyPromoCode } from "../../shared/ApplyPromoCode";
-import { persistDiscountedTotals } from "../../shared/persistDiscountedTotals";
+//import { applyPromoCode } from "../../shared/ApplyPromoCode";
+//import { persistDiscountedTotals } from "../../shared/persistDiscountedTotals";
 import { monitorResidentialToastAndBlockPage } from "../../shared/BlockOnResidentialToast";
 // src/index.ts  (or your main bootstrap)
 import { initChatWidget } from "../../chat/chatWidget";
 
 document.addEventListener("DOMContentLoaded", () => {
   initChatWidget({
-    title: "Vivid Assistant",
+    title: "Prisma Assistant",
     apiBase: "https://ai-chat-bot-1xm4.onrender.com/api/ai",
     debug: true, // leave on until we confirm
   });
@@ -75,14 +75,14 @@ export function main() {
   }
 
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTCONFIRMATION) {
-    persistDiscountedTotals();
+    //persistDiscountedTotals();
   }
 
   if (
     GLOBALVARS.currentPage === StorefrontPage.CHECKOUTPAYMENT ||
     window.location.pathname.includes("/checkout/4-payment.php")
   ) {
-    applyPromoCode();
+    //applyPromoCode();
   }
 }
 
