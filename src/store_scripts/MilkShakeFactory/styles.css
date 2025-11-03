@@ -281,6 +281,14 @@ table.tableMain {
   padding: 10px;
 }
 
+table#catalogTblheader {
+  display: none;
+}
+
+.buttonContainer {
+  display: none;
+}
+
 img#productImage {
   width: 400px;
 }
