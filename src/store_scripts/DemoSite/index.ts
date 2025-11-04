@@ -103,6 +103,7 @@ export function main() {
 
   const formatSize = (s: { w: string; h: string }) => `${s.w} × ${s.h} in`;
 
+  // Add a FINISHED SIZE row directly after the Quantity row on /cart/3-edit.php
   const renderFinishedSizeUnderQty = (
     root: Document | HTMLElement = document
   ): boolean => {
@@ -131,8 +132,6 @@ export function main() {
 
       const tdValue = document.createElement("td");
       tdValue.textContent = label;
-
-      // Optional style for consistency
       tdValue.style.fontWeight = "normal";
       tdValue.style.fontSize = "1em";
 
@@ -195,7 +194,6 @@ export function main() {
 
       // observe childList only; throttle callback
       _observer = new MutationObserver((muts) => {
-        // if any added nodes exist, schedule render
         for (const m of muts) {
           if (m.addedNodes && m.addedNodes.length) {
             scheduleRender(root);
@@ -210,16 +208,11 @@ export function main() {
   };
 
   //
-  // ───────────────────────────── Existing Site Logic ─────────────────────────────
-  //
-
-  //
   // ───────────── Cart page: add FINISHED SIZE under MEMO (Printed only) ─────────────
   //
   function vi_cart_isPrinted(scope: ParentNode): boolean {
     try {
-      // Heuristics on cart page (no hidden productType here usually)
-      // Consider printed if jobDetailsTable has INKS or PAPER rows, or SKU rel ends with _w_b / _w_*
+      // Consider printed if jobDetailsTable has INKS or PAPER rows, SKU rel shows _w_, or title starts with "Printed"
       const hasInksOrPaper = !!scope.querySelector(
         ".jobDetailsTable .INKSRow, .jobDetailsTable .PAPERRow"
       );
@@ -249,7 +242,6 @@ export function main() {
         ) as HTMLAnchorElement | null
       )?.getAttribute("rel") || "";
     if (rel) candidates.push(rel);
-    // Fallbacks
     const prodCode =
       (scope.querySelector("#productCode") as HTMLInputElement | null)?.value ||
       "";
@@ -273,12 +265,9 @@ export function main() {
 
   function vi_cart_renderFinishedSizeOnce(itemBox: HTMLElement) {
     try {
-      // Each cart item block is a .dtContent table wrapper (outer table -> tbody > tr > td > table.dtContent)
-      // Insert row directly under the MEMO row's table (.memoTable)
       const memoTable = itemBox.querySelector(".memoTable tbody");
       if (!memoTable) return;
 
-      // Derive a stable per-item id from memo input name (e.g., memo521075)
       const memoInput = memoTable.querySelector(
         'input[name^="memo"]'
       ) as HTMLInputElement | null;
@@ -293,7 +282,7 @@ export function main() {
       const label = vi_cart_findSize(itemBox);
       if (!label) return;
 
-      // Build row same structure as PRODUCT row
+      // Build row same structure as PRODUCT row (two tds)
       const tr = document.createElement("tr");
       tr.id = rowId;
 
@@ -306,7 +295,6 @@ export function main() {
       tdValue.setAttribute("align", "left");
       tdValue.textContent = label;
 
-      // Insert after the MEMO row (which is the first/only row in memoTable)
       memoTable.appendChild(tr);
       tr.append(tdLabel, tdValue);
     } catch (e) {
@@ -347,6 +335,7 @@ export function main() {
         }
       });
       obs.observe(root, { childList: true, subtree: true });
+
       // Auto-disconnect after 3s idle to avoid any long-lived observers
       let idle: number | null = window.setTimeout(() => {
         obs.disconnect();
@@ -357,9 +346,14 @@ export function main() {
           obs.disconnect();
         }, 3000);
       });
-    } catch {}
+    } catch {
+      /* noop */
+    }
   }
 
+  //
+  // ───────────────────────────── Page init ─────────────────────────────
+  //
   function init() {
     const isAddToCartPage = () => {
       try {
@@ -373,8 +367,21 @@ export function main() {
       }
     };
 
+    const isCartPage = () =>
+      (GLOBALVARS?.currentPage || "").toLowerCase().includes("cart page") ||
+      window.location.pathname.includes("/cart/");
+
+    // --- Cart page: FINISHED SIZE under MEMO (Printed only) ---
+    if (isCartPage()) {
+      try {
+        vi_cart_installFinishedSize();
+      } catch (e) {
+        console.warn("[vi] cart enhancer error:", e);
+      }
+    }
+
+    // --- Add-to-Cart page: image swap + Finished Size row under Quantity ---
     if (isAddToCartPage()) {
-      // Swap proof image from .cache to generated preview (for 10s max)
       try {
         const img = document.getElementById(
           "productImage"
@@ -401,16 +408,7 @@ export function main() {
       } catch (e) {
         console.warn("[vi] image swap error:", e);
       }
-      // Cart page: add FINISHED SIZE under MEMO for each line item
-      const isCartPage = () =>
-        (GLOBALVARS?.currentPage || "").toLowerCase().includes("cart page") ||
-        window.location.pathname.includes("/cart/");
 
-      if (isCartPage()) {
-        vi_cart_installFinishedSize();
-      }
-
-      // Finished Size (Printed only)
       try {
         watchFinishedSize();
       } catch (e) {
