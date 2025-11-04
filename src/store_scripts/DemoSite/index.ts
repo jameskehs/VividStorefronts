@@ -258,7 +258,7 @@ export function main() {
 
     for (const raw of candidates) {
       const m = raw.match(/(\d+(?:\.\d+)?)\s*[xX]\s*(\d+(?:\.\d+)?)/);
-      if (m) return `${m[1]} × ${m[2]} in`;
+      if (m) return `${m[1]}:w × ${m[2]}"h`;
     }
     return null;
   }
