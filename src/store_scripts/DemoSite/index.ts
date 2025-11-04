@@ -212,6 +212,154 @@ export function main() {
   //
   // ───────────────────────────── Existing Site Logic ─────────────────────────────
   //
+
+  //
+  // ───────────── Cart page: add FINISHED SIZE under MEMO (Printed only) ─────────────
+  //
+  function vi_cart_isPrinted(scope: ParentNode): boolean {
+    try {
+      // Heuristics on cart page (no hidden productType here usually)
+      // Consider printed if jobDetailsTable has INKS or PAPER rows, or SKU rel ends with _w_b / _w_*
+      const hasInksOrPaper = !!scope.querySelector(
+        ".jobDetailsTable .INKSRow, .jobDetailsTable .PAPERRow"
+      );
+      const rel =
+        (
+          scope.querySelector(
+            'a.productImage[id^="productImage-"]'
+          ) as HTMLAnchorElement | null
+        )?.getAttribute("rel") || "";
+      const printedByRel = /_w_/i.test(rel) || /_w_b/i.test(rel);
+      const titleTxt = (
+        scope.querySelector(".jobDescCell .jobDesc")?.textContent || ""
+      ).trim();
+      const printedByTitle = /^printed\b/i.test(titleTxt);
+      return hasInksOrPaper || printedByRel || printedByTitle;
+    } catch {
+      return false;
+    }
+  }
+
+  function vi_cart_findSize(scope: ParentNode): string | null {
+    const candidates: string[] = [];
+    const rel =
+      (
+        scope.querySelector(
+          'a.productImage[id^="productImage-"]'
+        ) as HTMLAnchorElement | null
+      )?.getAttribute("rel") || "";
+    if (rel) candidates.push(rel);
+    // Fallbacks
+    const prodCode =
+      (scope.querySelector("#productCode") as HTMLInputElement | null)?.value ||
+      "";
+    const prodId =
+      (
+        scope.querySelector(
+          'input[name="productID"]'
+        ) as HTMLInputElement | null
+      )?.value || "";
+    const title = (
+      scope.querySelector(".jobDescCell .jobDesc")?.textContent || ""
+    ).trim();
+    [prodCode, prodId, title].forEach((v) => v && candidates.push(v));
+
+    for (const raw of candidates) {
+      const m = raw.match(/(\d+(?:\.\d+)?)\s*[xX]\s*(\d+(?:\.\d+)?)/);
+      if (m) return `${m[1]} × ${m[2]} in`;
+    }
+    return null;
+  }
+
+  function vi_cart_renderFinishedSizeOnce(itemBox: HTMLElement) {
+    try {
+      // Each cart item block is a .dtContent table wrapper (outer table -> tbody > tr > td > table.dtContent)
+      // Insert row directly under the MEMO row's table (.memoTable)
+      const memoTable = itemBox.querySelector(".memoTable tbody");
+      if (!memoTable) return;
+
+      // Derive a stable per-item id from memo input name (e.g., memo521075)
+      const memoInput = memoTable.querySelector(
+        'input[name^="memo"]'
+      ) as HTMLInputElement | null;
+      const itemId = memoInput?.name?.replace("memo", "") || "";
+      const rowId = `finishedSizeRow-${itemId || "unknown"}`;
+
+      // Cleanup any prior row before re-render
+      const prev = itemBox.querySelector(`#${rowId}`);
+      if (prev) prev.remove();
+
+      if (!vi_cart_isPrinted(itemBox)) return;
+      const label = vi_cart_findSize(itemBox);
+      if (!label) return;
+
+      // Build row same structure as PRODUCT row
+      const tr = document.createElement("tr");
+      tr.id = rowId;
+
+      const tdLabel = document.createElement("td");
+      tdLabel.setAttribute("align", "right");
+      tdLabel.setAttribute("nowrap", "nowrap");
+      tdLabel.innerHTML = "<strong>FINISHED SIZE</strong>";
+
+      const tdValue = document.createElement("td");
+      tdValue.setAttribute("align", "left");
+      tdValue.textContent = label;
+
+      // Insert after the MEMO row (which is the first/only row in memoTable)
+      memoTable.appendChild(tr);
+      tr.append(tdLabel, tdValue);
+    } catch (e) {
+      console.warn("[vi] cart finished-size render error:", e);
+    }
+  }
+
+  function vi_cart_installFinishedSize() {
+    const root = document.getElementById("shoppingCartTbl") || document.body;
+    if (!root) return;
+
+    const renderAll = () => {
+      root.querySelectorAll<HTMLTableElement>(".dtContent").forEach((dt) => {
+        vi_cart_renderFinishedSizeOnce(dt as unknown as HTMLElement);
+      });
+    };
+
+    // initial pass
+    renderAll();
+
+    // observe changes (throttled)
+    let t: number | null = null;
+    const schedule = () => {
+      if (t) window.clearTimeout(t);
+      t = window.setTimeout(() => {
+        t = null;
+        renderAll();
+      }, 200);
+    };
+
+    try {
+      const obs = new MutationObserver((muts) => {
+        for (const m of muts) {
+          if (m.addedNodes && m.addedNodes.length) {
+            schedule();
+            return;
+          }
+        }
+      });
+      obs.observe(root, { childList: true, subtree: true });
+      // Auto-disconnect after 3s idle to avoid any long-lived observers
+      let idle: number | null = window.setTimeout(() => {
+        obs.disconnect();
+      }, 3000);
+      root.addEventListener("DOMNodeInserted", () => {
+        if (idle) window.clearTimeout(idle);
+        idle = window.setTimeout(() => {
+          obs.disconnect();
+        }, 3000);
+      });
+    } catch {}
+  }
+
   function init() {
     const isAddToCartPage = () => {
       try {
@@ -252,6 +400,14 @@ export function main() {
         }
       } catch (e) {
         console.warn("[vi] image swap error:", e);
+      }
+      // Cart page: add FINISHED SIZE under MEMO for each line item
+      const isCartPage = () =>
+        (GLOBALVARS?.currentPage || "").toLowerCase().includes("cart page") ||
+        window.location.pathname.includes("/cart/");
+
+      if (isCartPage()) {
+        vi_cart_installFinishedSize();
       }
 
       // Finished Size (Printed only)
