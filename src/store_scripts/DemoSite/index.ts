@@ -1,29 +1,37 @@
 import { StorefrontPage } from "../../enums/StorefrontPage.enum";
 import { GLOBALVARS } from "../../index";
-//import { applyPromoCode } from "../../shared/ApplyPromoCode";
-//import { persistDiscountedTotals } from "../../shared/persistDiscountedTotals";
+// import { applyPromoCode } from "../../shared/ApplyPromoCode";
+// import { persistDiscountedTotals } from "../../shared/persistDiscountedTotals";
 import { monitorResidentialToastAndBlockPage } from "../../shared/BlockOnResidentialToast";
-// src/index.ts  (or your main bootstrap)
 import { initChatWidget } from "../../chat/chatWidget";
 
 document.addEventListener("DOMContentLoaded", () => {
-  initChatWidget({
-    title: "Prisma Assistant",
-    apiBase: "https://ai-chat-bot-1xm4.onrender.com/api/ai",
-    debug: true, // leave on until we confirm
-  });
-  console.log("[VividChat] direct mount called");
+  try {
+    initChatWidget({
+      title: "Prisma Assistant",
+      apiBase: "https://ai-chat-bot-1xm4.onrender.com/api/ai",
+      debug: true,
+    });
+    console.log("[VividChat] direct mount called");
+  } catch (e) {
+    console.warn("[VividChat] init error:", e);
+  }
 });
 
 export function main() {
   //
-  // ───────────────────────────── Helpers: Finished Size (hardened) ─────────────────────────────
+  // ───────────── Finished Size helpers (Printed only) — throttled & guarded ─────────────
   //
   const TAG_ID = "vi-finished-size";
+  let _renderTimer: number | null = null;
+  let _idleTimer: number | null = null;
+  let _observer: MutationObserver | null = null;
+  let _lastText = ""; // prevent no-op DOM writes
+  let _renders = 0; // upper bound for safety
 
   const isPrinted = (root: Document | HTMLElement = document): boolean => {
     try {
-      const fromHidden =
+      const hidden =
         (
           root.querySelector("#productType") as HTMLInputElement | null
         )?.value?.trim() ||
@@ -33,7 +41,7 @@ export function main() {
           ) as HTMLInputElement | null
         )?.value?.trim() ||
         "";
-      if (fromHidden) return /^printed$/i.test(fromHidden);
+      if (hidden) return /^printed$/i.test(hidden);
 
       const txt =
         (
@@ -65,7 +73,6 @@ export function main() {
             'input[name="productID"]'
           ) as HTMLInputElement | null
         )?.value || "",
-        // some carts use an <a.productImage rel="WxH_w_b"> on cart pages
         (
           document.querySelector(
             'a.productImage[id^="productImage-"]'
@@ -98,24 +105,25 @@ export function main() {
 
   const renderFinishedSizeUnderQty = (
     root: Document | HTMLElement = document
-  ): void => {
+  ): boolean => {
     try {
       const qtyCol = root.querySelector("#quantityCol");
-      if (!qtyCol) return;
+      if (!qtyCol) return false;
 
-      // Only for printed; clean up if not printed
       if (!isPrinted(root)) {
         const old = qtyCol.querySelector("#" + TAG_ID);
         if (old) old.remove();
-        return;
+        _lastText = "";
+        return false;
       }
 
       const size = findRawSize();
-      if (!size) return;
+      if (!size) return false;
 
-      const label = formatSize(size);
+      const label = `Finished Size: ${formatSize(size)}`;
+      if (label === _lastText) return false; // nothing to do
+
       let tag = qtyCol.querySelector("#" + TAG_ID) as HTMLDivElement | null;
-
       if (!tag) {
         tag = document.createElement("div");
         tag.id = TAG_ID;
@@ -123,7 +131,6 @@ export function main() {
         tag.style.fontSize = "0.95em";
         tag.style.opacity = "0.9";
 
-        // Optional pill styling if CSS vars exist
         try {
           const rootStyle = getComputedStyle(document.documentElement);
           const bg = (
@@ -149,18 +156,14 @@ export function main() {
         const qtyDesc = qtyCol.querySelector(
           "#quantityDescription"
         ) as HTMLElement | null;
-        if (qtyDesc?.parentElement) {
-          qtyDesc.before(tag);
-        } else if (qtyInput) {
-          qtyInput.insertAdjacentElement("afterend", tag);
-        } else {
-          (qtyCol as HTMLElement).appendChild(tag);
-        }
+        if (qtyDesc?.parentElement) qtyDesc.before(tag);
+        else if (qtyInput) qtyInput.insertAdjacentElement("afterend", tag);
+        else (qtyCol as HTMLElement).appendChild(tag);
       }
 
-      tag.textContent = `Finished Size: ${label}`;
+      tag.textContent = label;
+      _lastText = label;
 
-      // Optional: populate hidden size input if blank (helps downstream imports)
       try {
         const sizeInput = document.querySelector(
           'input[name="size"]'
@@ -170,35 +173,64 @@ export function main() {
       } catch {
         /* ignore */
       }
+
+      return true;
     } catch (err) {
       console.warn("[vi] renderFinishedSizeUnderQty failed:", err);
+      return false;
     }
+  };
+
+  const scheduleRender = (root: Document | HTMLElement) => {
+    if (_renderTimer !== null) window.clearTimeout(_renderTimer);
+    // throttle to at most once per 200ms
+    _renderTimer = window.setTimeout(() => {
+      _renderTimer = null;
+      if (_renders > 50) {
+        // hard safety cap per page load
+        if (_observer) {
+          _observer.disconnect();
+          _observer = null;
+        }
+        return;
+      }
+      const ok = renderFinishedSizeUnderQty(root);
+      _renders++;
+
+      // after a successful render, if no mutations for 2s, disconnect observer
+      if (ok) {
+        if (_idleTimer !== null) window.clearTimeout(_idleTimer);
+        _idleTimer = window.setTimeout(() => {
+          if (_observer) {
+            _observer.disconnect();
+            _observer = null;
+          }
+        }, 2000);
+      }
+    }, 200);
   };
 
   const watchFinishedSize = (): void => {
     try {
-      renderFinishedSizeUnderQty(document);
-
       const root =
         (document.getElementById("editForm") as HTMLElement | null) ||
         document.body;
       if (!root) return;
 
-      const obs = new MutationObserver((muts) => {
-        try {
-          let needed = false;
-          for (const m of muts) {
-            if (m.addedNodes && m.addedNodes.length) {
-              needed = true;
-              break;
-            }
+      // initial render
+      scheduleRender(root);
+
+      // observe childList only; throttle callback
+      _observer = new MutationObserver((muts) => {
+        // if any added nodes exist, schedule render
+        for (const m of muts) {
+          if (m.addedNodes && m.addedNodes.length) {
+            scheduleRender(root);
+            return;
           }
-          if (needed) renderFinishedSizeUnderQty(root);
-        } catch (err) {
-          console.warn("[vi] watchFinishedSize mutation loop error:", err);
         }
       });
-      obs.observe(root, { childList: true, subtree: true, attributes: false });
+      _observer.observe(root, { childList: true, subtree: true });
     } catch (err) {
       console.warn("[vi] watchFinishedSize init failed:", err);
     }
@@ -221,34 +253,35 @@ export function main() {
     };
 
     if (isAddToCartPage()) {
-      // Refresh product image to the full PDF preview thumbnail
-      const img = document.getElementById(
-        "productImage"
-      ) as HTMLImageElement | null;
-      const artID = (window as any).p?.artID;
-
-      if (img && artID) {
-        const origin = window.location.origin;
-        const desiredURL = `${origin}/catalog/gen/pdf_art_image.php?artID=${artID}&nocache=${Date.now()}`;
-
-        const apply = () => {
-          try {
-            if (img.src.startsWith(`${origin}/.cache`)) {
-              img.src = desiredURL;
-              img.width = 400;
-              img.style.height = "auto";
+      // Swap proof image from .cache to generated preview (for 10s max)
+      try {
+        const img = document.getElementById(
+          "productImage"
+        ) as HTMLImageElement | null;
+        const artID = (window as any)?.p?.artID;
+        if (img && artID) {
+          const origin = window.location.origin;
+          const desiredURL = `${origin}/catalog/gen/pdf_art_image.php?artID=${artID}&nocache=${Date.now()}`;
+          const apply = () => {
+            try {
+              if (img.src.startsWith(`${origin}/.cache`)) {
+                img.src = desiredURL;
+                img.width = 400;
+                img.style.height = "auto";
+              }
+            } catch {
+              /* ignore */
             }
-          } catch {
-            /* ignore */
-          }
-        };
-
-        apply();
-        const interval = window.setInterval(apply, 300);
-        window.setTimeout(() => window.clearInterval(interval), 10000);
+          };
+          apply();
+          const interval = window.setInterval(apply, 300);
+          window.setTimeout(() => window.clearInterval(interval), 10000);
+        }
+      } catch (e) {
+        console.warn("[vi] image swap error:", e);
       }
 
-      // Show finished size under Quantity (Printed items only)
+      // Finished Size (Printed only)
       try {
         watchFinishedSize();
       } catch (e) {
@@ -270,19 +303,18 @@ export function main() {
         `<span class="red">*</span> Delivery time listed includes 1 to 2 days to process order plus shipping.
       Please note we do not process orders on weekends or holidays.`
       );
-
     monitorResidentialToastAndBlockPage();
   }
 
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTCONFIRMATION) {
-    //persistDiscountedTotals();
+    // persistDiscountedTotals();
   }
 
   if (
     GLOBALVARS.currentPage === StorefrontPage.CHECKOUTPAYMENT ||
     window.location.pathname.includes("/checkout/4-payment.php")
   ) {
-    //applyPromoCode();
+    // applyPromoCode();
   }
 }
 
@@ -298,7 +330,6 @@ function convertMenuTextToIcons(): void {
 
   const tryConvert = () => {
     const menuItems = document.querySelectorAll<HTMLLIElement>("#menu li");
-
     if (menuItems.length === 0) {
       setTimeout(tryConvert, 200);
       return;
@@ -308,21 +339,18 @@ function convertMenuTextToIcons(): void {
       const link = item.querySelector("a");
       if (link) {
         const rawText = link.textContent?.trim().toUpperCase();
-
         const matchedKey = Object.keys(iconMap).find((key) =>
           rawText?.startsWith(key)
         );
         const iconClass = matchedKey ? iconMap[matchedKey] : "";
-
         if (iconClass) {
           const countMatch = rawText?.match(/\((\d+)\)/)?.[1];
-
           link.innerHTML = `
-    <span class="icon-wrap">
-      <i class="fa ${iconClass}"></i>
-      ${countMatch ? `<span class="badge">${countMatch}</span>` : ""}
-    </span>
-  `;
+            <span class="icon-wrap">
+              <i class="fa ${iconClass}"></i>
+              ${countMatch ? `<span class="badge">${countMatch}</span>` : ""}
+            </span>
+          `;
           link.setAttribute("title", rawText || "");
         }
       }
