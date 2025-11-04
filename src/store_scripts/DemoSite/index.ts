@@ -101,7 +101,7 @@ export function main() {
     }
   };
 
-  const formatSize = (s: { w: string; h: string }) => `${s.w} × ${s.h} in`;
+  const formatSize = (s: { w: string; h: string }) => `${s.w}"w × ${s.h}"h`;
 
   // Add a FINISHED SIZE row directly after the Quantity row on /cart/3-edit.php
   const renderFinishedSizeUnderQty = (
@@ -128,7 +128,7 @@ export function main() {
 
       const tdLabel = document.createElement("td");
       tdLabel.setAttribute("align", "right");
-      tdLabel.innerHTML = "<strong>FINISHED SIZE:</strong>";
+      tdLabel.innerHTML = "<strong>FINISHED SIZE</strong>";
 
       const tdValue = document.createElement("td");
       tdValue.textContent = label;
@@ -289,7 +289,7 @@ export function main() {
       const tdLabel = document.createElement("td");
       tdLabel.setAttribute("align", "right");
       tdLabel.setAttribute("nowrap", "nowrap");
-      tdLabel.innerHTML = "<strong>FINISHED SIZE</strong>";
+      tdLabel.innerHTML = "<strong>FINISHED SIZE:</strong>";
 
       const tdValue = document.createElement("td");
       tdValue.setAttribute("align", "left");
