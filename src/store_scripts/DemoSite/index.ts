@@ -120,7 +120,7 @@ export function main() {
       const size = findRawSize();
       if (!size) return false;
 
-      const label = `${size.w} × ${size.h} in`;
+      const label = `${size.w}"w × ${size.h}"h`;
 
       // Create the new row (matches PRODUCT row style)
       const tr = document.createElement("tr");
@@ -128,7 +128,7 @@ export function main() {
 
       const tdLabel = document.createElement("td");
       tdLabel.setAttribute("align", "right");
-      tdLabel.innerHTML = "<strong>FINISHED SIZE</strong>";
+      tdLabel.innerHTML = "<strong>FINISHED SIZE:</strong>";
 
       const tdValue = document.createElement("td");
       tdValue.textContent = label;
