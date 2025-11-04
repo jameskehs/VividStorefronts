@@ -107,72 +107,45 @@ export function main() {
     root: Document | HTMLElement = document
   ): boolean => {
     try {
-      const qtyCol = root.querySelector("#quantityCol");
-      if (!qtyCol) return false;
+      const qtyRow = root.querySelector("#quantityRow");
+      if (!qtyRow) return false;
 
-      if (!isPrinted(root)) {
-        const old = qtyCol.querySelector("#" + TAG_ID);
-        if (old) old.remove();
-        _lastText = "";
-        return false;
-      }
+      // Remove any prior finished-size row
+      const oldRow = root.querySelector("#finishedSizeRow");
+      if (oldRow) oldRow.remove();
+
+      if (!isPrinted(root)) return false;
 
       const size = findRawSize();
       if (!size) return false;
 
-      const label = `Finished Size: ${formatSize(size)}`;
-      if (label === _lastText) return false; // nothing to do
+      const label = `${size.w} × ${size.h} in`;
 
-      let tag = qtyCol.querySelector("#" + TAG_ID) as HTMLDivElement | null;
-      if (!tag) {
-        tag = document.createElement("div");
-        tag.id = TAG_ID;
-        tag.style.marginTop = "6px";
-        tag.style.fontSize = "0.95em";
-        tag.style.opacity = "0.9";
+      // Create the new row (matches PRODUCT row style)
+      const tr = document.createElement("tr");
+      tr.id = "finishedSizeRow";
 
-        try {
-          const rootStyle = getComputedStyle(document.documentElement);
-          const bg = (
-            rootStyle.getPropertyValue("--tag-dimensions-bg") || ""
-          ).trim();
-          const fg = (
-            rootStyle.getPropertyValue("--tag-dimensions-text") || ""
-          ).trim();
-          if (bg || fg) {
-            tag.style.display = "inline-block";
-            tag.style.padding = "2px 8px";
-            tag.style.borderRadius = "6px";
-            if (bg) tag.style.background = bg;
-            if (fg) tag.style.color = fg;
-          }
-        } catch {
-          /* ignore */
-        }
+      const tdLabel = document.createElement("td");
+      tdLabel.setAttribute("align", "right");
+      tdLabel.innerHTML = "<strong>FINISHED SIZE</strong>";
 
-        const qtyInput = qtyCol.querySelector(
-          "#quantity"
-        ) as HTMLElement | null;
-        const qtyDesc = qtyCol.querySelector(
-          "#quantityDescription"
-        ) as HTMLElement | null;
-        if (qtyDesc?.parentElement) qtyDesc.before(tag);
-        else if (qtyInput) qtyInput.insertAdjacentElement("afterend", tag);
-        else (qtyCol as HTMLElement).appendChild(tag);
-      }
+      const tdValue = document.createElement("td");
+      tdValue.textContent = label;
 
-      tag.textContent = label;
-      _lastText = label;
+      // Optional style for consistency
+      tdValue.style.fontWeight = "normal";
+      tdValue.style.fontSize = "1em";
 
-      try {
-        const sizeInput = document.querySelector(
-          'input[name="size"]'
-        ) as HTMLInputElement | null;
-        if (sizeInput && !sizeInput.value)
-          sizeInput.value = `${size.w} x ${size.h}`;
-      } catch {
-        /* ignore */
-      }
+      tr.append(tdLabel, tdValue);
+
+      // Insert right after Quantity row
+      qtyRow.parentElement?.insertBefore(tr, qtyRow.nextElementSibling);
+
+      // Optional: populate hidden size input if blank
+      const sizeInput = document.querySelector(
+        'input[name="size"]'
+      ) as HTMLInputElement | null;
+      if (sizeInput && !sizeInput.value) sizeInput.value = label;
 
       return true;
     } catch (err) {
