@@ -118,7 +118,7 @@ table.tableMain {
   justify-content: center;
   height: 52px;
   padding: 10px 14px;
-  color: #021d49;
+  color: #fff;
   text-decoration: none;
   transition: transform 0.2s ease, color 0.2s ease;
 }
