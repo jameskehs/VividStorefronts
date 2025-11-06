@@ -301,10 +301,3 @@ img#productImage {
 #searchbar {
   display: none;
 }
-
-.tablesorter tbody td {
-  color: #3d3d3d;
-  padding: 4px;
-  background: #f9f9f9;
-  vertical-align: none !important;
-}
