@@ -9,8 +9,8 @@ export function main() {
 
   document.title = "Krispy Krunchy Online Store";
 
-  let shipMsg = `<p class="ship-message">We've moved!<br>Click <a href="https://www.krispykrunchy.com/krunch-shop/">HERE</a> to access our brand-new online store for the latest products and a smoother shopping experience. We can't wait to see you there!</p>`;
-  $(shipMsg).insertBefore(".tableMain");
+  //let shipMsg = `<p class="ship-message">We've moved!<br>Click <a href="https://www.krispykrunchy.com/krunch-shop/">HERE</a> to access our brand-new online store for the latest products and a smoother shopping experience. We can't wait to see you there!</p>`;
+  //$(shipMsg).insertBefore(".tableMain");
 
   // Change "Shipping & Handling" to "Shipping" in the order summary
   $("#taxRushShipGrand table tbody tr td").eq(7).text("Shipping");
