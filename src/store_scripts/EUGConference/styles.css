@@ -39,7 +39,7 @@
 }
 
 /* Apply same animated gradient to ui-box header */
-.ui-box > header {
+.ui-box header.dark {
   /* fallback */
   background-color: var(--loginbar-bg);
 
