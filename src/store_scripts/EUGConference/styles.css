@@ -45,7 +45,7 @@
 
   /* animated gradient */
   background: linear-gradient(
-    45deg,
+    -45deg,
     var(--login-grad-start),
     var(--login-grad-end)
   );
