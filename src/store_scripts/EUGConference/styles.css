@@ -5,7 +5,7 @@
 
 :root {
   --login-grad-start: #1edcc4;
-  --login-grad-end: #2d948c;
+  --login-grad-end: #007368;
 }
 
 #loginWrapper {
@@ -145,12 +145,12 @@ table.tableMain {
   justify-content: center;
   height: 52px;
   padding: 10px 14px;
-  color: #36b6a6;
+  color: #007368;
   text-decoration: none;
   transition: transform 0.2s ease, color 0.2s ease;
 }
 #menu li a .icon-wrap i {
-  color: #36b6a6 !important;
+  color: #007368 !important;
   font-size: 24px;
   line-height: 1;
   vertical-align: middle;
