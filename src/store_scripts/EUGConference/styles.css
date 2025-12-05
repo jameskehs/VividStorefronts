@@ -4,8 +4,8 @@
 }
 
 :root {
-  --login-grad-start: #007368;
-  --login-grad-end: #007368;
+  --login-grad-start: #00aaa1;
+  --login-grad-end: #ffed00;
 }
 
 #loginWrapper {
@@ -36,6 +36,25 @@
   100% {
     background-position: 0% 50%;
   }
+}
+
+/* Apply same animated gradient to ui-box header */
+.ui-box > header {
+  /* fallback */
+  background-color: var(--loginbar-bg);
+
+  /* animated gradient */
+  background: linear-gradient(
+    45deg,
+    var(--login-grad-start),
+    var(--login-grad-end)
+  );
+  background-size: 200% 200%;
+  animation: loginGradient 7s ease infinite;
+
+  color: #fff; /* optional: make text white */
+  padding: 8px 12px; /* optional: match styling */
+  border-radius: 4px 4px 0 0;
 }
 
 .parentSubcategoryCell {
@@ -145,12 +164,12 @@ table.tableMain {
   justify-content: center;
   height: 52px;
   padding: 10px 14px;
-  color: #007368;
+  color: #00aaa1;
   text-decoration: none;
   transition: transform 0.2s ease, color 0.2s ease;
 }
 #menu li a .icon-wrap i {
-  color: #007368 !important;
+  color: #00aaa1 !important;
   font-size: 24px;
   line-height: 1;
   vertical-align: middle;
