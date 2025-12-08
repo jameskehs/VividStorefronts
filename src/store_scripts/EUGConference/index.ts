@@ -1,12 +1,11 @@
 import { StorefrontPage } from "../../enums/StorefrontPage.enum";
 import { GLOBALVARS } from "../../index";
 
-// TODO: replace with your real guest credentials.
-// You can also later swap this to a mapping function if you have
-// multiple guest logins per storefront/site.
+// Shared guest login for this storefront
+// TODO: replace with your real credentials for the guest account
 const GUEST_LOGIN = {
-  loginId: "EUG2025",
-  password: "conference",
+  loginId: "GUEST_LOGIN_ID_HERE",
+  password: "GUEST_PASSWORD_HERE",
 };
 
 export function main() {
@@ -123,7 +122,7 @@ export function main() {
       if (form && continueBtn && radio && !continueBtn.disabled) {
         if (!radio.checked) {
           radio.checked = true;
-          // Trigger their inline onclick: updates globals + totals
+          // fire their onclick (updates globals + totals)
           radio.click();
         }
 
@@ -148,45 +147,67 @@ export function main() {
   // AUTO-LOGIN GUEST ACCOUNT ON LOGIN PAGE
   // ---------------------------------------------------------
   const setupGuestAutoLogin = () => {
-    // Use your enum directly so we only run this on the login page
-    if (GLOBALVARS.currentPage !== StorefrontPage.LOGIN) return;
-
     const { loginId, password } = GUEST_LOGIN;
     if (!loginId || !password) return;
 
-    // Wait a bit so Presswise can wire up validation/handlers
+    // Detect the login page by its specific fields & form
+    const loginInput = document.getElementById(
+      "login_user"
+    ) as HTMLInputElement | null;
+    const passwordInput = document.getElementById(
+      "login_pass"
+    ) as HTMLInputElement | null;
+
+    if (!loginInput || !passwordInput) return;
+
+    const form =
+      loginInput.closest("form") ||
+      passwordInput.closest("form") ||
+      document.querySelector("form[action*='login.php']");
+
+    if (!form) return;
+
+    // Optional extra guard: ensure we're really on login.php
+    const path = window.location.pathname.toLowerCase();
+    if (!path.includes("login.php") && !path.endsWith("/login")) {
+      // Still allow it if fields exist (you can remove this if you want it looser)
+      // return;
+    }
+
+    // Wait a bit so their jQuery focus / button wiring happens first
     window.setTimeout(() => {
-      const loginInput = document.getElementById(
-        "loginID"
+      const loginField = document.getElementById(
+        "login_user"
       ) as HTMLInputElement | null;
-      const passwordInput = document.getElementById(
-        "password1"
+      const passField = document.getElementById(
+        "login_pass"
       ) as HTMLInputElement | null;
 
-      if (!loginInput || !passwordInput) return;
+      if (!loginField || !passField) return;
 
-      // Don't override if user is already typing
-      if (loginInput.value || passwordInput.value) return;
+      // Don't overwrite if user has started typing (just in case)
+      if (loginField.value || passField.value) return;
 
-      loginInput.value = loginId;
-      passwordInput.value = password;
-
-      const form =
-        (loginInput.closest("form") as HTMLFormElement | null) ||
-        (passwordInput.closest("form") as HTMLFormElement | null);
-
-      if (!form) return;
+      loginField.value = loginId;
+      passField.value = password;
 
       const submitButton =
-        form.querySelector<HTMLButtonElement>('button[type="submit"]') ||
-        form.querySelector<HTMLInputElement>('input[type="submit"]');
+        (form as HTMLFormElement).querySelector<HTMLButtonElement>(
+          "button[name='login_submit']"
+        ) ||
+        (form as HTMLFormElement).querySelector<HTMLButtonElement>(
+          "button[type='submit']"
+        ) ||
+        (form as HTMLFormElement).querySelector<HTMLInputElement>(
+          "input[type='submit']"
+        );
 
       // Slight delay in case filling triggers onblur validation
       window.setTimeout(() => {
         if (submitButton) {
           submitButton.click();
         } else {
-          form.submit();
+          (form as HTMLFormElement).submit();
         }
       }, 150);
     }, 300);
@@ -200,7 +221,7 @@ export function main() {
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", () => {
-      // tiny delay so inline scripts (get_shipping_methods, etc.) run first
+      // tiny delay so inline scripts (get_shipping_methods, adjustCenter, etc.) run first
       window.setTimeout(runPageEnhancements, 200);
     });
   } else {
