@@ -46,24 +46,112 @@ export function main() {
     }
   }
 
+  // Run init on DOM ready
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", init);
   } else {
     init();
   }
 
+  // --- AUTO-SKIP ADDRESS & SHIPPING STEP ---------------------------
+
+  const isAddressAndShippingPage = () => {
+    const page = GLOBALVARS?.currentPage?.trim().toLowerCase() || "";
+    // Heuristics: tweak if needed for your environment
+    if (page.includes("address") || page.includes("shipping")) return true;
+
+    // Fallback: look for a typical shipping method field
+    return !!document.querySelector('input[name="shipMethodID"]');
+  };
+
+  if (isAddressAndShippingPage()) {
+    const runAutoSkip = () => autoSkipAddressAndShipping();
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", runAutoSkip);
+    } else {
+      runAutoSkip();
+    }
+  }
+
+  // -----------------------------------------------------------------
+
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTCONFIRMATION) {
+    // you can add confirmation-page logic here if needed
   }
 
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTPAYMENT) {
+    // payment-page logic here if needed
   }
 
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTREVIEW) {
+    // review-page logic here if needed
   }
 }
 
 main();
 
+function autoSkipAddressAndShipping(): void {
+  // Try to locate the main checkout form
+  const form =
+    document.querySelector<HTMLFormElement>('form[action*="checkout"]') ||
+    document.querySelector<HTMLFormElement>('form[name="checkoutForm"]');
+
+  if (!form) return;
+
+  // List of required shipping address fields (adjust selectors to match your markup)
+  const requiredSelectors = [
+    'input[name="stFirst"]',
+    'input[name="stLast"]',
+    'input[name="stStreet"]',
+    'input[name="stCity"]',
+    'select[name="stState"]',
+    'input[name="stZip"]',
+  ];
+
+  const allFilled = requiredSelectors.every((selector) => {
+    const el = form.querySelector<HTMLInputElement | HTMLSelectElement>(
+      selector
+    );
+    if (!el) return false;
+    return (el as HTMLInputElement | HTMLSelectElement).value.trim().length > 0;
+  });
+
+  // If the user hasn't got a full address yet (guest checkout, new user, etc.), don't skip
+  if (!allFilled) return;
+
+  // Optionally, set a default shipping method if nothing is selected yet.
+  // If you know a specific value for your default, replace "input[name='shipMethodID']"
+  // with something like "input[name='shipMethodID'][value='123']".
+  const existingChecked = form.querySelector<HTMLInputElement>(
+    'input[name="shipMethodID"]:checked'
+  );
+
+  if (!existingChecked) {
+    const defaultShip = form.querySelector<HTMLInputElement>(
+      'input[name="shipMethodID"]'
+    );
+    if (defaultShip) {
+      defaultShip.checked = true;
+    }
+  }
+
+  // Small delay gives Presswise's own JS a chance to finish any last DOM tweaks
+  setTimeout(() => {
+    const continueButton =
+      form.querySelector<HTMLButtonElement>('button[type="submit"]') ||
+      form.querySelector<HTMLInputElement>('input[type="submit"]');
+
+    if (continueButton) {
+      continueButton.click();
+    } else {
+      form.submit();
+    }
+  }, 300);
+}
+
+// -------------------------------------------------------------
+// Existing menu-icon code
+// -------------------------------------------------------------
 function convertMenuTextToIcons(): void {
   const iconMap: Record<string, string> = {
     HOME: "fa-home",
