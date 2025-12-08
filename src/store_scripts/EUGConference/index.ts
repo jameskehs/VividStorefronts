@@ -146,36 +146,16 @@ export function main() {
   // ---------------------------------------------------------
   // AUTO-LOGIN GUEST ACCOUNT ON LOGIN PAGE
   // ---------------------------------------------------------
-  const setupGuestAutoLogin = () => {
+  function setupGuestAutoLogin(): void {
     const { loginId, password } = GUEST_LOGIN;
     if (!loginId || !password) return;
 
-    // Detect the login page by its specific fields & form
-    const loginInput = document.getElementById(
-      "login_user"
-    ) as HTMLInputElement | null;
-    const passwordInput = document.getElementById(
-      "login_pass"
-    ) as HTMLInputElement | null;
+    let attempts = 0;
+    const maxAttempts = 40; // ~10 seconds (40 * 250ms)
 
-    if (!loginInput || !passwordInput) return;
+    const intervalId = window.setInterval(() => {
+      attempts++;
 
-    const form =
-      loginInput.closest("form") ||
-      passwordInput.closest("form") ||
-      document.querySelector("form[action*='login.php']");
-
-    if (!form) return;
-
-    // Optional extra guard: ensure we're really on login.php
-    const path = window.location.pathname.toLowerCase();
-    if (!path.includes("login.php") && !path.endsWith("/login")) {
-      // Still allow it if fields exist (you can remove this if you want it looser)
-      // return;
-    }
-
-    // Wait a bit so their jQuery focus / button wiring happens first
-    window.setTimeout(() => {
       const loginField = document.getElementById(
         "login_user"
       ) as HTMLInputElement | null;
@@ -183,35 +163,42 @@ export function main() {
         "login_pass"
       ) as HTMLInputElement | null;
 
-      if (!loginField || !passField) return;
+      if (loginField && passField) {
+        const form =
+          (loginField.closest("form") as HTMLFormElement | null) ||
+          (passField.closest("form") as HTMLFormElement | null) ||
+          document.querySelector<HTMLFormElement>("form[action*='login.php']");
 
-      // Don't overwrite if user has started typing (just in case)
-      if (loginField.value || passField.value) return;
+        if (form) {
+          // Fill no matter what (we're forcing guest login)
+          loginField.value = loginId;
+          passField.value = password;
 
-      loginField.value = loginId;
-      passField.value = password;
+          const submitButton =
+            form.querySelector<HTMLButtonElement>(
+              "button[name='login_submit']"
+            ) ||
+            form.querySelector<HTMLButtonElement>("button[type='submit']") ||
+            form.querySelector<HTMLInputElement>("input[type='submit']");
 
-      const submitButton =
-        (form as HTMLFormElement).querySelector<HTMLButtonElement>(
-          "button[name='login_submit']"
-        ) ||
-        (form as HTMLFormElement).querySelector<HTMLButtonElement>(
-          "button[type='submit']"
-        ) ||
-        (form as HTMLFormElement).querySelector<HTMLInputElement>(
-          "input[type='submit']"
-        );
+          window.setTimeout(() => {
+            if (submitButton) {
+              submitButton.click();
+            } else {
+              form.submit();
+            }
+          }, 150);
 
-      // Slight delay in case filling triggers onblur validation
-      window.setTimeout(() => {
-        if (submitButton) {
-          submitButton.click();
-        } else {
-          (form as HTMLFormElement).submit();
+          window.clearInterval(intervalId);
+          return;
         }
-      }, 150);
-    }, 300);
-  };
+      }
+
+      if (attempts >= maxAttempts) {
+        window.clearInterval(intervalId);
+      }
+    }, 250);
+  }
 
   const runPageEnhancements = () => {
     setupAddressSkip();
