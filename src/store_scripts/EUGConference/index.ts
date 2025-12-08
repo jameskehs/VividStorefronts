@@ -1,13 +1,6 @@
 import { StorefrontPage } from "../../enums/StorefrontPage.enum";
 import { GLOBALVARS } from "../../index";
 
-// Shared guest login for this storefront
-// TODO: replace with your real credentials for the guest account
-const GUEST_LOGIN = {
-  loginId: "GUEST_LOGIN_ID_HERE",
-  password: "GUEST_PASSWORD_HERE",
-};
-
 export function main() {
   function init() {
     const isAddToCartPage = () => {
@@ -143,67 +136,9 @@ export function main() {
     }, 250);
   };
 
-  // ---------------------------------------------------------
-  // AUTO-LOGIN GUEST ACCOUNT ON LOGIN PAGE
-  // ---------------------------------------------------------
-  function setupGuestAutoLogin(): void {
-    const { loginId, password } = GUEST_LOGIN;
-    if (!loginId || !password) return;
-
-    let attempts = 0;
-    const maxAttempts = 40; // ~10 seconds (40 * 250ms)
-
-    const intervalId = window.setInterval(() => {
-      attempts++;
-
-      const loginField = document.getElementById(
-        "login_user"
-      ) as HTMLInputElement | null;
-      const passField = document.getElementById(
-        "login_pass"
-      ) as HTMLInputElement | null;
-
-      if (loginField && passField) {
-        const form =
-          (loginField.closest("form") as HTMLFormElement | null) ||
-          (passField.closest("form") as HTMLFormElement | null) ||
-          document.querySelector<HTMLFormElement>("form[action*='login.php']");
-
-        if (form) {
-          // Fill no matter what (we're forcing guest login)
-          loginField.value = loginId;
-          passField.value = password;
-
-          const submitButton =
-            form.querySelector<HTMLButtonElement>(
-              "button[name='login_submit']"
-            ) ||
-            form.querySelector<HTMLButtonElement>("button[type='submit']") ||
-            form.querySelector<HTMLInputElement>("input[type='submit']");
-
-          window.setTimeout(() => {
-            if (submitButton) {
-              submitButton.click();
-            } else {
-              form.submit();
-            }
-          }, 150);
-
-          window.clearInterval(intervalId);
-          return;
-        }
-      }
-
-      if (attempts >= maxAttempts) {
-        window.clearInterval(intervalId);
-      }
-    }, 250);
-  }
-
   const runPageEnhancements = () => {
     setupAddressSkip();
     setupShippingSkip();
-    setupGuestAutoLogin();
   };
 
   if (document.readyState === "loading") {
