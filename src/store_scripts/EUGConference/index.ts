@@ -1,8 +1,9 @@
 import { StorefrontPage } from "../../enums/StorefrontPage.enum";
 import { GLOBALVARS } from "../../index";
 
-// Simple config for the guest login.
-// Swap this out to use your Login enum or environment-specific mapping.
+// TODO: replace with your real guest credentials.
+// You can also later swap this to a mapping function if you have
+// multiple guest logins per storefront/site.
 const GUEST_LOGIN = {
   loginId: "EUG2025",
   password: "conference",
@@ -79,7 +80,6 @@ export function main() {
   const setupAddressSkip = () => {
     if (!isAddressStep()) return;
 
-    // Detect the "Ship to my address" button on the Address page
     const btnSelector = '#shipToMyAddress button[name="button_shipTo"]';
 
     const clickShipToMyAddress = () => {
@@ -121,14 +121,13 @@ export function main() {
 
       // Need form, a shipMethod radio, and an enabled Continue button
       if (form && continueBtn && radio && !continueBtn.disabled) {
-        // Ensure a method is actually selected and fire its onclick
         if (!radio.checked) {
           radio.checked = true;
-          // trigger their inline onclick: updates globals + totals
+          // Trigger their inline onclick: updates globals + totals
           radio.click();
         }
 
-        // Small delay to let their update_order_summary_ui settle if needed
+        // Small delay to let update_order_summary_ui settle
         window.setTimeout(() => {
           if (!continueBtn.disabled) {
             continueBtn.click();
@@ -148,22 +147,14 @@ export function main() {
   // ---------------------------------------------------------
   // AUTO-LOGIN GUEST ACCOUNT ON LOGIN PAGE
   // ---------------------------------------------------------
-  const isLoginPage = () => {
-    // Very simple detection: presence of loginID + password1 inputs
-    const loginInput = document.getElementById("loginID");
-    const passwordInput = document.getElementById("password1");
-    return !!loginInput && !!passwordInput;
-  };
-
   const setupGuestAutoLogin = () => {
-    if (!isLoginPage()) return;
+    // Use your enum directly so we only run this on the login page
+    if (GLOBALVARS.currentPage !== StorefrontPage.LOGIN) return;
 
-    // If you want to tie into your Login enum, replace this block
-    // with a lookup based on your enum / GLOBALVARS.
     const { loginId, password } = GUEST_LOGIN;
     if (!loginId || !password) return;
 
-    // Wait a bit so any Presswise JS can attach validation, etc.
+    // Wait a bit so Presswise can wire up validation/handlers
     window.setTimeout(() => {
       const loginInput = document.getElementById(
         "loginID"
@@ -174,7 +165,7 @@ export function main() {
 
       if (!loginInput || !passwordInput) return;
 
-      // Don't override anything if the user has already typed
+      // Don't override if user is already typing
       if (loginInput.value || passwordInput.value) return;
 
       loginInput.value = loginId;
