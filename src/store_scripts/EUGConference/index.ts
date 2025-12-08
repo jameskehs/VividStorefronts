@@ -43,6 +43,9 @@ export function main() {
       window.setTimeout(() => {
         window.clearInterval(interval);
       }, 10000);
+
+      // Fix quantity input behavior on Add to Cart page
+      fixQuantityInputOnAddToCart();
     }
   }
 
@@ -167,6 +170,64 @@ export function main() {
 }
 
 main();
+
+// -------------------------------------------------------------
+// Fix quantity field behavior on Add to Cart page
+// -------------------------------------------------------------
+function fixQuantityInputOnAddToCart(): void {
+  const qtyInput = document.getElementById(
+    "quantity"
+  ) as HTMLInputElement | null;
+  if (!qtyInput) return;
+
+  // Remove Presswise's "int-enforced" flag so their script doesn't clamp keys
+  qtyInput.removeAttribute("data-int-enforced");
+
+  // If jQuery exists, unbind any key filters they put on this field
+  const anyWindow = window as any;
+  if (anyWindow.$) {
+    const $qty = anyWindow.$(qtyInput);
+    $qty.off("keydown");
+    $qty.off("keypress");
+  }
+
+  // Add a sane key filter: allow digits + editing keys, block random characters
+  qtyInput.addEventListener("keydown", (e: KeyboardEvent) => {
+    const allowedNavKeys = [
+      "Backspace",
+      "Delete",
+      "Tab",
+      "ArrowLeft",
+      "ArrowRight",
+      "ArrowUp",
+      "ArrowDown",
+      "Home",
+      "End",
+      "Enter",
+    ];
+
+    // allow nav/edit keys
+    if (allowedNavKeys.includes(e.key)) {
+      return;
+    }
+
+    // allow Ctrl/Cmd combos (copy, paste, select all, etc.)
+    if (
+      (e.ctrlKey || e.metaKey) &&
+      ["a", "c", "v", "x"].includes(e.key.toLowerCase())
+    ) {
+      return;
+    }
+
+    // allow digits 0-9
+    if (e.key >= "0" && e.key <= "9") {
+      return;
+    }
+
+    // everything else: block
+    e.preventDefault();
+  });
+}
 
 // -------------------------------------------------------------
 // Existing menu-icon code
