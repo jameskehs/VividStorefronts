@@ -1,6 +1,13 @@
 import { StorefrontPage } from "../../enums/StorefrontPage.enum";
 import { GLOBALVARS } from "../../index";
 
+// Simple config for the guest login.
+// Swap this out to use your Login enum or environment-specific mapping.
+const GUEST_LOGIN = {
+  loginId: "EUG2025",
+  password: "conference",
+};
+
 export function main() {
   function init() {
     const isAddToCartPage = () => {
@@ -46,7 +53,7 @@ export function main() {
     }
   }
 
-  // Run main init on DOM ready
+  // Run add-to-cart logic on DOM ready
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", init);
   } else {
@@ -138,18 +145,75 @@ export function main() {
     }, 250);
   };
 
-  const runSkipLogic = () => {
+  // ---------------------------------------------------------
+  // AUTO-LOGIN GUEST ACCOUNT ON LOGIN PAGE
+  // ---------------------------------------------------------
+  const isLoginPage = () => {
+    // Very simple detection: presence of loginID + password1 inputs
+    const loginInput = document.getElementById("loginID");
+    const passwordInput = document.getElementById("password1");
+    return !!loginInput && !!passwordInput;
+  };
+
+  const setupGuestAutoLogin = () => {
+    if (!isLoginPage()) return;
+
+    // If you want to tie into your Login enum, replace this block
+    // with a lookup based on your enum / GLOBALVARS.
+    const { loginId, password } = GUEST_LOGIN;
+    if (!loginId || !password) return;
+
+    // Wait a bit so any Presswise JS can attach validation, etc.
+    window.setTimeout(() => {
+      const loginInput = document.getElementById(
+        "loginID"
+      ) as HTMLInputElement | null;
+      const passwordInput = document.getElementById(
+        "password1"
+      ) as HTMLInputElement | null;
+
+      if (!loginInput || !passwordInput) return;
+
+      // Don't override anything if the user has already typed
+      if (loginInput.value || passwordInput.value) return;
+
+      loginInput.value = loginId;
+      passwordInput.value = password;
+
+      const form =
+        (loginInput.closest("form") as HTMLFormElement | null) ||
+        (passwordInput.closest("form") as HTMLFormElement | null);
+
+      if (!form) return;
+
+      const submitButton =
+        form.querySelector<HTMLButtonElement>('button[type="submit"]') ||
+        form.querySelector<HTMLInputElement>('input[type="submit"]');
+
+      // Slight delay in case filling triggers onblur validation
+      window.setTimeout(() => {
+        if (submitButton) {
+          submitButton.click();
+        } else {
+          form.submit();
+        }
+      }, 150);
+    }, 300);
+  };
+
+  const runPageEnhancements = () => {
     setupAddressSkip();
     setupShippingSkip();
+    setupGuestAutoLogin();
   };
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", () => {
       // tiny delay so inline scripts (get_shipping_methods, etc.) run first
-      window.setTimeout(runSkipLogic, 200);
+      window.setTimeout(runPageEnhancements, 200);
     });
   } else {
-    window.setTimeout(runSkipLogic, 200);
+    window.setTimeout(runPageEnhancements, 200);
   }
 
   // ---------------------------------------------------------
