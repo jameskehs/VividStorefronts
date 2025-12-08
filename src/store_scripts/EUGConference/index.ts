@@ -46,37 +46,103 @@ export function main() {
     }
   }
 
-  // Run init on DOM ready
+  // Run main init on DOM ready
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", init);
   } else {
     init();
   }
 
-  // --- AUTO-SKIP ADDRESS & SHIPPING STEP ---------------------------
+  // ---------------------------------------------------------
+  // AUTO-SKIP ADDRESS STEP (Step 1)
+  // ---------------------------------------------------------
+  const setupAddressSkip = () => {
+    // Detect the Address step by the presence of the "Ship to my address" button
+    const shipToMyAddressButton = document.querySelector<HTMLButtonElement>(
+      '#shipToMyAddress button[name="button_shipTo"]'
+    );
 
-  const isAddressAndShippingPage = () => {
-    const page = GLOBALVARS?.currentPage?.trim().toLowerCase() || "";
-    // Heuristics: tweak if needed for your environment
-    if (page.includes("address") || page.includes("shipping")) return true;
+    // There is also a progress bar: .circle.active with "Address" title,
+    // but the button check is the most reliable for this page.
+    if (!shipToMyAddressButton) return;
 
-    // Fallback: look for a typical shipping method field
-    return !!document.querySelector('input[name="shipMethodID"]');
+    // Give Presswise a moment to finish binding handlers, then click it
+    setTimeout(() => {
+      // Safety check in case user already navigated away
+      const btn = document.querySelector<HTMLButtonElement>(
+        '#shipToMyAddress button[name="button_shipTo"]'
+      );
+      if (btn) {
+        btn.click();
+      }
+    }, 400);
   };
 
-  if (isAddressAndShippingPage()) {
-    const runAutoSkip = () => autoSkipAddressAndShipping();
-    if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", runAutoSkip);
-    } else {
-      runAutoSkip();
-    }
+  // ---------------------------------------------------------
+  // AUTO-SKIP SHIPPING STEP (Step 2)
+  // ---------------------------------------------------------
+  const setupShippingSkip = () => {
+    // Shipping step typically has shipMethodID radios
+    const shipMethodRadios = document.querySelectorAll<HTMLInputElement>(
+      'input[name="shipMethodID"]'
+    );
+    if (shipMethodRadios.length === 0) return;
+
+    // Find the form that contains the shipping methods
+    const form =
+      shipMethodRadios[0].closest("form") ||
+      document.querySelector<HTMLFormElement>("form");
+
+    if (!form) return;
+
+    const chooseDefaultAndSubmit = () => {
+      // If nothing selected yet, select the first one (or customize which you want)
+      const alreadyChecked = form.querySelector<HTMLInputElement>(
+        'input[name="shipMethodID"]:checked'
+      );
+      if (!alreadyChecked) {
+        const first = form.querySelector<HTMLInputElement>(
+          'input[name="shipMethodID"]'
+        );
+        if (first) {
+          first.checked = true;
+        }
+      }
+
+      setTimeout(() => {
+        const submitButton =
+          form.querySelector<HTMLButtonElement>('button[type="submit"]') ||
+          form.querySelector<HTMLInputElement>('input[type="submit"]');
+
+        if (submitButton) {
+          submitButton.click();
+        } else {
+          form.submit();
+        }
+      }, 200);
+    };
+
+    // Small delay so any Presswise JS can populate shipping methods fully
+    setTimeout(chooseDefaultAndSubmit, 400);
+  };
+
+  const runSkipLogic = () => {
+    setupAddressSkip();
+    setupShippingSkip();
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", runSkipLogic);
+  } else {
+    // tiny delay so all inline scripts (like loadStorefrontScript) have executed
+    setTimeout(runSkipLogic, 200);
   }
 
-  // -----------------------------------------------------------------
-
+  // ---------------------------------------------------------
+  // Other page hooks if you want them later
+  // ---------------------------------------------------------
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTCONFIRMATION) {
-    // you can add confirmation-page logic here if needed
+    // confirmation-page logic here if needed
   }
 
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTPAYMENT) {
@@ -89,65 +155,6 @@ export function main() {
 }
 
 main();
-
-function autoSkipAddressAndShipping(): void {
-  // Try to locate the main checkout form
-  const form =
-    document.querySelector<HTMLFormElement>('form[action*="checkout"]') ||
-    document.querySelector<HTMLFormElement>('form[name="checkoutForm"]');
-
-  if (!form) return;
-
-  // List of required shipping address fields (adjust selectors to match your markup)
-  const requiredSelectors = [
-    'input[name="stFirst"]',
-    'input[name="stLast"]',
-    'input[name="stStreet"]',
-    'input[name="stCity"]',
-    'select[name="stState"]',
-    'input[name="stZip"]',
-  ];
-
-  const allFilled = requiredSelectors.every((selector) => {
-    const el = form.querySelector<HTMLInputElement | HTMLSelectElement>(
-      selector
-    );
-    if (!el) return false;
-    return (el as HTMLInputElement | HTMLSelectElement).value.trim().length > 0;
-  });
-
-  // If the user hasn't got a full address yet (guest checkout, new user, etc.), don't skip
-  if (!allFilled) return;
-
-  // Optionally, set a default shipping method if nothing is selected yet.
-  // If you know a specific value for your default, replace "input[name='shipMethodID']"
-  // with something like "input[name='shipMethodID'][value='123']".
-  const existingChecked = form.querySelector<HTMLInputElement>(
-    'input[name="shipMethodID"]:checked'
-  );
-
-  if (!existingChecked) {
-    const defaultShip = form.querySelector<HTMLInputElement>(
-      'input[name="shipMethodID"]'
-    );
-    if (defaultShip) {
-      defaultShip.checked = true;
-    }
-  }
-
-  // Small delay gives Presswise's own JS a chance to finish any last DOM tweaks
-  setTimeout(() => {
-    const continueButton =
-      form.querySelector<HTMLButtonElement>('button[type="submit"]') ||
-      form.querySelector<HTMLInputElement>('input[type="submit"]');
-
-    if (continueButton) {
-      continueButton.click();
-    } else {
-      form.submit();
-    }
-  }, 300);
-}
 
 // -------------------------------------------------------------
 // Existing menu-icon code
