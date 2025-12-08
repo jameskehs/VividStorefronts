@@ -31,7 +31,7 @@ export function main() {
       }
 
       // Watch for AJAX overwrites for a short time
-      const interval = setInterval(() => {
+      const interval = window.setInterval(() => {
         if (img.src.startsWith(`${origin}/.cache`)) {
           img.src = desiredURL;
           img.width = 400;
@@ -40,8 +40,8 @@ export function main() {
       }, 300);
 
       // Stop checking after 10 seconds
-      setTimeout(() => {
-        clearInterval(interval);
+      window.setTimeout(() => {
+        window.clearInterval(interval);
       }, 10000);
     }
   }
@@ -54,27 +54,41 @@ export function main() {
   }
 
   // ---------------------------------------------------------
+  // Helper: detect Address / Shipping steps by progress bar
+  // ---------------------------------------------------------
+  const getActiveStepTitle = (): string => {
+    const activeTitle = document.querySelector<HTMLElement>(
+      ".checkoutProgress .circle.active .title"
+    );
+    return activeTitle?.textContent?.trim().toLowerCase() || "";
+  };
+
+  const isAddressStep = () => getActiveStepTitle() === "address";
+  const isShippingStep = () => getActiveStepTitle() === "shipping";
+
+  // ---------------------------------------------------------
   // AUTO-SKIP ADDRESS STEP (Step 1)
   // ---------------------------------------------------------
   const setupAddressSkip = () => {
-    // Detect the Address step by the presence of the "Ship to my address" button
-    const shipToMyAddressButton = document.querySelector<HTMLButtonElement>(
-      '#shipToMyAddress button[name="button_shipTo"]'
-    );
+    if (!isAddressStep()) return;
 
-    // There is also a progress bar: .circle.active with "Address" title,
-    // but the button check is the most reliable for this page.
-    if (!shipToMyAddressButton) return;
+    // Detect the "Ship to my address" button on the Address page
+    const btnSelector = '#shipToMyAddress button[name="button_shipTo"]';
 
-    // Give Presswise a moment to finish binding handlers, then click it
-    setTimeout(() => {
-      // Safety check in case user already navigated away
-      const btn = document.querySelector<HTMLButtonElement>(
-        '#shipToMyAddress button[name="button_shipTo"]'
-      );
-      if (btn) {
-        btn.click();
+    const clickShipToMyAddress = () => {
+      const shipToMyAddressButton =
+        document.querySelector<HTMLButtonElement>(btnSelector);
+      if (!shipToMyAddressButton) {
+        return false;
       }
+
+      shipToMyAddressButton.click();
+      return true;
+    };
+
+    // Give the page a moment to initialize, then click once
+    window.setTimeout(() => {
+      clickShipToMyAddress();
     }, 400);
   };
 
@@ -82,48 +96,46 @@ export function main() {
   // AUTO-SKIP SHIPPING STEP (Step 2)
   // ---------------------------------------------------------
   const setupShippingSkip = () => {
-    // Shipping step typically has shipMethodID radios
-    const shipMethodRadios = document.querySelectorAll<HTMLInputElement>(
-      'input[name="shipMethodID"]'
-    );
-    if (shipMethodRadios.length === 0) return;
+    if (!isShippingStep()) return;
 
-    // Find the form that contains the shipping methods
-    const form =
-      shipMethodRadios[0].closest("form") ||
-      document.querySelector<HTMLFormElement>("form");
+    let attempts = 0;
+    const maxAttempts = 40; // ~10 seconds (40 * 250ms)
 
-    if (!form) return;
+    const intervalId = window.setInterval(() => {
+      attempts++;
 
-    const chooseDefaultAndSubmit = () => {
-      // If nothing selected yet, select the first one (or customize which you want)
-      const alreadyChecked = form.querySelector<HTMLInputElement>(
-        'input[name="shipMethodID"]:checked'
+      const form = document.getElementById("ship") as HTMLFormElement | null;
+      const continueBtn = document.getElementById(
+        "shipContinue"
+      ) as HTMLButtonElement | null;
+      const radio = form?.querySelector<HTMLInputElement>(
+        'input[name="shipMethod"]'
       );
-      if (!alreadyChecked) {
-        const first = form.querySelector<HTMLInputElement>(
-          'input[name="shipMethodID"]'
-        );
-        if (first) {
-          first.checked = true;
+
+      // Need form, a shipMethod radio, and an enabled Continue button
+      if (form && continueBtn && radio && !continueBtn.disabled) {
+        // Ensure a method is actually selected and fire its onclick
+        if (!radio.checked) {
+          radio.checked = true;
+          // trigger their inline onclick: updates globals + totals
+          radio.click();
         }
+
+        // Small delay to let their update_order_summary_ui settle if needed
+        window.setTimeout(() => {
+          if (!continueBtn.disabled) {
+            continueBtn.click();
+          }
+        }, 150);
+
+        window.clearInterval(intervalId);
+        return;
       }
 
-      setTimeout(() => {
-        const submitButton =
-          form.querySelector<HTMLButtonElement>('button[type="submit"]') ||
-          form.querySelector<HTMLInputElement>('input[type="submit"]');
-
-        if (submitButton) {
-          submitButton.click();
-        } else {
-          form.submit();
-        }
-      }, 200);
-    };
-
-    // Small delay so any Presswise JS can populate shipping methods fully
-    setTimeout(chooseDefaultAndSubmit, 400);
+      if (attempts >= maxAttempts) {
+        window.clearInterval(intervalId);
+      }
+    }, 250);
   };
 
   const runSkipLogic = () => {
@@ -132,10 +144,12 @@ export function main() {
   };
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", runSkipLogic);
+    document.addEventListener("DOMContentLoaded", () => {
+      // tiny delay so inline scripts (get_shipping_methods, etc.) run first
+      window.setTimeout(runSkipLogic, 200);
+    });
   } else {
-    // tiny delay so all inline scripts (like loadStorefrontScript) have executed
-    setTimeout(runSkipLogic, 200);
+    window.setTimeout(runSkipLogic, 200);
   }
 
   // ---------------------------------------------------------
@@ -171,7 +185,7 @@ function convertMenuTextToIcons(): void {
     const menuItems = document.querySelectorAll<HTMLLIElement>("#menu li");
 
     if (menuItems.length === 0) {
-      setTimeout(tryConvert, 200);
+      window.setTimeout(tryConvert, 200);
       return;
     }
 
@@ -200,9 +214,11 @@ function convertMenuTextToIcons(): void {
     });
   };
 
-  document.readyState === "loading"
-    ? document.addEventListener("DOMContentLoaded", tryConvert)
-    : tryConvert();
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", tryConvert);
+  } else {
+    tryConvert();
+  }
 }
 
 convertMenuTextToIcons();
