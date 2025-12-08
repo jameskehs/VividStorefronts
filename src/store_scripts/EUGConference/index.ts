@@ -44,7 +44,7 @@ export function main() {
         window.clearInterval(interval);
       }, 10000);
 
-      // Fix quantity input behavior on Add to Cart page
+      // Fix quantity input behavior on Add to Cart page (desktop + mobile)
       fixQuantityInputOnAddToCart();
     }
   }
@@ -175,58 +175,58 @@ main();
 // Fix quantity field behavior on Add to Cart page
 // -------------------------------------------------------------
 function fixQuantityInputOnAddToCart(): void {
-  const qtyInput = document.getElementById(
-    "quantity"
-  ) as HTMLInputElement | null;
-  if (!qtyInput) return;
+  let attempts = 0;
+  const maxAttempts = 20; // ~6 seconds @ 300ms
 
-  // Remove Presswise's "int-enforced" flag so their script doesn't clamp keys
-  qtyInput.removeAttribute("data-int-enforced");
+  const intervalId = window.setInterval(() => {
+    attempts++;
 
-  // If jQuery exists, unbind any key filters they put on this field
-  const anyWindow = window as any;
-  if (anyWindow.$) {
-    const $qty = anyWindow.$(qtyInput);
-    $qty.off("keydown");
-    $qty.off("keypress");
-  }
+    const original = document.getElementById(
+      "quantity"
+    ) as HTMLInputElement | null;
+    if (original) {
+      // Clone the input to strip all existing event listeners
+      const clone = original.cloneNode(true) as HTMLInputElement;
 
-  // Add a sane key filter: allow digits + editing keys, block random characters
-  qtyInput.addEventListener("keydown", (e: KeyboardEvent) => {
-    const allowedNavKeys = [
-      "Backspace",
-      "Delete",
-      "Tab",
-      "ArrowLeft",
-      "ArrowRight",
-      "ArrowUp",
-      "ArrowDown",
-      "Home",
-      "End",
-      "Enter",
-    ];
+      // Clean up restrictive attributes
+      clone.removeAttribute("data-int-enforced");
+      clone.removeAttribute("onchange");
 
-    // allow nav/edit keys
-    if (allowedNavKeys.includes(e.key)) {
+      // Better mobile keyboard, but still numeric
+      clone.type = "tel";
+      clone.setAttribute("inputmode", "numeric");
+      clone.setAttribute("pattern", "\\d*");
+
+      // Our own change handler: still call Presswise functions if they exist
+      clone.addEventListener("change", () => {
+        const win = window as any;
+        let val = clone.value;
+
+        if (typeof win.removeCommas === "function") {
+          val = win.removeCommas(val);
+          clone.value = val;
+        }
+
+        if (typeof win.checkMinQty === "function") {
+          win.checkMinQty(val);
+        }
+
+        if (typeof win.checkBackOrder === "function") {
+          win.checkBackOrder(val);
+        }
+      });
+
+      // Replace the original with the clean clone
+      original.parentNode?.replaceChild(clone, original);
+
+      window.clearInterval(intervalId);
       return;
     }
 
-    // allow Ctrl/Cmd combos (copy, paste, select all, etc.)
-    if (
-      (e.ctrlKey || e.metaKey) &&
-      ["a", "c", "v", "x"].includes(e.key.toLowerCase())
-    ) {
-      return;
+    if (attempts >= maxAttempts) {
+      window.clearInterval(intervalId);
     }
-
-    // allow digits 0-9
-    if (e.key >= "0" && e.key <= "9") {
-      return;
-    }
-
-    // everything else: block
-    e.preventDefault();
-  });
+  }, 300);
 }
 
 // -------------------------------------------------------------
