@@ -43,9 +43,6 @@ export function main() {
       window.setTimeout(() => {
         window.clearInterval(interval);
       }, 10000);
-
-      // Fix quantity input behavior on Add to Cart page (desktop + mobile)
-      fixQuantityInputOnAddToCart();
     }
   }
 
@@ -170,64 +167,6 @@ export function main() {
 }
 
 main();
-
-// -------------------------------------------------------------
-// Fix quantity field behavior on Add to Cart page
-// -------------------------------------------------------------
-function fixQuantityInputOnAddToCart(): void {
-  let attempts = 0;
-  const maxAttempts = 20; // ~6 seconds @ 300ms
-
-  const intervalId = window.setInterval(() => {
-    attempts++;
-
-    const original = document.getElementById(
-      "quantity"
-    ) as HTMLInputElement | null;
-    if (original) {
-      // Clone the input to strip all existing event listeners
-      const clone = original.cloneNode(true) as HTMLInputElement;
-
-      // Clean up restrictive attributes
-      clone.removeAttribute("data-int-enforced");
-      clone.removeAttribute("onchange");
-
-      // Better mobile keyboard, but still numeric
-      clone.type = "tel";
-      clone.setAttribute("inputmode", "numeric");
-      clone.setAttribute("pattern", "\\d*");
-
-      // Our own change handler: still call Presswise functions if they exist
-      clone.addEventListener("change", () => {
-        const win = window as any;
-        let val = clone.value;
-
-        if (typeof win.removeCommas === "function") {
-          val = win.removeCommas(val);
-          clone.value = val;
-        }
-
-        if (typeof win.checkMinQty === "function") {
-          win.checkMinQty(val);
-        }
-
-        if (typeof win.checkBackOrder === "function") {
-          win.checkBackOrder(val);
-        }
-      });
-
-      // Replace the original with the clean clone
-      original.parentNode?.replaceChild(clone, original);
-
-      window.clearInterval(intervalId);
-      return;
-    }
-
-    if (attempts >= maxAttempts) {
-      window.clearInterval(intervalId);
-    }
-  }, 300);
-}
 
 // -------------------------------------------------------------
 // Existing menu-icon code
