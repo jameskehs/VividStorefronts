@@ -118,12 +118,12 @@ table.tableMain {
   justify-content: center;
   height: 52px;
   padding: 10px 14px;
-  color: #f8f2e0;
+  color: #0f3554;
   text-decoration: none;
   transition: transform 0.2s ease, color 0.2s ease;
 }
 #menu li a .icon-wrap i {
-  color: #f8f2e0 !important;
+  color: #0f3554 !important;
   font-size: 24px;
   line-height: 1;
   vertical-align: middle;
