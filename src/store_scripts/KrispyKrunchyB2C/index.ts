@@ -14,7 +14,7 @@ export function main() {
   $("#billAdrOnFileBox").remove();
 
   // Remove the Edit Profile Form
-  //$("#editProfileTbl tbody").eq(1).remove();
+  $("#editProfileTbl tbody").eq(1).remove();
 
   //
   // ───────────── Shared helpers (Printed only) ─────────────
