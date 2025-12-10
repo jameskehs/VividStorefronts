@@ -13,8 +13,18 @@ export function main() {
   // Remove option to use default customer billing address
   $("#billAdrOnFileBox").remove();
 
-  // Remove the Edit Profile Form
-  //$("#editProfileTbl tbody").eq(1).remove();
+  // Remove the "You are creating a new user account..." block above the form
+  $("#editProfileTbl > tbody > tr > td > table")
+    .filter(function () {
+      return (
+        $(this)
+          .text()
+          .indexOf(
+            "You are creating a new user account for customer account:"
+          ) !== -1
+      );
+    })
+    .remove(); // removes just that inner table section
 
   //
   // ───────────── Shared helpers (Printed only) ─────────────
