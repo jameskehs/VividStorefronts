@@ -32,10 +32,6 @@ ul.TreeControl li.TCbullet a {
   font-size: 1.6rem;
 }
 
-.prodCell .left a:not(span.meta a) {
-  border: 2px solid #eee;
-}
-
 .catalogTbl,
 ul.TreeControl {
   background-color: #fff;
