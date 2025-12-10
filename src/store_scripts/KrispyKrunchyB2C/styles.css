@@ -4,6 +4,10 @@ body {
   background-repeat: none;
 }
 
+#editProfileTbl tbody {
+  display: none;
+}
+
 .ship-message {
   background-color: #ffc4c4;
   max-width: 1600px;
