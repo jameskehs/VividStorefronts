@@ -32,11 +32,6 @@ ul.TreeControl li.TCbullet a {
   font-size: 1.6rem;
 }
 
-.catalogTbl,
-ul.TreeControl {
-  background-color: #fff;
-}
-
 .tableSiteBanner img {
   height: 120px;
 }
