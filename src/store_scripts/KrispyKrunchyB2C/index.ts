@@ -425,4 +425,20 @@ function convertMenuTextToIcons(): void {
     : tryConvert();
 }
 
+// Insert global Krispy Krunchy footer on every page
+const existingFooter = document.querySelector(".kkc-global-footer");
+if (!existingFooter) {
+  const footer = document.createElement("footer");
+  footer.className = "kkc-global-footer";
+  footer.innerHTML = `
+    <div class="kkc-footer-inner">
+      <a href="https://www.krispykrunchy.com/terms-of-use/" target="_blank" rel="noopener noreferrer">Terms of Use</a>
+      <span class="kkc-footer-separator">|</span>
+      <a href="https://www.krispykrunchy.com/legal/" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
+      <span class="kkc-footer-separator">|</span>
+      <a href="https://www.krispykrunchy.com/california-employee-privacy-policy/" target="_blank" rel="noopener noreferrer">California Privacy Policy</a>
+    </div>
+  `;
+  document.body.appendChild(footer);
+}
 convertMenuTextToIcons();

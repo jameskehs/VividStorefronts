@@ -330,3 +330,36 @@ img#productImage {
 #searchbar {
   display: none;
 }
+
+/* === Global Krispy Krunchy footer === */
+.kkc-global-footer {
+  width: 100%;
+  max-width: 1200px;
+  margin: 40px auto 16px;
+  padding: 12px 24px;
+  background-color: rgba(255, 255, 255, 0.96);
+  border-radius: 6px;
+  font-size: 0.95rem;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.kkc-footer-inner {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.kkc-footer-inner a {
+  color: #000;
+  text-decoration: none;
+}
+
+.kkc-footer-inner a:hover {
+  text-decoration: underline;
+}
+
+.kkc-footer-separator {
+  color: #555;
+}
