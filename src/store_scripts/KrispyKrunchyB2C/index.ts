@@ -1,26 +1,11 @@
-// <script src="https://main--vividstorefronts.netlify.app/main.js"></script>
-// <script>loadStorefrontScript(brandingProfile)</script>
-
 import { StorefrontPage } from "../../enums/StorefrontPage.enum";
 import { GLOBALVARS } from "../../index";
 
-let hasInitialized = false;
-
 export function main() {
-  if (hasInitialized) {
-    console.warn("main() already initialized; skipping duplicate run.");
-    return;
-  }
-  hasInitialized = true;
-
-  console.log(GLOBALVARS.currentPage);
-
   document.title = "Krispy Krunchy Online Store";
 
-  if (!$(".ship-message").length) {
-    const shipMsg = `<p class="ship-message">More Items Coming Soon!</p>`;
-    $(shipMsg).insertBefore(".tableMain");
-  }
+  //let shipMsg = `<p class="ship-message">More Items Coming Soon!</p>`;
+  // $(shipMsg).insertBefore(".tableMain");
 
   // Change "Shipping & Handling" to "Shipping" in the order summary
   $("#taxRushShipGrand table tbody tr td").eq(7).text("Shipping");
@@ -31,134 +16,23 @@ export function main() {
   // Remove the Edit Profile Form
   $("#editProfileTbl tbody").eq(1).remove();
 
-  if (GLOBALVARS.currentPage === StorefrontPage.ADDTOCART) {
-    // Hide add to cart button when editing an item that was already added to the cart
-    if ($("#returnToCartButton").css("display") === "block") {
-      $("#addToCartButton").remove();
-    }
-
-    // Hide the qtyAvailable row when adding an item to cart
-    $(".tablesorter tr").each(function (index, element) {
-      if ($(element).find("th").text() === "Qty Available:") {
-        $(element).hide();
-      }
-    });
-
-    // Hide the Address Book box from the Add to Cart Page
-    $("#orchAdrBookBox").hide();
-
-    // Hide the Company ship to select box
-    $("#companyShipToBox").hide();
-
-    // Move the "complete order" section to the top of the shipment box
-    const completeOrder = $("#completeOrder").closest("tr");
-    const shipBox = completeOrder.closest(".ui-box").find("thead tr.header");
-    shipBox.after(completeOrder);
-
-    // Hide the employee select dropdown
-    $("#custom_EmployeeID").closest("tr").hide();
-
-    // Show the message and button to add a new employee
-    const addEmployee = $("#addEmployee");
-    const employeeHelp = $("#employeeHelp");
-    if (addEmployee.length && employeeHelp.length) {
-      addEmployee.show();
-      employeeHelp.show();
-
-      const $newEmpButton = $("#addEmployeeButton");
-      if ($newEmpButton.length) {
-        $newEmpButton.addClass("btn btn-primary");
-      }
-    }
-
-    // Hide the combo menu option for employees
-    $("#custom_MenuList").closest("tr").hide();
-
-    // Hide the custom menu list section
-    $("#custom_MenuListSection").hide();
-  }
-
   //
-  // ───────────── Checkout pages shipping message tweaks ─────────────
+  // ───────────── Shared helpers (Printed only) ─────────────
   //
-  if (
-    GLOBALVARS.currentPage === StorefrontPage.CHECKOUTADDRESS ||
-    GLOBALVARS.currentPage === StorefrontPage.CHECKOUTREVIEW ||
-    GLOBALVARS.currentPage === StorefrontPage.CHECKOUTCONFIRMATION
-  ) {
-    const replaceInnerHtml = (
-      selector: string,
-      search: string | RegExp,
-      replace: string
-    ) => {
-      const el = document.querySelector<HTMLElement>(selector);
-      if (!el || !el.innerHTML) return;
-      el.innerHTML = el.innerHTML.replace(search, replace);
-    };
-
-    // Edit the shipping message of the checkout page
-    replaceInnerHtml(
-      "div#mainContentSF .pw-order-shipment-box strong",
-      /Shipping from [^<]*/,
-      "Orders ship within 7 business days. Please allow additional time for transit."
-    );
-
-    // Edit the shipping message of the checkout page
-    replaceInnerHtml(
-      "div#mainContentSF .pw-order-shipment-box",
-      /Orders typically ship in [^<]*/,
-      "Orders typically ship within 7 business days. Please allow additional time for transit."
-    );
-
-    // Hide the customer ship to selector text
-    replaceInnerHtml(
-      "div#pf-shipment-box #shipmentShipto",
-      /Use company ship to/g,
-      ""
-    );
-  }
-
-  //
-  // ───────────── Add-to-Cart: FINISHED SIZE row under Quantity ─────────────
-  //
-  let _renderTimer: number | null = null;
-  let _idleTimer: number | null = null;
-  let _observer: MutationObserver | null = null;
-  let _renders = 0;
-
-  const extractSize = (root: ParentNode): { w: string; h: string } | null => {
+  const isPrinted = (root: Document | HTMLElement = document): boolean => {
     try {
-      const memoTable = root.querySelector("table.memo");
-      if (!memoTable) return null;
+      const hidden =
+        (
+          root.querySelector("#productType") as HTMLInputElement | null
+        )?.value?.trim() ||
+        (
+          root.querySelector(
+            'input[name="productType"]'
+          ) as HTMLInputElement | null
+        )?.value?.trim() ||
+        "";
+      if (hidden) return /^printed$/i.test(hidden);
 
-      const rows = Array.from(memoTable.querySelectorAll("tr"));
-      const finishedRow = rows.find((tr) => {
-        const th = tr.querySelector("th, td");
-        return th && /finished size/i.test(th.textContent || "");
-      });
-      if (!finishedRow) return null;
-
-      const valueCell = finishedRow.querySelector("td:last-child");
-      if (!valueCell) return null;
-
-      const raw = (valueCell.textContent || "").trim();
-      if (!raw) return null;
-
-      const cleaned = raw.replace(/\s+/g, " ");
-      const match = cleaned.match(
-        /(\d+(?:\.\d+)?)\s*(?:["in]|in\.?)\s*[x×]\s*(\d+(?:\.\d+)?)\s*(?:["in]|in\.?)?/i
-      );
-      if (!match) return null;
-
-      return { w: match[1], h: match[2] };
-    } catch (e) {
-      console.warn("[msf] extractSize error:", e);
-      return null;
-    }
-  };
-
-  const isPrinted = (root: ParentNode): boolean => {
-    try {
       const txt =
         (
           root.querySelector(
@@ -174,11 +48,59 @@ export function main() {
           ?.value ||
         "";
       return /^\s*printed\b/i.test(txt || "");
-    } catch (e) {
-      console.warn("[msf] isPrinted error:", e);
+    } catch {
       return false;
     }
   };
+
+  // Pull WxH from a few common places (productCode/productID/link rel/title)
+  const extractSize = (
+    scope: ParentNode | Document = document
+  ): { w: string; h: string } | null => {
+    try {
+      const candidates: string[] = [
+        (scope.querySelector?.("#productCode") as HTMLInputElement | null)
+          ?.value || "",
+        (
+          scope.querySelector?.(
+            'input[name="productID"]'
+          ) as HTMLInputElement | null
+        )?.value || "",
+        (
+          scope.querySelector?.(
+            'a.productImage[id^="productImage-"]'
+          ) as HTMLAnchorElement | null
+        )?.getAttribute("rel") || "",
+        (
+          scope.querySelector?.(
+            "#breadcrumb .templateName a"
+          ) as HTMLAnchorElement | null
+        )?.getAttribute("title") ||
+          (
+            scope.querySelector?.(
+              "#breadcrumb .templateName a"
+            ) as HTMLAnchorElement | null
+          )?.textContent ||
+          "",
+      ];
+      for (const raw of candidates) {
+        if (!raw) continue;
+        const m = raw.match(/(\d+(?:\.\d+)?)\s*[xX]\s*(\d+(?:\.\d+)?)/);
+        if (m) return { w: m[1], h: m[2] };
+      }
+      return null;
+    } catch {
+      return null;
+    }
+  };
+
+  //
+  // ───────────── Add-to-Cart: show FINISHED SIZE row under Quantity ─────────────
+  //
+  let _renderTimer: number | null = null;
+  let _idleTimer: number | null = null;
+  let _observer: MutationObserver | null = null;
+  let _renders = 0;
 
   const renderFinishedSizeUnderQty = (
     root: Document | HTMLElement = document
@@ -204,15 +126,22 @@ export function main() {
 
       const tdLabel = document.createElement("td");
       tdLabel.setAttribute("align", "right");
-      tdLabel.setAttribute("nowrap", "nowrap");
-      tdLabel.innerHTML = "<strong>FINISHED SIZE:</strong>";
+      tdLabel.innerHTML = "<strong>FINISHED SIZE</strong>";
 
       const tdValue = document.createElement("td");
-      tdValue.setAttribute("align", "left");
       tdValue.textContent = label;
+      tdValue.style.fontWeight = "normal";
+      tdValue.style.fontSize = "1em";
 
       tr.append(tdLabel, tdValue);
-      qtyRow.parentElement?.insertBefore(tr, qtyRow.nextSibling);
+      qtyRow.parentElement?.insertBefore(tr, qtyRow.nextElementSibling);
+
+      // fill hidden size if blank (helps downstream)
+      const sizeInput = document.querySelector(
+        'input[name="size"]'
+      ) as HTMLInputElement | null;
+      if (sizeInput && !sizeInput.value)
+        sizeInput.value = `${size.w} x ${size.h}`;
 
       return true;
     } catch (e) {
@@ -221,20 +150,29 @@ export function main() {
     }
   };
 
-  const scheduleRender = (root: Document | HTMLElement = document) => {
-    if (_renderTimer !== null) {
-      window.clearTimeout(_renderTimer);
-    }
+  const scheduleRender = (root: Document | HTMLElement) => {
+    if (_renderTimer) window.clearTimeout(_renderTimer);
     _renderTimer = window.setTimeout(() => {
-      const ok = renderFinishedSizeUnderQty(root);
-      if (ok) {
-        _renders++;
-        if (_renders > 20 && _observer) {
+      _renderTimer = null;
+      if (_renders > 50) {
+        if (_observer) {
           _observer.disconnect();
           _observer = null;
         }
+        return;
       }
-    }, 30);
+      const ok = renderFinishedSizeUnderQty(root);
+      _renders++;
+      if (ok) {
+        if (_idleTimer) window.clearTimeout(_idleTimer);
+        _idleTimer = window.setTimeout(() => {
+          if (_observer) {
+            _observer.disconnect();
+            _observer = null;
+          }
+        }, 2000);
+      }
+    }, 200);
   };
 
   const watchFinishedSize = () => {
@@ -262,81 +200,137 @@ export function main() {
   // ───────────── Cart page: FINISHED SIZE under MEMO ("48\"w × 96\"h") ─────────────
   //
   const cartLooksPrinted = (scope: ParentNode): boolean => {
-    const memoLabel = scope.querySelector<HTMLElement>(
-      ".pw-cart-memo-label, .memo-label"
-    );
-    if (!memoLabel) return false;
-    return /memo/i.test(memoLabel.textContent || "");
+    try {
+      const hasInksOrPaper = !!scope.querySelector(
+        ".jobDetailsTable .INKSRow, .jobDetailsTable .PAPERRow"
+      );
+      const rel =
+        (
+          scope.querySelector(
+            'a.productImage[id^="productImage-"]'
+          ) as HTMLAnchorElement | null
+        )?.getAttribute("rel") || "";
+      const printedByRel = /_w_/i.test(rel) || /_w_b/i.test(rel);
+      const titleTxt = (
+        scope.querySelector(".jobDescCell .jobDesc")?.textContent || ""
+      ).trim();
+      const printedByTitle = /^printed\b/i.test(titleTxt);
+      return hasInksOrPaper || printedByRel || printedByTitle;
+    } catch {
+      return false;
+    }
   };
 
-  const injectFinishedSizeIntoCartItem = (itemBox: HTMLElement) => {
-    const memoTable = itemBox.querySelector<HTMLTableElement>("table.memo");
-    if (!memoTable) return;
+  const cartRenderOne = (itemBox: HTMLElement) => {
+    try {
+      const memoTable = itemBox.querySelector(".memoTable tbody");
+      if (!memoTable) return;
 
-    const memoInput = itemBox.querySelector(
-      'input[name^="memo"]'
-    ) as HTMLInputElement | null;
-    const itemId = memoInput?.name?.replace("memo", "") || "";
-    const rowId = `finishedSizeRow-${itemId || "unknown"}`;
+      const memoInput = memoTable.querySelector(
+        'input[name^="memo"]'
+      ) as HTMLInputElement | null;
+      const itemId = memoInput?.name?.replace("memo", "") || "";
+      const rowId = `finishedSizeRow-${itemId || "unknown"}`;
 
-    const old = itemBox.querySelector(`#${rowId}`);
-    if (old) old.remove();
+      const old = itemBox.querySelector(`#${rowId}`);
+      if (old) old.remove();
 
-    if (!cartLooksPrinted(itemBox)) return;
+      if (!cartLooksPrinted(itemBox)) return;
 
-    const sz = extractSize(itemBox);
-    if (!sz) return;
+      const sz = extractSize(itemBox);
+      if (!sz) return;
 
-    const label = `${sz.w}"w × ${sz.h}"h`;
+      // Cart-specific format: 48"w × 96"h
+      const label = `${sz.w}"w × ${sz.h}"h`;
 
-    const tr = document.createElement("tr");
-    tr.id = rowId;
+      const tr = document.createElement("tr");
+      tr.id = rowId;
 
-    const tdLabel = document.createElement("td");
-    tdLabel.setAttribute("align", "right");
-    tdLabel.setAttribute("nowrap", "nowrap");
-    tdLabel.innerHTML = "<strong>FINISHED SIZE:</strong>";
+      const tdLabel = document.createElement("td");
+      tdLabel.setAttribute("align", "right");
+      tdLabel.setAttribute("nowrap", "nowrap");
+      tdLabel.innerHTML = "<strong>FINISHED SIZE:</strong>";
 
-    const tdValue = document.createElement("td");
-    tdValue.setAttribute("align", "left");
-    tdValue.textContent = label;
+      const tdValue = document.createElement("td");
+      tdValue.setAttribute("align", "left");
+      tdValue.textContent = label;
 
-    memoTable.appendChild(tr);
-    tr.append(tdLabel, tdValue);
+      memoTable.appendChild(tr);
+      tr.append(tdLabel, tdValue);
+    } catch (e) {
+      console.warn("[msf] cartRenderOne error:", e);
+    }
   };
 
-  const injectFinishedSizeIntoCart = () => {
-    const cartTable = document.querySelector<HTMLElement>("#cartItemsTbl");
-    if (!cartTable) return;
+  const installCartFinishedSize = () => {
+    const root = document.getElementById("shoppingCartTbl") || document.body;
+    if (!root) return;
 
-    const itemBoxes =
-      cartTable.querySelectorAll<HTMLElement>(".pw-cart-item-box");
-    if (!itemBoxes.length) return;
+    const renderAll = () => {
+      root.querySelectorAll<HTMLTableElement>(".dtContent").forEach((dt) => {
+        cartRenderOne(dt as unknown as HTMLElement);
+      });
+    };
 
-    itemBoxes.forEach((box) => injectFinishedSizeIntoCartItem(box));
+    renderAll();
+
+    // light observer (auto-disconnect after idle)
+    let t: number | null = null;
+    const schedule = () => {
+      if (t) window.clearTimeout(t);
+      t = window.setTimeout(() => {
+        t = null;
+        renderAll();
+      }, 200);
+    };
+
+    try {
+      const obs = new MutationObserver((muts) => {
+        for (const m of muts) {
+          if (m.addedNodes && m.addedNodes.length) {
+            schedule();
+            return;
+          }
+        }
+      });
+      obs.observe(root, { childList: true, subtree: true });
+
+      let idle: number | null = window.setTimeout(() => {
+        obs.disconnect();
+      }, 3000);
+      root.addEventListener("DOMNodeInserted", () => {
+        if (idle) window.clearTimeout(idle);
+        idle = window.setTimeout(() => {
+          obs.disconnect();
+        }, 3000);
+      });
+    } catch {
+      /* noop */
+    }
   };
 
-  const isAddToCartPage = () => {
-    const page = GLOBALVARS?.currentPage?.trim().toLowerCase() || "";
-    return (
-      page.includes("add to cart") ||
-      window.location.pathname.includes("/cart/3-edit.php")
-    );
-  };
+  //
+  // ───────────── Existing site logic + entry ─────────────
+  //
+  function init() {
+    const isAddToCartPage = () => {
+      const page = GLOBALVARS?.currentPage?.trim().toLowerCase() || "";
+      return (
+        page.includes("add to cart") ||
+        window.location.pathname.includes("/cart/3-edit.php")
+      );
+    };
 
-  const init = () => {
-    if (GLOBALVARS.currentPage === StorefrontPage.ADDTOCART) {
-      watchFinishedSize();
+    const isCartPage = () =>
+      (GLOBALVARS?.currentPage || "").toLowerCase().includes("cart page") ||
+      window.location.pathname.includes("/cart/");
+
+    // Cart page hook (runs independently of add-to-cart)
+    if (isCartPage()) {
+      installCartFinishedSize();
     }
 
-    if (GLOBALVARS.currentPage === StorefrontPage.CART) {
-      injectFinishedSizeIntoCart();
-      setTimeout(injectFinishedSizeIntoCart, 500);
-      setTimeout(injectFinishedSizeIntoCart, 1500);
-      setTimeout(injectFinishedSizeIntoCart, 3500);
-    }
-
-    // Add-to-cart page image swap
+    // Add-to-cart page image swap + finished size under quantity
     if (isAddToCartPage()) {
       const img = document.getElementById(
         "productImage"
@@ -351,6 +345,8 @@ export function main() {
           try {
             if (img.src.startsWith(`${origin}/.cache`)) {
               img.src = desiredURL;
+              img.width = 400;
+              img.style.height = "auto";
             }
           } catch {
             /* ignore */
@@ -364,12 +360,20 @@ export function main() {
 
       watchFinishedSize();
     }
-  };
+  }
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", init);
   } else {
     init();
+  }
+
+  // (Unused in this file, but keeping the stubs to match your template)
+  if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTCONFIRMATION) {
+  }
+  if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTPAYMENT) {
+  }
+  if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTREVIEW) {
   }
 }
 
@@ -396,14 +400,13 @@ function convertMenuTextToIcons(): void {
       if (link) {
         const rawText = link.textContent?.trim().toUpperCase();
 
-        if (!rawText) return;
-        if (rawText === "HOME") return;
+        const matchedKey = Object.keys(iconMap).find((key) =>
+          rawText?.startsWith(key)
+        );
+        const iconClass = matchedKey ? iconMap[matchedKey] : "";
 
-        const iconClass = iconMap[rawText];
         if (iconClass) {
-          const countMatch = link.innerHTML.match(
-            /<span class="badge">.*?<\/span>/
-          )?.[0];
+          const countMatch = rawText?.match(/\((\d+)\)/)?.[1];
 
           link.innerHTML = `
     <span class="icon-wrap">
