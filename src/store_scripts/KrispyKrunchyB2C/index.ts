@@ -445,6 +445,8 @@ if (!existingFooter) {
       <a href="https://www.krispykrunchy.com/terms-of-use/" target="_blank" rel="noopener noreferrer">Terms of Use</a>
       <span class="kkc-footer-separator">|</span>
       <a href="https://www.krispykrunchy.com/legal/" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
+      <span class="kkc-footer-separator">|</span>
+      <a href="https://www.krispykrunchy.com/california-employee-privacy-policy/" target="_blank" rel="noopener noreferrer">California Privacy Policy</a>
     </div>
   `;
   document.body.appendChild(footer);
