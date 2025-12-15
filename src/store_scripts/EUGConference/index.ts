@@ -59,25 +59,54 @@ export function main() {
   function replaceLoginMessage() {
     const NEW_MESSAGE =
       `Please create a NEW and UNIQUE account reserved specifically for the 2026 Eggs Up Grill Owner’s Conference. ` +
-      `The preferred Login ID is “EUG then your first name and last name initial with no spaces.” ` +
+      `The preferred Login ID is "EUG then your first name and last name initial with no spaces.” ` +
       `YOUR CURRENT USER ID, IF YOU ALREADY HAVE ONE, CANNOT BE USED FOR THIS STOREFRONT.`;
 
-    const walker = document.createTreeWalker(
-      document.body,
-      NodeFilter.SHOW_TEXT,
-      null
-    );
+    const tryReplaceOnce = (): boolean => {
+      // 1) Try common “message container” elements first (faster/cleaner than TreeWalker)
+      const candidates = Array.from(
+        document.querySelectorAll<HTMLElement>(
+          "div, p, span, td, li, .ui-box, #loginWrapper"
+        )
+      );
 
-    let node: Text | null;
-    while ((node = walker.nextNode() as Text | null)) {
-      if (
-        node.nodeValue &&
-        node.nodeValue.toLowerCase().includes("please log in")
-      ) {
-        node.nodeValue = NEW_MESSAGE;
-        break; // stop after first replacement
+      for (const el of candidates) {
+        const txt = (el.textContent || "").trim();
+        // looser match: catches “Please log in to your account…”, “Please login…”, etc.
+        if (/please\s+log\s*in/i.test(txt) || /please\s+login/i.test(txt)) {
+          el.textContent = NEW_MESSAGE;
+          return true;
+        }
       }
-    }
+
+      // 2) Fallback: scan text nodes
+      const walker = document.createTreeWalker(
+        document.body,
+        NodeFilter.SHOW_TEXT
+      );
+      let node: Text | null;
+      while ((node = walker.nextNode() as Text | null)) {
+        const val = node.nodeValue || "";
+        if (/please\s+log\s*in/i.test(val) || /please\s+login/i.test(val)) {
+          node.nodeValue = NEW_MESSAGE;
+          return true;
+        }
+      }
+
+      return false;
+    };
+
+    // Run now + after short delays (covers late rendering)
+    if (tryReplaceOnce()) return;
+    window.setTimeout(() => tryReplaceOnce(), 250);
+    window.setTimeout(() => tryReplaceOnce(), 1000);
+
+    // Watch briefly for AJAX/DOM updates, then stop
+    const obs = new MutationObserver(() => {
+      if (tryReplaceOnce()) obs.disconnect();
+    });
+    obs.observe(document.body, { childList: true, subtree: true });
+    window.setTimeout(() => obs.disconnect(), 8000);
   }
 
   // ---------------------------------------------------------
