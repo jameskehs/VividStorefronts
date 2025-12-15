@@ -2,7 +2,7 @@ import { StorefrontPage } from "../../enums/StorefrontPage.enum";
 import { GLOBALVARS } from "../../index";
 
 export function main() {
-  document.title = "Krispy Krunchy Online Store";
+  document.title = "Krispy Krunch Online Store";
 
   //let shipMsg = `<p class="ship-message">More Items Coming Soon!</p>`;
   // $(shipMsg).insertBefore(".tableMain");
