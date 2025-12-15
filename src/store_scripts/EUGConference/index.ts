@@ -86,10 +86,9 @@ export function main() {
       );
       let node: Text | null;
       while ((node = walker.nextNode() as Text | null)) {
-        const val = node.nodeValue || "";
-        if (/please\s+log\s*in/i.test(val) || /please\s+login/i.test(val)) {
+        if (node.nodeValue && /please\s+log\s*into?/i.test(node.nodeValue)) {
           node.nodeValue = NEW_MESSAGE;
-          return true;
+          break;
         }
       }
 
