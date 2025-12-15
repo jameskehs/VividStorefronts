@@ -141,12 +141,12 @@ table.tableMain {
   justify-content: center;
   height: 52px;
   padding: 10px 14px;
-  color: #dd282c;
+  color: #00205b;
   text-decoration: none;
   transition: transform 0.2s ease, color 0.2s ease;
 }
 #menu li a .icon-wrap i {
-  color: #dd282c !important;
+  color: #00205b !important;
   font-size: 24px;
   line-height: 1;
   vertical-align: middle;
