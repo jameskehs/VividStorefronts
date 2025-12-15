@@ -54,6 +54,33 @@ export function main() {
   }
 
   // ---------------------------------------------------------
+  // Reaplace Login Message
+  // ---------------------------------------------------------
+  function replaceLoginMessage() {
+    const NEW_MESSAGE =
+      `Please create a NEW and UNIQUE account reserved specifically for the 2026 Eggs Up Grill Owner’s Conference. ` +
+      `The preferred Login ID is “EUG then your first name and last name initial with no spaces.” ` +
+      `YOUR CURRENT USER ID, IF YOU ALREADY HAVE ONE, CANNOT BE USED FOR THIS STOREFRONT.`;
+
+    const walker = document.createTreeWalker(
+      document.body,
+      NodeFilter.SHOW_TEXT,
+      null
+    );
+
+    let node: Text | null;
+    while ((node = walker.nextNode() as Text | null)) {
+      if (
+        node.nodeValue &&
+        node.nodeValue.toLowerCase().includes("please log in")
+      ) {
+        node.nodeValue = NEW_MESSAGE;
+        break; // stop after first replacement
+      }
+    }
+  }
+
+  // ---------------------------------------------------------
   // Helper: detect Address / Shipping steps by progress bar
   // ---------------------------------------------------------
   const getActiveStepTitle = (): string => {
@@ -135,6 +162,10 @@ export function main() {
       }
     }, 250);
   };
+
+  document.addEventListener("DOMContentLoaded", () => {
+    replaceLoginMessage();
+  });
 
   const runPageEnhancements = () => {
     setupAddressSkip();
