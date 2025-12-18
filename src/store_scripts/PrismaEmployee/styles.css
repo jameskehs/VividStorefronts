@@ -9,6 +9,9 @@
   box-shadow: 0px 0px 0px rgb(255, 255, 255) !important;
 }
 
+/* =========================
+   CATALOG / PRODUCT GRID
+   ========================= */
 .prodCell {
   padding: 8px !important;
   border: none;
@@ -25,11 +28,23 @@ img.finishedGoodThmb {
   border: 1px solid lightgray;
 }
 
+.prodCell .left a {
+  background-color: transparent !important;
+  display: block;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  height: auto;
+  max-height: 250px;
+}
+
 div.anchorCatalog {
   background-color: var(--primary-color) !important;
   display: none;
 }
 
+/* =========================
+   LEFT TREE / DROPDOWNS
+   ========================= */
 ul.TreeControl li#active {
   border-bottom: none;
   border-left-color: transparent;
@@ -46,20 +61,14 @@ ul.TreeControl {
   padding: 8px;
 }
 
+/* =========================
+   PAGE LAYOUT WRAPPERS
+   ========================= */
 #mainContentSF {
   width: 100% !important;
   max-width: none;
   padding: 0 !important;
   background-color: #efefef;
-}
-
-.prodCell .left a {
-  background-color: transparent !important;
-  display: block;
-  border-radius: 8px;
-  transition: all 0.2s ease;
-  height: auto;
-  max-height: 250px;
 }
 
 #logoLinks {
@@ -68,6 +77,12 @@ ul.TreeControl {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+/* Inside #logoLinks layout */
+#logoLinks .logo-layout {
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 table.tableLogin {
@@ -84,70 +99,43 @@ table.tableMain {
 }
 
 #headWrapper {
-  padding-top: 12px;
-  padding-right: 32px;
-  padding-bottom: 12px;
-  padding-left: 32px;
+  padding: 12px 32px;
   width: 100%;
   background-color: var(--navbar-bg);
 }
 
-/* === MENU CONTAINER === */
+/* =========================
+   MENU (ICON COLOR + NO JITTER)
+   ========================= */
 #menu {
-  display: flex;
-  justify-content: center; /* or space-between */
+  display: flex !important; /* override theme table layout */
+  justify-content: center;
   align-items: center;
 }
 
 #menu li {
   display: inline-block;
-  float: none; /* REMOVE float */
+  float: none; /* override theme floats */
   text-align: center;
+  flex: 0 0 auto; /* stable footprint */
 }
 
-/* === LINK STYLING === */
+/* link */
 #menu li a {
-  display: flex;
+  display: inline-flex; /* avoids flex stretching weirdness */
   align-items: center;
   justify-content: center;
+  width: 72px; /* stable width prevents hover pushing neighbors */
   height: 52px;
   padding: 10px 14px;
-  color: #cadc56;
-  text-decoration: none;
-  transition: transform 0.2s ease, color 0.2s ease;
-}
-#menu li a .icon-wrap i {
-  color: #fff;
-  font-size: 24px;
-  line-height: 1;
-  vertical-align: middle;
-}
-
-/* === HOVER === */
-#menu li a:hover {
-  transform: scale(1.15);
-  color: #cadc56;
-}
-
-#menu li a {
-  color: var(--navbar-text);
-}
-
-#menu li:hover > a {
-  color: var(--navbar-hover) !important;
-}
-
-/* icons */
-#menu li a .icon-wrap i {
   color: var(--navbar-text) !important;
-  transition: color 0.2s ease;
+  text-decoration: none;
+  will-change: transform;
+  transform-origin: center;
+  backface-visibility: hidden;
 }
 
-#menu li:hover > a .icon-wrap i {
-  color: var(--navbar-hover) !important;
-}
-
-/* === REMOVE ALL UNDERLINES === */
+/* remove underlines / borders / backgrounds (menu only) */
 #menu li a,
 #menu li a i,
 #menu li a:before,
@@ -158,20 +146,52 @@ table.tableMain {
   outline: none !important;
 }
 
-/* === REMOVE SELECTED UNDERLINE === */
+/* remove selected underline */
 #menu li.menuG a:before {
   display: none !important;
 }
 
-/* === ICON WRAPPER === */
+/* icon wrapper */
 .icon-wrap {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
   vertical-align: middle;
+  transform-origin: center;
+  transition: transform 0.2s ease;
 }
 
-/* === CART ICON FIXED ALIGNMENT === */
+/* default icon color: override Font Awesome global colors */
+#menu li a .icon-wrap i,
+#menu li a .icon-wrap i.fa,
+#menu li a .icon-wrap i.fas,
+#menu li a .icon-wrap i.far,
+#menu li a .icon-wrap i.fab {
+  color: var(--navbar-text) !important;
+  font-size: 24px;
+  line-height: 1;
+  vertical-align: middle;
+  transition: color 0.2s ease;
+}
+
+/* hover: lock link + icon color, and scale ONLY the icon-wrap (no jitter) */
+#menu li:hover > a,
+#menu li a:hover {
+  color: var(--navbar-hover) !important;
+}
+
+#menu li:hover > a .icon-wrap,
+#menu li a:hover .icon-wrap {
+  transform: scale(1.15);
+}
+
+#menu li:hover > a .icon-wrap i,
+#menu li a:hover .icon-wrap i {
+  color: var(--navbar-hover) !important;
+}
+
+/* cart icon alignment */
 .icon-wrap i.fa-shopping-cart {
   font-size: 24px;
   line-height: 1;
@@ -179,7 +199,7 @@ table.tableMain {
   top: -4px; /* fine-tune as needed */
 }
 
-/* === BADGE SHOWN BESIDE ICON (NOT OVERLAPPING) === */
+/* badge beside icon */
 .icon-wrap .badge {
   display: inline-block;
   background-color: #ff3b3b;
@@ -193,18 +213,15 @@ table.tableMain {
   text-align: center;
 }
 
-/* === LAST ITEM FIX === */
+/* last item padding fix */
 #menu li:last-child a {
   padding: 10px 0 0 15px;
   background: transparent;
 }
 
-/* Inside #logoLinks layout */
-#logoLinks .logo-layout {
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
+/* =========================
+   HOME SEARCH
+   ========================= */
 #home-search-container {
   position: relative;
   display: flex;
@@ -212,69 +229,6 @@ table.tableMain {
   justify-content: center;
   margin: 0 24px;
   width: 350px;
-}
-
-/* ======================================================
-   MENU ICON COLOR FIX (override Font Awesome defaults)
-   ====================================================== */
-
-/* default icon color */
-#menu li a .icon-wrap i.fa,
-#menu li a .icon-wrap i.fas,
-#menu li a .icon-wrap i.far,
-#menu li a .icon-wrap i.fab {
-  color: var(--navbar-text) !important;
-  transition: color 0.2s ease;
-}
-
-/* hover icon color */
-#menu li:hover > a .icon-wrap i.fa,
-#menu li:hover > a .icon-wrap i.fas,
-#menu li:hover > a .icon-wrap i.far,
-#menu li:hover > a .icon-wrap i.fab,
-#menu li a:hover .icon-wrap i.fa,
-#menu li a:hover .icon-wrap i.fas,
-#menu li a:hover .icon-wrap i.far,
-#menu li a:hover .icon-wrap i.fab {
-  color: var(--navbar-hover) !important;
-}
-
-/* Stop menu hover jitter */
-#menu {
-  justify-content: center;
-}
-
-/* give each item a fixed footprint so scaling doesn't push neighbors */
-#menu li {
-  flex: 0 0 auto;
-}
-
-#menu li a {
-  display: inline-flex; /* avoid flex item stretching weirdness */
-  width: 72px; /* pick a size that fits your icons */
-  height: 52px;
-  justify-content: center;
-  align-items: center;
-  transform-origin: center;
-  will-change: transform;
-  backface-visibility: hidden;
-}
-
-/* scale the icon only (not the whole link) */
-#menu li a:hover {
-  transform: none !important;
-}
-
-#menu li a .icon-wrap {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transform-origin: center;
-  transition: transform 0.2s ease;
-}
-
-#menu li a:hover .icon-wrap {
-  transform: scale(1.15);
 }
 
 #home-search-input {
@@ -297,9 +251,9 @@ table.tableMain {
   height: 24px;
   width: 24px;
   border: none !important;
-  background: none; /* No background */
-  border-radius: 0; /* No rounded shape */
-  box-shadow: none; /* No shadow */
+  background: none;
+  border-radius: 0;
+  box-shadow: none;
   padding: 0;
   cursor: pointer;
   display: flex;
@@ -326,6 +280,9 @@ table.tableMain {
   transform: none !important;
 }
 
+/* =========================
+   PRICING TABLE
+   ========================= */
 #pricing-table,
 #pricing-table tr,
 #pricing-table th,
@@ -337,11 +294,13 @@ table.tableMain {
 #pricing-table td {
   padding: 8px;
 }
+
 #pricing-table {
   margin: 0 auto;
   border-collapse: collapse;
   width: 100%;
 }
+
 #pricing-table th {
   background-color: transparent !important;
   color: black;
@@ -349,6 +308,9 @@ table.tableMain {
   text-transform: uppercase;
 }
 
+/* =========================
+   SIDEBAR / MISC
+   ========================= */
 #sideBarNav {
   width: 300px !important;
   background-color: transparent;
