@@ -1,5 +1,5 @@
 .tableSiteBanner img {
-  height: 120px;
+  height: 100px;
 }
 
 #loginWrapper {
@@ -133,6 +133,13 @@ table.tableMain {
   will-change: transform;
   transform-origin: center;
   backface-visibility: hidden;
+}
+
+/* Prevent icon itself from becoming the hover target (stops “darkening” on icon-hover) */
+#menu .icon-wrap i,
+#menu .icon-wrap svg,
+#menu .icon-wrap .badge {
+  pointer-events: none;
 }
 
 /* remove underlines / borders / backgrounds (menu only) */
