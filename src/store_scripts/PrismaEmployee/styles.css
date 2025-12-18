@@ -129,6 +129,24 @@ table.tableMain {
   color: #cadc56;
 }
 
+#menu li a {
+  color: var(--navbar-text);
+}
+
+#menu li:hover > a {
+  color: var(--navbar-hover) !important;
+}
+
+/* icons */
+#menu li a .icon-wrap i {
+  color: var(--navbar-text) !important;
+  transition: color 0.2s ease;
+}
+
+#menu li:hover > a .icon-wrap i {
+  color: var(--navbar-hover) !important;
+}
+
 /* === REMOVE ALL UNDERLINES === */
 #menu li a,
 #menu li a i,
@@ -219,6 +237,44 @@ table.tableMain {
 #menu li a:hover .icon-wrap i.far,
 #menu li a:hover .icon-wrap i.fab {
   color: var(--navbar-hover) !important;
+}
+
+/* Stop menu hover jitter */
+#menu {
+  justify-content: center;
+}
+
+/* give each item a fixed footprint so scaling doesn't push neighbors */
+#menu li {
+  flex: 0 0 auto;
+}
+
+#menu li a {
+  display: inline-flex; /* avoid flex item stretching weirdness */
+  width: 72px; /* pick a size that fits your icons */
+  height: 52px;
+  justify-content: center;
+  align-items: center;
+  transform-origin: center;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+/* scale the icon only (not the whole link) */
+#menu li a:hover {
+  transform: none !important;
+}
+
+#menu li a .icon-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transform-origin: center;
+  transition: transform 0.2s ease;
+}
+
+#menu li a:hover .icon-wrap {
+  transform: scale(1.15);
 }
 
 #home-search-input {
