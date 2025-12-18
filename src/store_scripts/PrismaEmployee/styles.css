@@ -2,6 +2,41 @@
   height: 100px;
 }
 
+:root {
+  --login-grad-start: #00a3e0;
+  --login-grad-end: #c4d600;
+}
+
+#loginWrapper {
+  width: 100%;
+  padding: 0 32px;
+  box-shadow: 0 0 0 rgb(255 255 255) !important;
+
+  /* fallback */
+  background-color: var(--loginbar-bg);
+
+  /* animated gradient */
+  background: linear-gradient(
+    45deg,
+    var(--login-grad-start),
+    var(--login-grad-end)
+  );
+  background-size: 200% 200%;
+  animation: loginGradient 7s ease infinite;
+}
+
+@keyframes loginGradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
 #loginWrapper {
   width: 100%;
   background-color: var(--loginbar-bg);
