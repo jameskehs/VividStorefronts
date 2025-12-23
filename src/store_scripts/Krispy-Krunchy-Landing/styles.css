@@ -20,7 +20,7 @@
 }
 
 #loginWrapper {
-  width: 1440px;
+  width: 100%;
   display: block !important;
   margin-left: auto !important;
   margin-right: auto !important;
@@ -107,7 +107,7 @@ table.tableMain {
   padding-right: 32px;
   padding-bottom: 12px;
   padding-left: 32px;
-  width: 1440px;
+  width: 100%;
   display: block !important;
   margin-left: auto !important;
   margin-right: auto !important;
@@ -324,7 +324,7 @@ img#productImage {
 
 /* === Global Krispy Krunchy footer === */
 .kkc-global-footer {
-  width: 1440px;
+  width: 100%;
   display: block !important;
   margin-left: auto !important;
   margin-right: auto !important;
