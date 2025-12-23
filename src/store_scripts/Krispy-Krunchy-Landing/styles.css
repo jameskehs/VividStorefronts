@@ -98,17 +98,18 @@ table.tableLogin {
 
 table.tableMain {
   top: auto !important; /* Ensure no top value is applied */
-  max-width: 1200px;
+  max-width: 100% !important;
   margin: auto !important;
 }
 
 #headWrapper {
+  display: none;
   padding-top: 12px;
   padding-right: 32px;
   padding-bottom: 12px;
   padding-left: 32px;
   width: 100%;
-  display: block !important;
+  /*display: block !important;*/
   margin-left: auto !important;
   margin-right: auto !important;
   background-color: var(--navbar-bg);
