@@ -2,15 +2,21 @@
   display: none;
 }
 
-.tableSiteBanner td,
-.tableSiteBanner td a {
+/* Center the logo table inside the header row */
+#logoLinks .tableSiteBanner {
+  margin: 0 auto !important; /* centers the table itself */
+}
+
+/* Override the <td align="left"> */
+#logoLinks .tableSiteBanner td {
   text-align: center !important;
 }
 
-.tableSiteBanner img {
+/* Prevent inline-image spacing quirks */
+#logoLinks .tableSiteBanner img {
   height: 150px;
-  display: block !important;
-  margin: 0 auto !important;
+  display: block;
+  margin: 0 auto;
 }
 
 #loginWrapper {
