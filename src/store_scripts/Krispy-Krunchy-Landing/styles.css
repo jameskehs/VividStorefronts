@@ -1,3 +1,53 @@
+/* FULL PAGE LANDING */
+.kkc-landing {
+  position: relative;
+  width: 100%;
+  max-width: 1440px;
+  aspect-ratio: 1440 / 900; /* keeps proportions like your example */
+  margin: 0 auto;
+  background-image: url("../user/images/krispy-krunchy/KKC_Krunch-Shop_Landing_Background.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* RESET IMAGES */
+.kkc-landing img {
+  display: block;
+  border: 0;
+}
+
+/* LOGO */
+.kkc-logo {
+  position: absolute;
+  top: 40px;
+  left: 40px;
+  width: 180px;
+}
+
+/* BUTTON BASE */
+.kkc-btn {
+  position: absolute;
+  width: 260px;
+  transition: transform 0.2s ease;
+}
+
+.kkc-btn:hover {
+  transform: scale(1.05);
+}
+
+/* OPERATOR (TOP RIGHT) */
+.kkc-operator {
+  top: 160px;
+  right: 80px;
+}
+
+/* TEAM MEMBER (BOTTOM LEFT) */
+.kkc-team {
+  bottom: 80px;
+  left: 80px;
+}
+
 #navWrapper {
   display: none;
 }
