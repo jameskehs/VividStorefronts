@@ -2,11 +2,15 @@
   display: none;
 }
 
+.tableSiteBanner td,
+.tableSiteBanner td a {
+  text-align: center !important;
+}
+
 .tableSiteBanner img {
   height: 150px;
   display: block !important;
-  margin-left: auto !important;
-  margin-right: auto !important;
+  margin: 0 auto !important;
 }
 
 #loginWrapper {
