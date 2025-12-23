@@ -10,7 +10,10 @@
 }
 
 #loginWrapper {
-  width: 100%;
+  width: 1440px;
+  display: block !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
   height: 35px;
   background-color: var(--loginbar-bg);
   padding: 0px 32px;
@@ -94,7 +97,10 @@ table.tableMain {
   padding-right: 32px;
   padding-bottom: 12px;
   padding-left: 32px;
-  width: 100%;
+  width: 1440px;
+  display: block !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
   background-color: var(--navbar-bg);
 }
 
@@ -308,7 +314,10 @@ img#productImage {
 
 /* === Global Krispy Krunchy footer === */
 .kkc-global-footer {
-  width: 100%;
+  width: 1440px;
+  display: block !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
   padding: 12px 24px;
   background-color: #00205b;
   font-size: 0.95rem;
