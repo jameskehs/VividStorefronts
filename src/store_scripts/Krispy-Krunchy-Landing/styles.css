@@ -2,13 +2,11 @@
   display: none;
 }
 
-.tableSiteBanner {
-  text-align: center;
-}
-
 .tableSiteBanner img {
-  height: 120px;
-  display: inline-block;
+  height: 150px;
+  display: block !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
 }
 
 #loginWrapper {
