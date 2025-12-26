@@ -1,3 +1,346 @@
 .tableSiteBanner img {
   height: 150px;
 }
+
+#loginWrapper {
+  width: 100%;
+  background-color: var(--loginbar-bg);
+  padding: 0px 32px;
+  box-shadow: 0px 0px 0px rgb(255, 255, 255) !important;
+}
+
+/* =========================
+   CATALOG / PRODUCT GRID
+   ========================= */
+.prodCell {
+  padding: 8px !important;
+  border: none;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  background-color: #fff !important;
+  margin: 4px;
+}
+
+img.finishedGoodThmb {
+  max-height: 250px;
+  height: auto;
+  padding: 0px;
+}
+
+.prodCell .left a {
+  background-color: transparent !important;
+  display: block;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  height: auto;
+  max-height: 250px;
+}
+
+div.anchorCatalog {
+  background-color: var(--primary-color) !important;
+  display: none;
+}
+
+/* =========================
+   LEFT TREE / DROPDOWNS
+   ========================= */
+ul.TreeControl li#active {
+  border-bottom: none;
+  border-left-color: transparent;
+}
+
+ul.dropdown-content {
+  background-color: #fff;
+  margin-right: 5px !important;
+}
+
+ul.TreeControl {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 8px;
+}
+
+/* =========================
+   PAGE LAYOUT WRAPPERS
+   ========================= */
+#mainContentSF {
+  width: 100% !important;
+  max-width: none;
+  padding: 0 !important;
+  background-color: #efefef;
+}
+
+#logoLinks {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Inside #logoLinks layout */
+#logoLinks .logo-layout {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+table.tableLogin {
+  position: initial;
+  float: none;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+table.tableMain {
+  top: auto !important; /* Ensure no top value is applied */
+  max-width: 1200px;
+  margin: auto !important;
+}
+
+#headWrapper {
+  padding: 12px 32px;
+  width: 100%;
+  background-color: var(--navbar-bg);
+}
+
+/* =========================
+   MENU (ICON COLOR + NO JITTER)
+   ========================= */
+#menu {
+  display: flex !important; /* override theme table layout */
+  justify-content: center;
+  align-items: center;
+}
+
+#menu li {
+  display: inline-block;
+  float: none; /* override theme floats */
+  text-align: center;
+  flex: 0 0 auto; /* stable footprint */
+}
+
+/* link */
+#menu li a {
+  display: inline-flex; /* avoids flex stretching weirdness */
+  align-items: center;
+  justify-content: center;
+  width: 72px; /* stable width prevents hover pushing neighbors */
+  height: 52px;
+  padding: 10px 14px;
+  color: var(--navbar-text) !important;
+  text-decoration: none;
+  will-change: transform;
+  transform-origin: center;
+  backface-visibility: hidden;
+}
+
+/* Prevent icon itself from becoming the hover target (stops “darkening” on icon-hover) */
+#menu .icon-wrap i,
+#menu .icon-wrap svg,
+#menu .icon-wrap .badge {
+  pointer-events: none;
+}
+
+/* remove underlines / borders / backgrounds (menu only) */
+#menu li a,
+#menu li a i,
+#menu li a:before,
+#menu li a:after {
+  text-decoration: none !important;
+  border: none !important;
+  background: transparent !important;
+  outline: none !important;
+}
+
+/* remove selected underline */
+#menu li.menuG a:before {
+  display: none !important;
+}
+
+/* icon wrapper */
+.icon-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  vertical-align: middle;
+  transform-origin: center;
+  transition: transform 0.2s ease;
+}
+
+/* default icon color: override Font Awesome global colors */
+#menu li a .icon-wrap i,
+#menu li a .icon-wrap i.fa,
+#menu li a .icon-wrap i.fas,
+#menu li a .icon-wrap i.far,
+#menu li a .icon-wrap i.fab {
+  color: var(--navbar-text) !important;
+  font-size: 24px;
+  line-height: 1;
+  vertical-align: middle;
+  transition: color 0.2s ease;
+}
+
+/* hover: lock link + icon color, and scale ONLY the icon-wrap (no jitter) */
+#menu li:hover > a,
+#menu li a:hover {
+  color: var(--navbar-hover) !important;
+}
+
+#menu li:hover > a .icon-wrap,
+#menu li a:hover .icon-wrap {
+  transform: scale(1.15);
+}
+
+#menu li:hover > a .icon-wrap i,
+#menu li a:hover .icon-wrap i {
+  color: var(--navbar-hover) !important;
+}
+
+/* cart icon alignment */
+.icon-wrap i.fa-shopping-cart {
+  font-size: 24px;
+  line-height: 1;
+  position: relative;
+  top: -4px; /* fine-tune as needed */
+}
+
+/* badge beside icon */
+.icon-wrap .badge {
+  display: inline-block;
+  background-color: #ff3b3b;
+  color: white;
+  font-size: 11px;
+  font-weight: bold;
+  border-radius: 12px;
+  padding: 2px 6px;
+  line-height: 1;
+  min-width: 16px;
+  text-align: center;
+}
+
+/* last item padding fix */
+#menu li:last-child a {
+  padding: 10px 0 0 15px;
+  background: transparent;
+}
+
+/* =========================
+   HOME SEARCH
+   ========================= */
+#home-search-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 24px;
+  width: 350px;
+}
+
+#home-search-input {
+  width: 100%;
+  height: 44px; /* consistent height */
+  padding: 10px 44px 10px 18px;
+  font-size: 16px;
+  border: 1px solid #bbb;
+  border-radius: 999px;
+  outline: none;
+  background: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+#home-search-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 24px;
+  width: 24px;
+  border: none !important;
+  background: none;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#home-search-btn svg {
+  height: 18px;
+  width: 18px;
+  fill: #555;
+  display: block;
+  pointer-events: none; /* prevent accidental blocking */
+}
+
+#home-search-btn:hover {
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+#home-search-btn:hover svg {
+  fill: #555 !important;
+  transform: none !important;
+}
+
+/* =========================
+   PRICING TABLE
+   ========================= */
+#pricing-table,
+#pricing-table tr,
+#pricing-table th,
+#pricing-table td {
+  border-top: 1px solid #70707024;
+}
+
+#pricing-table th,
+#pricing-table td {
+  padding: 8px;
+}
+
+#pricing-table {
+  margin: 0 auto;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#pricing-table th {
+  background-color: transparent !important;
+  color: black;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+/* =========================
+   SIDEBAR / MISC
+   ========================= */
+#sideBarNav {
+  width: 300px !important;
+  background-color: transparent;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+table#catalogTblheader {
+  display: none;
+}
+
+.buttonContainer {
+  display: none;
+}
+
+img#productImage {
+  width: 400px;
+}
+
+.list-style-buttons {
+  display: inline;
+  margin-bottom: 10px;
+}
+
+#searchbar {
+  display: none;
+}
