@@ -318,6 +318,7 @@ table.tableMain {
    SIDEBAR / MISC
    ========================= */
 #sideBarNav {
+  display: none;
   width: 300px !important;
   background-color: transparent;
   border-radius: 8px;
