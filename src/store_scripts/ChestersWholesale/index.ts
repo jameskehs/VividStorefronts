@@ -1,8 +1,8 @@
 // <script src="https://main--vividstorefronts.netlify.app/main.js"></script>
 // <script>loadStorefrontScript(brandingProfile)</script>
 
-import { StorefrontPage } from '../../enums/StorefrontPage.enum';
-import { GLOBALVARS } from '../../index';
+import { StorefrontPage } from "../../enums/StorefrontPage.enum";
+import { GLOBALVARS } from "../../index";
 
 export function main() {
   console.log(GLOBALVARS.currentPage);
@@ -22,8 +22,8 @@ export function main() {
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTREVIEW) {
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTSHIPPING) {
-    $('#continueTbl .smallbody').eq(1).html(`<span class="red">*</span> Delivery time listed includes 1 to 2 days to process order plus shipping.
-      Please note we do not process orders on weekends or holidays.`);
+    //$('#continueTbl .smallbody').eq(1).html(`<span class="red">*</span> Delivery time listed includes 1 to 2 days to process order plus shipping.
+    //Please note we do not process orders on weekends or holidays.`);
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CREATEEDITACCOUNT) {
   }
