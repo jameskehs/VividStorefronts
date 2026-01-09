@@ -151,7 +151,7 @@ export function main() {
         'input[name="size"]'
       ) as HTMLInputElement | null;
       if (sizeInput && !sizeInput.value)
-        sizeInput.value = `${size.w} x ${size.h}`;
+        sizeInput.value = `${size.h} x ${size.w}`;
 
       return true;
     } catch (e) {
@@ -251,7 +251,7 @@ export function main() {
       if (!sz) return;
 
       // Cart-specific format: 48"w × 96"h
-      const label = `${sz.w}"w × ${sz.h}"h`;
+      const label = `${sz.h}"w × ${sz.w}"h`;
 
       const tr = document.createElement("tr");
       tr.id = rowId;
