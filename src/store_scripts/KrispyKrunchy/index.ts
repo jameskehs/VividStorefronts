@@ -66,7 +66,7 @@ export function main() {
   // Pull WxH from a few common places (productCode/productID/link rel/title)
   const extractSize = (
     scope: ParentNode | Document = document
-  ): { w: string; h: string } | null => {
+  ): { h: string; w: string } | null => {
     try {
       const candidates: string[] = [
         (scope.querySelector?.("#productCode") as HTMLInputElement | null)
