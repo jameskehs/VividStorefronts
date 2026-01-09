@@ -129,7 +129,7 @@ export function main() {
       if (!size) return false;
 
       // Use plain inches on add-to-cart (matches your previous sites)
-      const label = `${size.w}"w × ${size.h}"h`;
+      const label = `${size.h}"w × ${size.w}"h`;
 
       const tr = document.createElement("tr");
       tr.id = "finishedSizeRow";
