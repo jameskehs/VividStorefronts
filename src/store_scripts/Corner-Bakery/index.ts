@@ -13,7 +13,7 @@ export function main() {
         )?.value?.trim() ||
         (
           root.querySelector(
-            'input[name="productType"]'
+            'input[name="productType"]',
           ) as HTMLInputElement | null
         )?.value?.trim() ||
         "";
@@ -22,12 +22,12 @@ export function main() {
       const txt =
         (
           root.querySelector(
-            "#breadcrumb .templateName a"
+            "#breadcrumb .templateName a",
           ) as HTMLAnchorElement | null
         )?.getAttribute("title") ||
         (
           root.querySelector(
-            "#breadcrumb .templateName a"
+            "#breadcrumb .templateName a",
           ) as HTMLAnchorElement | null
         )?.textContent ||
         (root.querySelector("#productCode") as HTMLInputElement | null)
@@ -41,7 +41,7 @@ export function main() {
 
   // Pull WxH from a few common places (productCode/productID/link rel/title)
   const extractSize = (
-    scope: ParentNode | Document = document
+    scope: ParentNode | Document = document,
   ): { w: string; h: string } | null => {
     try {
       const candidates: string[] = [
@@ -49,22 +49,22 @@ export function main() {
           ?.value || "",
         (
           scope.querySelector?.(
-            'input[name="productID"]'
+            'input[name="productID"]',
           ) as HTMLInputElement | null
         )?.value || "",
         (
           scope.querySelector?.(
-            'a.productImage[id^="productImage-"]'
+            'a.productImage[id^="productImage-"]',
           ) as HTMLAnchorElement | null
         )?.getAttribute("rel") || "",
         (
           scope.querySelector?.(
-            "#breadcrumb .templateName a"
+            "#breadcrumb .templateName a",
           ) as HTMLAnchorElement | null
         )?.getAttribute("title") ||
           (
             scope.querySelector?.(
-              "#breadcrumb .templateName a"
+              "#breadcrumb .templateName a",
             ) as HTMLAnchorElement | null
           )?.textContent ||
           "",
@@ -89,7 +89,7 @@ export function main() {
   let _renders = 0;
 
   const renderFinishedSizeUnderQty = (
-    root: Document | HTMLElement = document
+    root: Document | HTMLElement = document,
   ): boolean => {
     try {
       const qtyRow = root.querySelector("#quantityRow");
@@ -105,7 +105,7 @@ export function main() {
       if (!size) return false;
 
       // Use plain inches on add-to-cart (matches your previous sites)
-      const label = `${size.w}"w × ${size.h}"h`;
+      const label = `${size.h}"w × ${size.w}"h`;
 
       const tr = document.createElement("tr");
       tr.id = "finishedSizeRow";
@@ -124,10 +124,10 @@ export function main() {
 
       // fill hidden size if blank (helps downstream)
       const sizeInput = document.querySelector(
-        'input[name="size"]'
+        'input[name="size"]',
       ) as HTMLInputElement | null;
       if (sizeInput && !sizeInput.value)
-        sizeInput.value = `${size.w} x ${size.h}`;
+        sizeInput.value = `${size.h} x ${size.w}`;
 
       return true;
     } catch (e) {
@@ -188,12 +188,12 @@ export function main() {
   const cartLooksPrinted = (scope: ParentNode): boolean => {
     try {
       const hasInksOrPaper = !!scope.querySelector(
-        ".jobDetailsTable .INKSRow, .jobDetailsTable .PAPERRow"
+        ".jobDetailsTable .INKSRow, .jobDetailsTable .PAPERRow",
       );
       const rel =
         (
           scope.querySelector(
-            'a.productImage[id^="productImage-"]'
+            'a.productImage[id^="productImage-"]',
           ) as HTMLAnchorElement | null
         )?.getAttribute("rel") || "";
       const printedByRel = /_w_/i.test(rel) || /_w_b/i.test(rel);
@@ -213,7 +213,7 @@ export function main() {
       if (!memoTable) return;
 
       const memoInput = memoTable.querySelector(
-        'input[name^="memo"]'
+        'input[name^="memo"]',
       ) as HTMLInputElement | null;
       const itemId = memoInput?.name?.replace("memo", "") || "";
       const rowId = `finishedSizeRow-${itemId || "unknown"}`;
@@ -319,7 +319,7 @@ export function main() {
     // Add-to-cart page image swap + finished size under quantity
     if (isAddToCartPage()) {
       const img = document.getElementById(
-        "productImage"
+        "productImage",
       ) as HTMLImageElement | null;
       const artID = (window as any).p?.artID;
 
@@ -387,7 +387,7 @@ function convertMenuTextToIcons(): void {
         const rawText = link.textContent?.trim().toUpperCase();
 
         const matchedKey = Object.keys(iconMap).find((key) =>
-          rawText?.startsWith(key)
+          rawText?.startsWith(key),
         );
         const iconClass = matchedKey ? iconMap[matchedKey] : "";
 
