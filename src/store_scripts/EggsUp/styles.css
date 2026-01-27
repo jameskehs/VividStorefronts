@@ -293,7 +293,7 @@ table.tableMain {
 #pricing-table tr,
 #pricing-table th,
 #pricing-table td {
-  border-top: 1px solid #000;
+  border: 1px solid #000;
 }
 
 #pricing-table th,
