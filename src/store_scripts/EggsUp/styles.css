@@ -352,3 +352,22 @@ img#productImage {
 .TCbullet a[alt="New Items"] {
   color: #ff0000 !important;
 }
+
+.flyoutMenuButton {
+  max-width: 120px;
+}
+
+/* Target that specific menu item (best if you can target by a stable parent too) */
+#ui-id-1 > a {
+  visibility: hidden; /* hides the original text */
+  position: relative;
+}
+
+#ui-id-1 > a::after {
+  content: "Add Name";
+  visibility: visible; /* show our replacement */
+  position: absolute;
+  left: 0;
+  top: 0;
+  white-space: nowrap;
+}
