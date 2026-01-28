@@ -337,18 +337,14 @@ img#productImage {
 }
 
 .checkoutProgress .circle .title {
-  color: #000 !important;
+  color: #000;
 }
 
 .checkoutProgress .circle .label {
-  color: #000 !important;
+  color: #000;
 }
 
 .checkoutProgress .circle,
 .checkoutProgress .bar {
-  border: 1px solid #000 !important;
-}
-
-.checkoutProgress .circle.active .label {
-  color: #fff !important;
+  border: 1px solid #000;
 }
