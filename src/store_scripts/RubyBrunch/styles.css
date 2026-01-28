@@ -1,5 +1,5 @@
 .tableSiteBanner img {
-  height: 100px;
+  height: 120px;
   margin-top: 20px;
   margin-bottom: 0px;
   margin-right: 0px;
@@ -97,46 +97,45 @@ table.tableMain {
   background-color: transparent;
 }
 
-/* === MENU CONTAINER === */
+/* =========================
+   MENU (ICON COLOR + NO JITTER)
+   ========================= */
 #menu {
-  display: flex;
-  justify-content: center; /* or space-between */
+  display: flex !important; /* override theme table layout */
+  justify-content: center;
   align-items: center;
 }
 
 #menu li {
   display: inline-block;
-  float: none; /* REMOVE float */
+  float: none; /* override theme floats */
   text-align: center;
+  flex: 0 0 auto; /* stable footprint */
 }
 
-/* === LINK STYLING === */
+/* link */
 #menu li a {
-  display: flex;
+  display: inline-flex; /* avoids flex stretching weirdness */
   align-items: center;
   justify-content: center;
+  width: 72px; /* stable width prevents hover pushing neighbors */
   height: 52px;
   padding: 10px 14px;
-  color: #fff;
+  color: var(--navbar-text) !important;
   text-decoration: none;
-  transition:
-    transform 0.2s ease,
-    color 0.2s ease;
-}
-#menu li a .icon-wrap i {
-  color: rgb(0, 0, 0) !important;
-  font-size: 24px;
-  line-height: 1;
-  vertical-align: middle;
+  will-change: transform;
+  transform-origin: center;
+  backface-visibility: hidden;
 }
 
-/* === HOVER === */
-#menu li a:hover {
-  transform: scale(1.15);
-  color: #fff !important;
+/* Prevent icon itself from becoming the hover target (stops “darkening” on icon-hover) */
+#menu .icon-wrap i,
+#menu .icon-wrap svg,
+#menu .icon-wrap .badge {
+  pointer-events: none;
 }
 
-/* === REMOVE ALL UNDERLINES === */
+/* remove underlines / borders / backgrounds (menu only) */
 #menu li a,
 #menu li a i,
 #menu li a:before,
@@ -147,20 +146,52 @@ table.tableMain {
   outline: none !important;
 }
 
-/* === REMOVE SELECTED UNDERLINE === */
+/* remove selected underline */
 #menu li.menuG a:before {
   display: none !important;
 }
 
-/* === ICON WRAPPER === */
+/* icon wrapper */
 .icon-wrap {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
   vertical-align: middle;
+  transform-origin: center;
+  transition: transform 0.2s ease;
 }
 
-/* === CART ICON FIXED ALIGNMENT === */
+/* default icon color: override Font Awesome global colors */
+#menu li a .icon-wrap i,
+#menu li a .icon-wrap i.fa,
+#menu li a .icon-wrap i.fas,
+#menu li a .icon-wrap i.far,
+#menu li a .icon-wrap i.fab {
+  color: var(--navbar-text) !important;
+  font-size: 24px;
+  line-height: 1;
+  vertical-align: middle;
+  transition: color 0.2s ease;
+}
+
+/* hover: lock link + icon color, and scale ONLY the icon-wrap (no jitter) */
+#menu li:hover > a,
+#menu li a:hover {
+  color: var(--navbar-hover) !important;
+}
+
+#menu li:hover > a .icon-wrap,
+#menu li a:hover .icon-wrap {
+  transform: scale(1.15);
+}
+
+#menu li:hover > a .icon-wrap i,
+#menu li a:hover .icon-wrap i {
+  color: var(--navbar-hover) !important;
+}
+
+/* cart icon alignment */
 .icon-wrap i.fa-shopping-cart {
   font-size: 24px;
   line-height: 1;
@@ -168,7 +199,7 @@ table.tableMain {
   top: -4px; /* fine-tune as needed */
 }
 
-/* === BADGE SHOWN BESIDE ICON (NOT OVERLAPPING) === */
+/* badge beside icon */
 .icon-wrap .badge {
   display: inline-block;
   background-color: #ff3b3b;
@@ -182,16 +213,10 @@ table.tableMain {
   text-align: center;
 }
 
-/* === LAST ITEM FIX === */
+/* last item padding fix */
 #menu li:last-child a {
   padding: 10px 0 0 15px;
   background: transparent;
-}
-
-/* Inside #logoLinks layout */
-#logoLinks .logo-layout {
-  max-width: 1200px;
-  margin: 0 auto;
 }
 
 /* =========================
@@ -255,6 +280,9 @@ table.tableMain {
   transform: none !important;
 }
 
+/* =========================
+   PRICING TABLE
+   ========================= */
 #pricing-table,
 #pricing-table tr,
 #pricing-table th,
@@ -266,11 +294,13 @@ table.tableMain {
 #pricing-table td {
   padding: 8px;
 }
+
 #pricing-table {
   margin: 0 auto;
   border-collapse: collapse;
   width: 100%;
 }
+
 #pricing-table th {
   background-color: transparent !important;
   color: black;
