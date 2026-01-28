@@ -335,3 +335,16 @@ img#productImage {
 #cartForm {
   background-color: #fff;
 }
+
+.checkoutProgress .circle .title {
+  color: #000 !important;
+}
+
+.checkoutProgress .circle .label {
+  color: #000 !important;
+}
+
+.checkoutProgress .circle,
+.checkoutProgress .bar {
+  border: 1px solid #000 !important;
+}
