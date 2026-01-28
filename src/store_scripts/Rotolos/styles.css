@@ -65,7 +65,7 @@ ul.TreeControl {
    ========================= */
 #mainContentSF {
   width: 100% !important;
-  max-width: none;
+  max-width: 1200px;
   padding: 0 !important;
   background-color: #efefef;
 }
