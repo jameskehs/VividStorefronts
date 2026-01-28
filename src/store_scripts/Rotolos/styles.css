@@ -1,5 +1,5 @@
 .tableSiteBanner img {
-  height: 150px;
+  height: 120px;
 }
 
 #loginWrapper {
@@ -38,6 +38,7 @@ img.finishedGoodThmb {
 
 div.anchorCatalog {
   background-color: var(--primary-color) !important;
+  border-radius: 4px;
 }
 
 /* =========================
