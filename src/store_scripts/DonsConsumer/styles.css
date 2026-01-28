@@ -53,7 +53,7 @@ ul.TreeControl {
 
 #mainContentSF {
   width: 100% !important;
-  max-width: none;
+  max-width: 1200px;
   padding: 0 !important;
   background-color: transparent;
 }
@@ -119,7 +119,9 @@ table.tableMain {
   padding: 10px 14px;
   color: #fff;
   text-decoration: none;
-  transition: transform 0.2s ease, color 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    color 0.2s ease;
 }
 #menu li a .icon-wrap i {
   color: rgb(0, 0, 0) !important;
