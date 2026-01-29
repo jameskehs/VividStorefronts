@@ -364,7 +364,7 @@ function convertMenuTextToIcons(): void {
         const iconClass = matchedKey ? iconMap[matchedKey] : "";
 
         if (matchedKey === "CATALOG") {
-          link.setAttribute("href", "/catalog/?g=3830&y=9150");
+          link.setAttribute("href", "/catalog");
         }
 
         if (iconClass) {
