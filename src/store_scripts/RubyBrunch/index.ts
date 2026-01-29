@@ -3,6 +3,7 @@ import { GLOBALVARS } from "../../index";
 import { applyPromoCode } from "../../shared/ApplyPromoCode";
 import { persistDiscountedTotals } from "../../shared/persistDiscountedTotals";
 import { monitorResidentialToastAndBlockPage } from "../../shared/BlockOnResidentialToast";
+import { ChangeInventoryCountNoticeNEW } from "../../shared/inventoryCountNoticeNEW";
 
 export function main() {
   function hideAvailableQtyOnce(): boolean {
@@ -381,3 +382,9 @@ function convertMenuTextToIcons(): void {
 }
 
 convertMenuTextToIcons();
+// Call the updated function with a placeholder email to be replaced dynamically
+
+ChangeInventoryCountNoticeNEW(
+  "Inventory not available for the desired order quantity. Please contact your account manager at 225-751-7297, or by email at dokshopbr@poweredbyprisma.com",
+  "dokshopbr@poweredbyprisma.com", // Placeholder email to be replaced dynamically
+);
