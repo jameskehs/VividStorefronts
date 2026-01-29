@@ -3,12 +3,12 @@ import { GLOBALVARS } from "../index";
 
 export async function ChangeInventoryCountNoticeNEW(
   newMessage: string,
-  emailPlaceholder: string
+  emailPlaceholder: string,
 ) {
   if (GLOBALVARS.currentPage === StorefrontPage.ADDTOCART) {
     const element = document.getElementById("inventoryCountNotice");
 
-    let salesEmailTxt = "sales@poweredbyprisma.com";
+    let salesEmailTxt = "dokshopbr@poweredbyprisma.com";
 
     // Always try to fetch fresh first
     try {

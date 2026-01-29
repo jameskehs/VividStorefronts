@@ -234,6 +234,11 @@ export function main() {
       );
     };
 
+    // Call the updated function with a placeholder email to be replaced dynamically
+    ChangeInventoryCountNoticeNEW(
+      "Inventory not available for the desired order quantity. Please contact your account manager at 225-751-7297, or by email at dokshopbr@poweredbyprisma.com",
+      "dokshopbr@poweredbyprisma.com", // Placeholder email to be replaced dynamically
+    );
     // Always try to hide AVAILABLE row on relevant pages
     const onCheckoutPage =
       GLOBALVARS.currentPage === StorefrontPage.CHECKOUTSHIPPING ||
@@ -382,9 +387,3 @@ function convertMenuTextToIcons(): void {
 }
 
 convertMenuTextToIcons();
-// Call the updated function with a placeholder email to be replaced dynamically
-
-ChangeInventoryCountNoticeNEW(
-  "Inventory not available for the desired order quantity. Please contact your account manager at 225-751-7297, or by email at dokshopbr@poweredbyprisma.com",
-  "dokshopbr@poweredbyprisma.com", // Placeholder email to be replaced dynamically
-);
