@@ -328,6 +328,7 @@ table#catalogTblheader {
   background-color: #fff;
   border-radius: 8px;
   margin: 4px;
+  padding: 8px !important;
 }
 
 .buttonContainer {
