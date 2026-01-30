@@ -324,9 +324,9 @@ table.tableMain {
   padding: 10px;
 }
 
-table#catalogTblheader {
+/*table#catalogTblheader {
   display: none;
-}
+}*/
 
 .buttonContainer {
   display: none;
