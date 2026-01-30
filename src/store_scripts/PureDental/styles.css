@@ -327,6 +327,7 @@ table.tableMain {
 table#catalogTblheader {
   background-color: #fff;
   border-radius: 8px;
+  margin: 4px;
 }
 
 .buttonContainer {
