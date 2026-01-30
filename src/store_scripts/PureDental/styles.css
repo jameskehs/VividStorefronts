@@ -324,9 +324,10 @@ table.tableMain {
   padding: 10px;
 }
 
-/*table#catalogTblheader {
-  display: none;
-}*/
+table#catalogTblheader {
+  background-color: #fff;
+  border-radius: 8px;
+}
 
 .buttonContainer {
   display: none;
