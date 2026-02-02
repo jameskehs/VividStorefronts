@@ -348,3 +348,10 @@ img#productImage {
 .kkc-footer-separator {
   color: #fff;
 }
+
+#mainContentSF {
+  width: 100% !important;
+  max-width: 1200px;
+  padding: 0 !important;
+  background-color: transparent;
+}
