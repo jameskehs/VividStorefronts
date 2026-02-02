@@ -36,16 +36,13 @@ img.finishedGoodThmb {
   max-height: 250px;
 }
 
-div.anchorCatalog {
-  background-color: var(--primary-color) !important;
-}
-
 /* =========================
    LEFT TREE / DROPDOWNS
    ========================= */
 ul.TreeControl li#active {
   border-bottom: none;
   border-left-color: transparent;
+  color: var(--secondary-color) !important;
 }
 
 ul.dropdown-content {
