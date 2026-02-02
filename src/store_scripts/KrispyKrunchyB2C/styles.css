@@ -299,10 +299,6 @@ table.tableMain {
   padding: 10px;
 }
 
-.tablesorter tbody td {
-  vertical-align: middle;
-}
-
 table#catalogTblheader {
   display: none;
 }
