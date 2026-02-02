@@ -136,7 +136,9 @@ table.tableMain {
   padding: 10px 14px;
   color: #00205b;
   text-decoration: none;
-  transition: transform 0.2s ease, color 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    color 0.2s ease;
 }
 #menu li a .icon-wrap i {
   color: #00205b !important;
@@ -302,10 +304,6 @@ table.tableMain {
 }
 
 table#catalogTblheader {
-  display: none;
-}
-
-.buttonContainer {
   display: none;
 }
 
