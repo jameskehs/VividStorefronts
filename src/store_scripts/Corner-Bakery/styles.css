@@ -64,13 +64,6 @@ ul.TreeControl {
 /* =========================
    PAGE LAYOUT WRAPPERS
    ========================= */
-#mainContentSF {
-  width: 100% !important;
-  max-width: none;
-  padding: 0 !important;
-  background-color: #efefef;
-}
-
 #logoLinks {
   max-width: 1200px;
   margin: 0 auto;
