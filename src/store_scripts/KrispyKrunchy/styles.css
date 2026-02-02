@@ -299,6 +299,10 @@ table.tableMain {
   padding: 10px;
 }
 
+td#productImageCol {
+  max-width: 600px;
+}
+
 table#catalogTblheader {
   display: none;
 }
