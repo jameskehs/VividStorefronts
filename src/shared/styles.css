@@ -456,6 +456,8 @@ p.prod_desc {
   flex-wrap: wrap;
   margin-bottom: 8px;
   gap: 2px;
+  align-content: center;
+  align-items: center;
 }
 .color_swatch {
   height: 20px !important;
