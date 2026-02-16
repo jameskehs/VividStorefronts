@@ -160,3 +160,10 @@ table.tableLogin {
   max-width: 1200px;
   margin: 0 auto;
 }
+#searchbar {
+  display: none;
+}
+.list-style-buttons {
+  display: inline;
+  margin-bottom: 10px;
+}
