@@ -147,3 +147,10 @@
   max-width: 1200px;
   margin: 0 auto;
 }
+
+#loginWrapper {
+  width: 100%;
+  background-color: var(--loginbar-bg);
+  padding: 0px 32px;
+  box-shadow: 0px 0px 0px rgb(255, 255, 255) !important;
+}
