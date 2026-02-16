@@ -34,5 +34,53 @@ export function main() {
   }
 }
 updateEstimateMessage(
-  "Estimate shown from ending order date listed above. Actual shipping transit time may depend on distance."
+  "Estimate shown from ending order date listed above. Actual shipping transit time may depend on distance.",
 );
+
+function convertMenuTextToIcons(): void {
+  const iconMap: Record<string, string> = {
+    HOME: "fa-home",
+    CATALOG: "fa-book-open",
+    "MY ACCOUNT": "fa-user",
+    "SHOPPING CART": "fa-shopping-cart",
+  };
+
+  const tryConvert = () => {
+    const menuItems = document.querySelectorAll<HTMLLIElement>("#menu li");
+
+    if (menuItems.length === 0) {
+      setTimeout(tryConvert, 200);
+      return;
+    }
+
+    menuItems.forEach((item) => {
+      const link = item.querySelector("a");
+      if (link) {
+        const rawText = link.textContent?.trim().toUpperCase();
+
+        const matchedKey = Object.keys(iconMap).find((key) =>
+          rawText?.startsWith(key),
+        );
+        const iconClass = matchedKey ? iconMap[matchedKey] : "";
+
+        if (iconClass) {
+          const countMatch = rawText?.match(/\((\d+)\)/)?.[1];
+
+          link.innerHTML = `
+    <span class="icon-wrap">
+      <i class="fa ${iconClass}"></i>
+      ${countMatch ? `<span class="badge">${countMatch}</span>` : ""}
+    </span>
+  `;
+          link.setAttribute("title", rawText || "");
+        }
+      }
+    });
+  };
+
+  document.readyState === "loading"
+    ? document.addEventListener("DOMContentLoaded", tryConvert)
+    : tryConvert();
+}
+
+convertMenuTextToIcons();
