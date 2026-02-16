@@ -2,7 +2,12 @@
   height: 150px;
 }
 #headWrapper {
-  padding: 0px;
+  padding-top: 12px;
+  padding-right: 32px;
+  padding-bottom: 12px;
+  padding-left: 32px;
+  width: 100%;
+  background-color: var(--navbar-bg);
 }
 #turnAroundTbl {
   display: none;
