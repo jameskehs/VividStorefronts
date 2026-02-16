@@ -134,6 +134,14 @@
   background: transparent;
 }
 
+#logoLinks {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 /* Inside #logoLinks layout */
 #logoLinks .logo-layout {
   max-width: 1200px;
