@@ -1,5 +1,5 @@
 .tableSiteBanner img {
-  height: 150px;
+  height: 120px;
 }
 
 #loginWrapper {
@@ -100,10 +100,12 @@ table.tableMain {
 #headWrapper {
   padding: 12px 32px;
   width: 100%;
-  background:
-    url("../user/images/fat-tuesday/header-background-abstract.png") no-repeat
-      left center / contain,
-    var(--navbar-bg);
+  background-color: var(--navbar-bg);
+
+  background-image: url("../user/images/fat-tuesday/header-background-abstract.png");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: contain; /* no crop, may letterbox */
 }
 
 /* =========================
