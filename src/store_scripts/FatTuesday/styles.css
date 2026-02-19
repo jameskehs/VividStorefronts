@@ -100,7 +100,10 @@ table.tableMain {
 #headWrapper {
   padding: 12px 32px;
   width: 100%;
-  background-color: var(--navbar-bg);
+  background:
+    url("../user/images/fat-tuesday/header-background-abstract.png") no-repeat
+      left center / contain,
+    var(--navbar-bg);
 }
 
 /* =========================
