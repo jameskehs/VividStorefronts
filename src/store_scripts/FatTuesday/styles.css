@@ -102,10 +102,10 @@ table.tableMain {
   width: 100%;
   background-color: var(--navbar-bg);
 
-  background-image: url("../user/images/fat-tuesday/header-background-abstract.png");
-  background-repeat: no-repeat;
-  background-position: center center; /*centered*/
-  background-size: 100% 100%; /* <-- stretch */
+  background-image: url("../user/images/fat-tuesday/header-background-abstract.png") !important;
+  background-repeat: no-repeat !important;
+  background-position: center center !important;
+  background-size: 100% 100% !important;
 }
 
 /* =========================
