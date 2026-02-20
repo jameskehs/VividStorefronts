@@ -38,6 +38,8 @@ img.finishedGoodThmb {
 
 div.anchorCatalog {
   background-color: var(--primary-color) !important;
+  /*display: none;*/
+  border-radius: 5px;
 }
 
 /* =========================
