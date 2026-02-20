@@ -295,6 +295,131 @@ export function main() {
     }
   };
 
+  // ───────────── Checkout: auto-apply FT{N} based on count of $75 items ─────────────
+  const installAutoCouponFT = () => {
+    const MIN_75_ITEMS = 2; // start applying at 2
+    const MAX_75_ITEMS = 10; // safety cap (adjust as you want)
+
+    const root = document.getElementById("lineItems") || document.body;
+    if (!root) return;
+
+    const count75Items = (): number => {
+      const rows = Array.from(
+        root.querySelectorAll<HTMLTableRowElement>("table tr"),
+      );
+
+      let count = 0;
+      for (const tr of rows) {
+        const tds = tr.querySelectorAll<HTMLTableCellElement>("td");
+        if (tds.length < 2) continue;
+
+        const left = (tds[0].textContent || "").trim();
+        const right = (tds[1].textContent || "").trim();
+
+        // Only count actual item rows like: "1.00 - Fat Tuesday 190 Cherry"
+        // (avoid subtotal/tax/shipping/coupon rows)
+        const looksLikeLineItem = /^\d+(\.\d+)?\s*-/.test(left);
+        const isExactly75 = /\$75\.00\b/.test(right);
+
+        if (looksLikeLineItem && isExactly75) count++;
+      }
+      return count;
+    };
+
+    const getAppliedCoupon = (): string | null => {
+      // Your applied state shows: <span title="...">Coupon Code: FT2</span>
+      const couponSpan = root.querySelector<HTMLSpanElement>(
+        'span[title^="Applied"][title*="off"]',
+      );
+      const txt = (couponSpan?.textContent || "").trim();
+      const m = txt.match(/Coupon Code:\s*([A-Z0-9_-]+)/i);
+      return m?.[1]?.toUpperCase() || null;
+    };
+
+    const removeCouponIfPresent = () => {
+      const remove = document.getElementById(
+        "remove-coupon",
+      ) as HTMLElement | null;
+      if (!remove) return;
+      remove.click(); // Presswise UI usually wires this up
+    };
+
+    const applyCoupon = (code: string) => {
+      const input = document.getElementById(
+        "coupon-code",
+      ) as HTMLInputElement | null;
+      const btn = document.getElementById(
+        "apply-coupon",
+      ) as HTMLButtonElement | null;
+      if (!input || !btn) return;
+
+      input.value = code;
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+      input.dispatchEvent(new Event("change", { bubbles: true }));
+      btn.click();
+    };
+
+    const render = () => {
+      const n = count75Items();
+
+      // Not eligible => clear auto state and optionally remove applied FT* coupon
+      if (n < MIN_75_ITEMS || n > MAX_75_ITEMS) {
+        sessionStorage.removeItem("FT_AUTO_LAST");
+        return;
+      }
+
+      const desired = `FT${n}`.toUpperCase();
+      const applied = getAppliedCoupon();
+
+      // If already correct, do nothing
+      if (applied === desired) {
+        sessionStorage.setItem("FT_AUTO_LAST", desired);
+        return;
+      }
+
+      // Prevent spam-click loops if the DOM is mid-refresh
+      const lastTried = sessionStorage.getItem("FT_AUTO_LAST");
+      if (lastTried === desired) return;
+
+      // If a different coupon is applied, remove it first, then apply desired
+      if (applied && applied !== desired) {
+        removeCouponIfPresent();
+        // allow the UI to refresh, then apply the new one
+        window.setTimeout(() => applyCoupon(desired), 350);
+      } else {
+        applyCoupon(desired);
+      }
+
+      sessionStorage.setItem("FT_AUTO_LAST", desired);
+    };
+
+    render();
+
+    // Re-run if checkout summary updates dynamically
+    try {
+      let t: number | null = null;
+      const schedule = () => {
+        if (t) window.clearTimeout(t);
+        t = window.setTimeout(() => {
+          t = null;
+          render();
+        }, 200);
+      };
+
+      const obs = new MutationObserver(() => schedule());
+      obs.observe(root, {
+        childList: true,
+        subtree: true,
+        characterData: true,
+      });
+
+      // Disconnect after a bit to keep it light
+      window.setTimeout(() => obs.disconnect(), 10000);
+    } catch {
+      /* noop */
+    }
+  };
+
   //
   // ───────────── Existing site logic + entry ─────────────
   //
@@ -358,8 +483,10 @@ export function main() {
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTCONFIRMATION) {
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTPAYMENT) {
+    installAutoCouponFT();
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTREVIEW) {
+    installAutoCouponFT();
   }
 }
 
