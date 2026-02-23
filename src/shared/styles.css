@@ -78,10 +78,6 @@ div.anchorCatalog {
   transition: all 0.2s ease;
 }
 
-#menu li a:hover {
-  color: var(--navbar-hover) !important;
-}
-
 #menu li a:before {
   opacity: 0;
   width: 0%;
