@@ -49,6 +49,10 @@ div.anchorCatalog {
   display: none;
 }
 
+.tblImage {
+  border: 1px solid #cccccc;
+}
+
 /* =========================
    LEFT TREE / DROPDOWNS
    ========================= */
