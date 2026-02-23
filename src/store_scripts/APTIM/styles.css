@@ -1,3 +1,7 @@
+.tableSiteBanner img {
+  height: 80px;
+}
+
 #loginWrapper {
   width: 100%;
   background-color: var(--loginbar-bg);
