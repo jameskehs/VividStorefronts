@@ -13,10 +13,6 @@
    CATALOG / PRODUCT GRID
    ========================= */
 
-.spriteLayer {
-  background-size: none !important;
-}
-
 div.spriteLayer {
   border: 1px solid !important;
   box-shadow: 2px 3px 2px rgba(0, 0, 0, 0.5) !important;
@@ -25,7 +21,7 @@ div.spriteLayer {
 .prodCell {
   padding: 8px !important;
   border: none;
-  border-radius: 8px;
+  border-radius: 0px;
   transition: all 0.2s ease;
   background-color: #fff !important;
   margin: 4px;
@@ -40,7 +36,7 @@ img.finishedGoodThmb {
 .prodCell .left a {
   background-color: transparent !important;
   display: block;
-  border-radius: 8px;
+  border-radius: 0px;
   transition: all 0.2s ease;
   height: auto;
   max-height: 250px;
@@ -330,7 +326,7 @@ table.tableMain {
 #sideBarNav {
   width: 300px !important;
   background-color: transparent;
-  border-radius: 8px;
+  border-radius: 0px;
   padding: 10px;
 }
 
