@@ -13,6 +13,10 @@
    CATALOG / PRODUCT GRID
    ========================= */
 
+.spriteLayer {
+  background-size: none !important;
+}
+
 div.spriteLayer {
   border: 1px solid !important;
   box-shadow: 2px 3px 2px rgba(0, 0, 0, 0.5) !important;
