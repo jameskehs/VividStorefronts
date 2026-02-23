@@ -8,6 +8,107 @@
   padding: 0px 32px;
   box-shadow: 0px 0px 0px rgb(255, 255, 255) !important;
 }
+
+/* =========================
+   CATALOG / PRODUCT GRID
+   ========================= */
+
+div.spriteLayer {
+  border: 1px solid !important;
+  box-shadow: 2px 3px 2px rgba(0, 0, 0, 0.5) !important;
+}
+
+.prodCell {
+  padding: 8px !important;
+  border: none;
+  border-radius: 0px;
+  transition: all 0.2s ease;
+  background-color: #fff !important;
+  margin: 4px;
+}
+
+img.finishedGoodThmb {
+  max-height: 250px;
+  height: auto;
+  padding: 0px;
+}
+
+.prodCell .left a {
+  background-color: transparent !important;
+  display: block;
+  border-radius: 0px;
+  transition: all 0.2s ease;
+  height: auto;
+  max-height: 250px;
+}
+
+div.anchorCatalog {
+  background-color: var(--primary-color) !important;
+  display: none;
+}
+
+/* =========================
+   LEFT TREE / DROPDOWNS
+   ========================= */
+ul.TreeControl li#active {
+  border-bottom: none;
+  border-left-color: transparent;
+}
+
+ul.dropdown-content {
+  background-color: #fff;
+  margin-right: 5px !important;
+}
+
+ul.TreeControl {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 8px;
+}
+
+/* =========================
+   PAGE LAYOUT WRAPPERS
+   ========================= */
+#mainContentSF {
+  width: 100% !important;
+  max-width: none !important;
+  padding: 0 !important;
+  background-color: #efefef;
+}
+
+#logoLinks {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Inside #logoLinks layout */
+#logoLinks .logo-layout {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+table.tableLogin {
+  position: initial;
+  float: none;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+table.tableMain {
+  top: auto !important; /* Ensure no top value is applied */
+  max-width: 1200px;
+  margin: auto !important;
+}
+
+#headWrapper {
+  padding: 12px 32px;
+  width: 100%;
+  background-color: var(--navbar-bg);
+}
+
 /* =========================
    MENU (ICON COLOR + NO JITTER)
    ========================= */
@@ -231,6 +332,14 @@
 
 table#catalogTblheader {
   display: none;
+}
+
+.buttonContainer {
+  display: none;
+}
+
+img#productImage {
+  width: 400px;
 }
 
 .list-style-buttons {
