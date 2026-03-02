@@ -313,15 +313,16 @@ table.tableMain {
    SIDEBAR / MISC
    ========================= */
 #sideBarNav {
-  width: 300px !important;
+  width: 310px !important;
   background-color: transparent;
   border-radius: 8px;
   padding: 10px;
 }
 
-/*table#catalogTblheader {
-  display: none;
-}*/
+table#catalogTblheader {
+  background-color: #fff;
+  border-radius: 8px;
+}
 
 .buttonContainer {
   display: none;
