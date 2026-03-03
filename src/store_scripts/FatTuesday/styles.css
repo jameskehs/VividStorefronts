@@ -341,3 +341,7 @@ img#productImage {
 #searchbar {
   display: none;
 }
+
+div.source {
+  font-size: 2.7rem !important;
+}
