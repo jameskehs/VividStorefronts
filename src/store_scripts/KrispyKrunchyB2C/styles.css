@@ -303,9 +303,10 @@ td#productImageCol {
   max-width: 600px;
 }
 
-/*table#catalogTblheader {
-  display: none;
-}*/
+table#catalogTblheader {
+  background-color: #fff;
+  border-radius: 8px;
+}
 
 img#productImage {
   width: 400px;
