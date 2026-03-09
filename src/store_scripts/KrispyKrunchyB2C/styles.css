@@ -303,9 +303,9 @@ td#productImageCol {
   max-width: 600px;
 }
 
-table#catalogTblheader {
+/*table#catalogTblheader {
   display: none;
-}
+}*/
 
 img#productImage {
   width: 400px;
