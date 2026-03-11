@@ -1,8 +1,60 @@
 import { StorefrontPage } from "../../enums/StorefrontPage.enum";
 import { GLOBALVARS } from "../../index";
+import { ChangeCustomerServiceMessage } from "../../shared/customerServiceMessage";
+import { changeSupportText } from "../../shared/changeSupportText";
+import { ChangeInventoryCountNoticeNEW } from "../../shared/inventoryCountNoticeNEW";
 
 export function main() {
-  document.title = "Krispy Krunch Online Store";
+  document.title = "Krunch Shop Online Store";
+
+  const applyKkcMessageOverrides = async () => {
+    // Let the shared helper do its normal replacement first
+    await ChangeInventoryCountNoticeNEW(
+      "Inventory not available for the desired order quantity. Please contact us at krunchshop@poweredbyprisma.com.",
+      "krunchshop@poweredbyprisma.com",
+    );
+
+    // Force the exact desired email afterward
+    if (GLOBALVARS.currentPage === StorefrontPage.ADDTOCART) {
+      const inventoryNotice = document.getElementById("inventoryCountNotice");
+      if (inventoryNotice) {
+        inventoryNotice.innerHTML =
+          'Inventory not available for the desired order quantity. Please contact us at <a href="mailto:krunchshop@poweredbyprisma.com">krunchshop@poweredbyprisma.com</a>.';
+      }
+    }
+
+    ChangeCustomerServiceMessage(
+      'For customer service, please contact us at <a href="mailto:krunchshop@poweredbyprisma.com">krunchshop@poweredbyprisma.com</a>.',
+    );
+
+    // Because changeSupportText overwrites innerHTML 3 times,
+    // put the full message in the LAST parameter only.
+    changeSupportText(
+      "",
+      "",
+      'If you are having issues accessing your account, please contact us at <a href="mailto:krunchshop@poweredbyprisma.com">krunchshop@poweredbyprisma.com</a>.',
+    );
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => {
+      void applyKkcMessageOverrides();
+      setTimeout(() => {
+        void applyKkcMessageOverrides();
+      }, 100);
+      setTimeout(() => {
+        void applyKkcMessageOverrides();
+      }, 400);
+    });
+  } else {
+    void applyKkcMessageOverrides();
+    setTimeout(() => {
+      void applyKkcMessageOverrides();
+    }, 100);
+    setTimeout(() => {
+      void applyKkcMessageOverrides();
+    }, 400);
+  }
 
   //let shipMsg = `<p class="ship-message">More Items Coming Soon!</p>`;
   // $(shipMsg).insertBefore(".tableMain");
@@ -20,7 +72,7 @@ export function main() {
         $(this)
           .text()
           .indexOf(
-            "You are creating a new user account for customer account:"
+            "You are creating a new user account for customer account:",
           ) !== -1
       );
     })
@@ -37,7 +89,7 @@ export function main() {
         )?.value?.trim() ||
         (
           root.querySelector(
-            'input[name="productType"]'
+            'input[name="productType"]',
           ) as HTMLInputElement | null
         )?.value?.trim() ||
         "";
@@ -46,12 +98,12 @@ export function main() {
       const txt =
         (
           root.querySelector(
-            "#breadcrumb .templateName a"
+            "#breadcrumb .templateName a",
           ) as HTMLAnchorElement | null
         )?.getAttribute("title") ||
         (
           root.querySelector(
-            "#breadcrumb .templateName a"
+            "#breadcrumb .templateName a",
           ) as HTMLAnchorElement | null
         )?.textContent ||
         (root.querySelector("#productCode") as HTMLInputElement | null)
@@ -65,7 +117,7 @@ export function main() {
 
   // Pull WxH from a few common places (productCode/productID/link rel/title)
   const extractSize = (
-    scope: ParentNode | Document = document
+    scope: ParentNode | Document = document,
   ): { w: string; h: string } | null => {
     try {
       const candidates: string[] = [
@@ -73,22 +125,22 @@ export function main() {
           ?.value || "",
         (
           scope.querySelector?.(
-            'input[name="productID"]'
+            'input[name="productID"]',
           ) as HTMLInputElement | null
         )?.value || "",
         (
           scope.querySelector?.(
-            'a.productImage[id^="productImage-"]'
+            'a.productImage[id^="productImage-"]',
           ) as HTMLAnchorElement | null
         )?.getAttribute("rel") || "",
         (
           scope.querySelector?.(
-            "#breadcrumb .templateName a"
+            "#breadcrumb .templateName a",
           ) as HTMLAnchorElement | null
         )?.getAttribute("title") ||
           (
             scope.querySelector?.(
-              "#breadcrumb .templateName a"
+              "#breadcrumb .templateName a",
             ) as HTMLAnchorElement | null
           )?.textContent ||
           "",
@@ -113,7 +165,7 @@ export function main() {
   let _renders = 0;
 
   const renderFinishedSizeUnderQty = (
-    root: Document | HTMLElement = document
+    root: Document | HTMLElement = document,
   ): boolean => {
     try {
       const qtyRow = root.querySelector("#quantityRow");
@@ -148,7 +200,7 @@ export function main() {
 
       // fill hidden size if blank (helps downstream)
       const sizeInput = document.querySelector(
-        'input[name="size"]'
+        'input[name="size"]',
       ) as HTMLInputElement | null;
       if (sizeInput && !sizeInput.value)
         sizeInput.value = `${size.w} x ${size.h}`;
@@ -212,12 +264,12 @@ export function main() {
   const cartLooksPrinted = (scope: ParentNode): boolean => {
     try {
       const hasInksOrPaper = !!scope.querySelector(
-        ".jobDetailsTable .INKSRow, .jobDetailsTable .PAPERRow"
+        ".jobDetailsTable .INKSRow, .jobDetailsTable .PAPERRow",
       );
       const rel =
         (
           scope.querySelector(
-            'a.productImage[id^="productImage-"]'
+            'a.productImage[id^="productImage-"]',
           ) as HTMLAnchorElement | null
         )?.getAttribute("rel") || "";
       const printedByRel = /_w_/i.test(rel) || /_w_b/i.test(rel);
@@ -237,7 +289,7 @@ export function main() {
       if (!memoTable) return;
 
       const memoInput = memoTable.querySelector(
-        'input[name^="memo"]'
+        'input[name^="memo"]',
       ) as HTMLInputElement | null;
       const itemId = memoInput?.name?.replace("memo", "") || "";
       const rowId = `finishedSizeRow-${itemId || "unknown"}`;
@@ -343,7 +395,7 @@ export function main() {
     // Add-to-cart page image swap + finished size under quantity
     if (isAddToCartPage()) {
       const img = document.getElementById(
-        "productImage"
+        "productImage",
       ) as HTMLImageElement | null;
       const artID = (window as any).p?.artID;
 
@@ -411,7 +463,7 @@ function convertMenuTextToIcons(): void {
         const rawText = link.textContent?.trim().toUpperCase();
 
         const matchedKey = Object.keys(iconMap).find((key) =>
-          rawText?.startsWith(key)
+          rawText?.startsWith(key),
         );
         const iconClass = matchedKey ? iconMap[matchedKey] : "";
 

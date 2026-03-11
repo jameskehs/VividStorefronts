@@ -365,3 +365,9 @@ img#productImage {
   top: 0;
   white-space: nowrap;
 }
+
+/* Remove  the sales reps */
+#contactCSRInfo,
+#contactSalesInfo {
+  display: none;
+}
