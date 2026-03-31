@@ -1,0 +1,26 @@
+.size_chart,
+.size_chart a,
+.size_chart a:hover,
+.size_chart h4,
+.size_chart a h4,
+.size_chart a:hover h4 {
+  background: transparent !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.size_chart a,
+.size_chart a:hover {
+  text-decoration: none;
+  transform: none !important;
+}
+
+.size_chart h4,
+.size_chart a h4,
+.size_chart a:hover h4 {
+  margin: 0;
+  padding: 0;
+  color: inherit;
+  transform: none !important;
+  transition: none !important;
+}
