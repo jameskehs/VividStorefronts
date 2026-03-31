@@ -1,26 +1,37 @@
-.size_chart,
-.size_chart a,
-.size_chart a:hover,
-.size_chart h4,
-.size_chart a h4,
-.size_chart a:hover h4 {
-  background: transparent !important;
-  background-color: transparent !important;
-  box-shadow: none !important;
+.size_chart {
+  margin-top: 12px;
 }
 
-.size_chart a,
-.size_chart a:hover {
+.specsheet-btn {
+  display: inline-block;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  background-color: #111;
+  border-radius: 6px;
   text-decoration: none;
-  transform: none !important;
+  border: none;
+  box-shadow: none !important;
+  transition:
+    background-color 0.2s ease,
+    transform 0.15s ease;
 }
 
-.size_chart h4,
-.size_chart a h4,
-.size_chart a:hover h4 {
-  margin: 0;
-  padding: 0;
-  color: inherit;
-  transform: none !important;
-  transition: none !important;
+/* Hover */
+.specsheet-btn:hover {
+  background-color: #333;
+  transform: translateY(-1px);
+}
+
+/* Active (click feel) */
+.specsheet-btn:active {
+  transform: translateY(0);
+  background-color: #000;
+}
+
+/* Kill any inherited weirdness */
+.specsheet-btn,
+.specsheet-btn:hover {
+  background-image: none !important;
 }
