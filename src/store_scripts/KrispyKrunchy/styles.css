@@ -371,3 +371,10 @@ img#productImage {
 #contactSalesInfo {
   display: none;
 }
+
+#thumbnailPrice {
+  background-color: var(--secondary-color) !important;
+  color: var(--primary-text) !important;
+  border-radius: 4px;
+  border: none;
+}
