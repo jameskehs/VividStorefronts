@@ -454,7 +454,8 @@ export function main() {
           // Style it red
           helper.style.color = "#cc0000";
           helper.style.marginTop = "8px";
-          helper.style.fontSize = "0.9em";
+          helper.style.fontStyle = "italic";
+          helper.style.fontSize = "1.2em";
           helper.style.fontWeight = "500";
 
           el.appendChild(helper);
