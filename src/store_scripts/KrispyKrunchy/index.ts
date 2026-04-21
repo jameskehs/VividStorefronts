@@ -4,6 +4,8 @@ import { ChangeCustomerServiceMessage } from "../../shared/customerServiceMessag
 import { changeSupportText } from "../../shared/changeSupportText";
 import { ChangeInventoryCountNoticeNEW } from "../../shared/inventoryCountNoticeNEW";
 
+declare const $: any;
+
 export function main() {
   document.title = "Krunch Shop Online Store";
 
@@ -67,7 +69,7 @@ export function main() {
 
   // Remove the "You are creating a new user account..." block above the form
   $("#editProfileTbl > tbody > tr > td > table")
-    .filter(function () {
+    .filter(function (this: any) {
       return (
         $(this)
           .text()
@@ -434,6 +436,35 @@ export function main() {
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTCONFIRMATION) {
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTPAYMENT) {
+    const updateCCInstructions = () => {
+      const el = document.getElementById("CCInstructions");
+
+      if (el) {
+        // Update main message (optional)
+        el.innerHTML =
+          "Enter your payment details below. A processing fee may apply to credit card transactions.";
+
+        // Add red helper text (only once)
+        if (!document.getElementById("kkc-cc-helper")) {
+          const helper = document.createElement("div");
+          helper.id = "kkc-cc-helper";
+          helper.textContent =
+            "Examples for KKC Employees: Personal purchase for daily job duties; Purchase to be given away";
+
+          // Style it red
+          helper.style.color = "#cc0000";
+          helper.style.marginTop = "8px";
+          helper.style.fontSize = "0.9em";
+          helper.style.fontWeight = "500";
+
+          el.appendChild(helper);
+        }
+      } else {
+        setTimeout(updateCCInstructions, 300);
+      }
+    };
+
+    updateCCInstructions();
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTREVIEW) {
   }
