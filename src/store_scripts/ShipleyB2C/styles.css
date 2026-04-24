@@ -345,3 +345,7 @@ img#productImage {
 #searchbar {
   display: none;
 }
+
+.TCbullet a[alt="Special Sales Items"] {
+  color: #ff0000 !important;
+}
