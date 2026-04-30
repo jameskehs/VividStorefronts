@@ -296,6 +296,28 @@ export function main() {
   };
 
   //
+  // ───────────── Department Number helper text ─────────────
+  //
+  const addDepartmentNumberMessage = (): void => {
+    const customerPO = document.querySelector<HTMLInputElement>("#customerPO");
+
+    if (!customerPO) return;
+    if (document.querySelector("#departmentNumberHelpText")) return;
+
+    const message = document.createElement("div");
+    message.id = "departmentNumberHelpText";
+    message.textContent =
+      "The Department Number field should be customer's restaurant number.";
+
+    message.style.marginTop = "6px";
+    message.style.color = "red";
+    message.style.fontStyle = "italic";
+    message.style.fontSize = "13px";
+
+    customerPO.insertAdjacentElement("afterend", message);
+  };
+
+  //
   // ───────────── Existing site logic + entry ─────────────
   //
   function init() {
@@ -356,21 +378,27 @@ export function main() {
 
   // (Unused in this file, but keeping the stubs to match your template)
   if (GLOBALVARS.currentPage === StorefrontPage.CATALOG) {
-    $("p.ui-state-error").each((index, element) => {
-      if ($(element).text() === "ON BACKORDER") {
-        $(element).hide();
-      }
-    });
+    document
+      .querySelectorAll<HTMLParagraphElement>("p.ui-state-error")
+      .forEach((element) => {
+        if (element.textContent?.trim() === "ON BACKORDER") {
+          element.style.display = "none";
+        }
+      });
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTCONFIRMATION) {
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTPAYMENT) {
-    $("#CCInstructions")
-      .css("color", "red")
-      .css("font-weight", "bold")
-      .text(
-        "Your credit card will be authorized once the order is placed. This may put a hold on funds with your banking institution. Please note that we do not charge your credit card until the order has shipped. Most times the shipping cost is less than estimated shipping cost shown.\n Enter the information below to complete the payment options for your order.",
-      );
+    addDepartmentNumberMessage();
+    const ccInstructions =
+      document.querySelector<HTMLDivElement>("#CCInstructions");
+
+    if (ccInstructions) {
+      ccInstructions.style.color = "red";
+      ccInstructions.style.fontWeight = "bold";
+      ccInstructions.textContent =
+        "Your credit card will be authorized once the order is placed. This may put a hold on funds with your banking institution. Please note that we do not charge your credit card until the order has shipped. Most times the shipping cost is less than estimated shipping cost shown.\n Enter the information below to complete the payment options for your order.";
+    }
   }
 
   if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTREVIEW) {
