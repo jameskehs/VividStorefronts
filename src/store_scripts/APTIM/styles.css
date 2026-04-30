@@ -340,7 +340,9 @@ table#catalogTblheader {
   display: none;
 }
 
-.buttonContainer {
+/* Hide catalog/product button containers only */
+.prodCell .buttonContainer,
+#catalogTbl .buttonContainer {
   display: none;
 }
 
