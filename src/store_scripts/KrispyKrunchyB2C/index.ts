@@ -60,23 +60,32 @@ export function main() {
   // $(shipMsg).insertBefore(".tableMain");
 
   // Change "Shipping & Handling" to "Shipping" in the order summary
-  $("#taxRushShipGrand table tbody tr td").eq(7).text("Shipping");
+  const shippingCells = document.querySelectorAll<HTMLTableCellElement>(
+    "#taxRushShipGrand table tbody tr td",
+  );
+
+  const shippingCell = shippingCells.item(7);
+  if (shippingCell) {
+    shippingCell.textContent = "Shipping";
+  }
 
   // Remove option to use default customer billing address
-  $("#billAdrOnFileBox").remove();
+  document.getElementById("billAdrOnFileBox")?.remove();
 
   // Remove the "You are creating a new user account..." block above the form
-  $("#editProfileTbl > tbody > tr > td > table")
-    .filter(function () {
-      return (
-        $(this)
-          .text()
-          .indexOf(
-            "You are creating a new user account for customer account:",
-          ) !== -1
-      );
-    })
-    .remove(); // removes just that inner table section
+  document
+    .querySelectorAll<HTMLTableElement>(
+      "#editProfileTbl > tbody > tr > td > table",
+    )
+    .forEach((table) => {
+      if (
+        table.textContent?.includes(
+          "You are creating a new user account for customer account:",
+        )
+      ) {
+        table.remove();
+      }
+    });
 
   //
   // ───────────── Shared helpers (Printed only) ─────────────
@@ -431,11 +440,11 @@ export function main() {
   }
 
   // (Unused in this file, but keeping the stubs to match your template)
-  if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTCONFIRMATION) {
+  if (GLOBALVARS?.currentPage === StorefrontPage.CHECKOUTCONFIRMATION) {
   }
-  if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTPAYMENT) {
+  if (GLOBALVARS?.currentPage === StorefrontPage.CHECKOUTPAYMENT) {
   }
-  if (GLOBALVARS.currentPage === StorefrontPage.CHECKOUTREVIEW) {
+  if (GLOBALVARS?.currentPage === StorefrontPage.CHECKOUTREVIEW) {
   }
 }
 
