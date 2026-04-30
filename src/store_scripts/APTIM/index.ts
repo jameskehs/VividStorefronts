@@ -3,6 +3,65 @@ import { GLOBALVARS } from "../../index";
 
 export function main() {
   //
+  // ───────────── Shared helper: wait for late-loading Presswise elements ─────────────
+  //
+  const waitForElement = (
+    selector: string,
+    callback: (el: HTMLElement) => void,
+    timeoutMs = 5000,
+  ): void => {
+    const existing = document.querySelector(selector) as HTMLElement | null;
+
+    if (existing) {
+      callback(existing);
+      return;
+    }
+
+    const observer = new MutationObserver(() => {
+      const el = document.querySelector(selector) as HTMLElement | null;
+
+      if (el) {
+        observer.disconnect();
+        callback(el);
+      }
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+    });
+
+    window.setTimeout(() => {
+      observer.disconnect();
+    }, timeoutMs);
+  };
+
+  //
+  // ───────────── APTIM checkout payment page message ─────────────
+  //
+  const initAptimCheckoutPayment = (): void => {
+    waitForElement("#custPOBox", (custPOBox) => {
+      const section = custPOBox.querySelector("section");
+
+      if (!section) return;
+
+      if (!document.getElementById("aptim-po-example-message")) {
+        const message = document.createElement("div");
+        message.id = "aptim-po-example-message";
+        message.textContent =
+          "Examples for APTIM Employees: Personal purchase for daily job duties; Purchase to be given away";
+        message.style.color = "red";
+        message.style.fontStyle = "italic";
+        message.style.marginTop = "6px";
+        message.style.fontSize = "13px";
+        message.style.lineHeight = "1.35";
+
+        section.appendChild(message);
+      }
+    });
+  };
+
+  //
   // ───────────── Shared helpers (Printed only) ─────────────
   //
   const isPrinted = (root: Document | HTMLElement = document): boolean => {
@@ -309,7 +368,7 @@ export function main() {
 
     const isCartPage = () =>
       (GLOBALVARS?.currentPage || "").toLowerCase().includes("cart page") ||
-      window.location.pathname.includes("/cart/");
+      !!document.getElementById("shoppingCartTbl");
 
     // Cart page hook (runs independently of add-to-cart)
     if (isCartPage()) {
@@ -354,11 +413,14 @@ export function main() {
     init();
   }
 
-  // (Unused in this file, but keeping the stubs to match your template)
+  // Page-specific hooks
   if (GLOBALVARS?.currentPage === StorefrontPage.CHECKOUTCONFIRMATION) {
   }
+
   if (GLOBALVARS?.currentPage === StorefrontPage.CHECKOUTPAYMENT) {
+    initAptimCheckoutPayment();
   }
+
   if (GLOBALVARS?.currentPage === StorefrontPage.CHECKOUTREVIEW) {
   }
 }
