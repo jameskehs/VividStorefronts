@@ -2,6 +2,9 @@ import { StorefrontPage } from "../../enums/StorefrontPage.enum";
 import { GLOBALVARS } from "../../index";
 
 export function main() {
+  const isAccountEditProfilePage = window.location.pathname.includes(
+    "/account/edit_profile.php",
+  );
   //
   // ───────────── Shared helper: wait for late-loading Presswise elements ─────────────
   //
@@ -371,6 +374,11 @@ export function main() {
       !!document.getElementById("shoppingCartTbl");
 
     // Cart page hook (runs independently of add-to-cart)
+    if (isAccountEditProfilePage) {
+      return;
+    }
+
+    // Cart page hook (runs independently of add-to-cart)
     if (isCartPage()) {
       installCartFinishedSize();
     }
@@ -473,4 +481,6 @@ function convertMenuTextToIcons(): void {
     : tryConvert();
 }
 
-convertMenuTextToIcons();
+if (!window.location.pathname.includes("/account/edit_profile.php")) {
+  convertMenuTextToIcons();
+}
