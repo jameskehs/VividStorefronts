@@ -368,4 +368,8 @@ p.thumbnailPrice {
   text-align: center;
   padding: 6px;
   width: fit-content;
+  display: flex;
+  gap: 2px;
+  flex-wrap: wrap;
+  font-size: 0.85rem;
 }
