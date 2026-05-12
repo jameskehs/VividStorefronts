@@ -361,7 +361,7 @@ img#productImage {
 }
 
 p.thumbnailPrice {
-  background-color: var(--secondary-color) !important;
+  background-color: red !important;
   color: var(--primary-text) !important;
   border-radius: 4px;
   border: none;
