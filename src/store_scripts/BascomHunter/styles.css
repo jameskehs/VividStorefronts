@@ -363,7 +363,7 @@ img#productImage {
 p.thumbnailPrice {
   background-color: red !important;
   color: var(--primary-text) !important;
-  border-radius: 4px;
+  border-radius: 0px !important;
   border: none;
   text-align: center;
   padding: 6px;
@@ -372,4 +372,14 @@ p.thumbnailPrice {
   gap: 2px;
   flex-wrap: wrap;
   font-size: 0.85rem;
+}
+
+.color_swatch {
+  border-radius: 0px !important;
+}
+
+.prod_info_tags p,
+.prod_sku {
+  background-color: #000 !important;
+  border-radius: 0px !important;
 }
