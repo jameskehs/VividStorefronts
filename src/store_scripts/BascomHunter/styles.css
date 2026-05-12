@@ -359,3 +359,13 @@ img#productImage {
 #searchbar {
   display: none;
 }
+
+p.thumbnailPrice {
+  background-color: var(--secondary-color) !important;
+  color: var(--primary-text) !important;
+  border-radius: 4px;
+  border: none;
+  text-align: center;
+  padding: 6px;
+  width: fit-content;
+}
