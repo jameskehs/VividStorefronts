@@ -375,8 +375,6 @@ p.thumbnailPrice {
 }
 
 .color_swatch {
-  height: 10px !important;
-  width: 10px !important;
   border-radius: 0px !important;
   border: 1px solid #d4d4d4 !important;
 }
