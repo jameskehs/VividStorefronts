@@ -375,7 +375,10 @@ p.thumbnailPrice {
 }
 
 .color_swatch {
+  height: 5px !important;
+  width: 5px !important;
   border-radius: 0px !important;
+  border: 1px solid #d4d4d4 !important;
 }
 
 .prod_info_tags p,
