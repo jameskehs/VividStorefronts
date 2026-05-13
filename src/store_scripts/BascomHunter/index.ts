@@ -40,31 +40,6 @@ export function main() {
   };
 
   //
-  // ───────────── APTIM checkout payment page message ─────────────
-  //
-  const initAptimCheckoutPayment = (): void => {
-    waitForElement("#custPOBox", (custPOBox) => {
-      const section = custPOBox.querySelector("section");
-
-      if (!section) return;
-
-      if (!document.getElementById("aptim-po-example-message")) {
-        const message = document.createElement("div");
-        message.id = "aptim-po-example-message";
-        message.textContent =
-          "Examples for APTIM Employees: Personal purchase for daily job duties; Purchase to be given away";
-        message.style.color = "red";
-        message.style.fontStyle = "italic";
-        message.style.marginTop = "6px";
-        message.style.fontSize = "13px";
-        message.style.lineHeight = "1.35";
-
-        section.appendChild(message);
-      }
-    });
-  };
-
-  //
   // ───────────── Shared helpers (Printed only) ─────────────
   //
   const isPrinted = (root: Document | HTMLElement = document): boolean => {
@@ -426,7 +401,6 @@ export function main() {
   }
 
   if (GLOBALVARS?.currentPage === StorefrontPage.CHECKOUTPAYMENT) {
-    initAptimCheckoutPayment();
   }
 
   if (GLOBALVARS?.currentPage === StorefrontPage.CHECKOUTREVIEW) {
