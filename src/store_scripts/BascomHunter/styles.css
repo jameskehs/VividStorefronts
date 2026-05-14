@@ -298,6 +298,29 @@ table.tableMain {
   transform: none !important;
 }
 
+#no-search-results-message {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  max-width: 700px;
+  margin: 12px auto 20px auto;
+  padding: 16px 20px;
+  text-align: center;
+  background: #f7f7f7;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  color: #222 !important;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+#no-search-results-message strong {
+  display: block;
+  font-size: 20px;
+  margin-bottom: 4px;
+  color: #222 !important;
+}
+
 /* =========================
    PRICING TABLE
    ========================= */
@@ -383,23 +406,4 @@ p.thumbnailPrice {
 .prod_sku {
   background-color: #000 !important;
   border-radius: 0px !important;
-}
-
-#no-search-results-message {
-  max-width: 700px;
-  margin: 12px auto 20px auto;
-  padding: 16px 20px;
-  text-align: center;
-  background: #f7f7f7;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  color: #222;
-  font-size: 16px;
-  line-height: 1.5;
-}
-
-#no-search-results-message strong {
-  display: block;
-  font-size: 20px;
-  margin-bottom: 4px;
 }
