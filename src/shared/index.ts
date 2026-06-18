@@ -32,7 +32,7 @@ export interface FeeShipmentLike {
  * Returns `null` if there are no fees (> 0) across all shipments.
  */
 export function calculateCreditCardFees<T extends FeeShipmentLike>(
-  shipments: T[] | null | undefined
+  shipments: T[] | null | undefined,
 ): number | null {
   if (!shipments || shipments.length === 0) return null;
 
@@ -121,21 +121,21 @@ function attachGlobalAjaxCSRF(): void {
       if (!entry) {
         // prefix/suffix match (some maps store keys without full path or with different prefixes)
         const byPrefix = Object.keys(tokensMap).find(
-          (k) => path.endsWith(k) || k.endsWith(path)
+          (k) => path.endsWith(k) || k.endsWith(path),
         );
         if (byPrefix) entry = tokensMap[byPrefix];
       }
       if (!entry) {
         // basename match (e.g., "ajax_newProductID.php")
         const byBase = Object.keys(tokensMap).find(
-          (k) => basenameFromPath(k) === baseName
+          (k) => basenameFromPath(k) === baseName,
         );
         if (byBase) entry = tokensMap[byBase];
       }
 
       // Fallbacks: meta/cookie if present
       const meta = document.querySelector(
-        'meta[name="csrf-token"]'
+        'meta[name="csrf-token"]',
       ) as HTMLMetaElement | null;
       const metaToken = meta?.getAttribute("content") || "";
       const cookieToken =
@@ -269,7 +269,7 @@ function enforceIntegerQuantitiesOnCart(): void {
         '#quantityCol input[name="quantity"]',
         "input.quantity",
         "input.qty",
-      ].join(",")
+      ].join(","),
     );
     candidates.forEach(applyToInput);
 
@@ -369,10 +369,10 @@ function enforceIntegerQuantityOnCartEdit(): void {
   const findEditableQuantityInput = (): HTMLInputElement | null => {
     return (
       document.querySelector<HTMLInputElement>(
-        '#quantityCol input[name="quantity"]:not([type="hidden"]):not([readonly]):not([disabled])'
+        '#quantityCol input[name="quantity"]:not([type="hidden"]):not([readonly]):not([disabled])',
       ) ||
       document.querySelector<HTMLInputElement>(
-        'input#quantity[name="quantity"]:not([type="hidden"]):not([readonly]):not([disabled])'
+        'input#quantity[name="quantity"]:not([type="hidden"]):not([readonly]):not([disabled])',
       ) ||
       null
     );
@@ -419,7 +419,7 @@ function installCartClickGuard(): void {
       document;
     return (
       row.querySelector<HTMLInputElement>(
-        'input[type="number"].qty, input.qty, input[name*="qty"], input[name*="quantity"]'
+        'input[type="number"].qty, input.qty, input[name*="qty"], input[name*="quantity"]',
       ) || null
     );
   };
@@ -460,7 +460,7 @@ function installCartClickGuard(): void {
       if (!target) return;
 
       const btn = target.closest(
-        'button, .qty-btn, .qtyPlus, .qtyMinus, [data-action="inc"], [data-action="dec"]'
+        'button, .qty-btn, .qtyPlus, .qtyMinus, [data-action="inc"], [data-action="dec"]',
       ) as Element | null;
       if (!btn) return;
 
@@ -476,7 +476,7 @@ function installCartClickGuard(): void {
       const text = (btn.textContent || "").trim();
       const looksLikeQty =
         (btn as Element).matches(
-          '.qty-btn, .qtyPlus, .qtyMinus, [data-action="inc"], [data-action="dec"]'
+          '.qty-btn, .qtyPlus, .qtyMinus, [data-action="inc"], [data-action="dec"]',
         ) || /^\s*[+\-]\s*$/.test(text);
 
       if (looksLikeQty) {
@@ -489,7 +489,7 @@ function installCartClickGuard(): void {
         }
       }
     },
-    true // capture
+    true, // capture
   );
 }
 
@@ -510,7 +510,7 @@ function suppressKnownInlineConstError(): void {
       }
       return false;
     },
-    true // capture
+    true, // capture
   );
 }
 
@@ -550,7 +550,7 @@ function toggleAddToCartWhenReturnPresent(): void {
 
     const isReturnVisible = (): boolean => {
       const returns = container.querySelectorAll<HTMLButtonElement>(
-        "#returnToCartButton, button[name='cart_return']"
+        "#returnToCartButton, button[name='cart_return']",
       );
       for (const btn of Array.from(returns)) {
         if (btn.offsetParent !== null) return true; // truly visible in layout
@@ -561,7 +561,7 @@ function toggleAddToCartWhenReturnPresent(): void {
     const sync = () => {
       const hideAdd = isReturnVisible();
       const adds = container.querySelectorAll<HTMLButtonElement>(
-        "#addToCartButton, button[name='add_cart']"
+        "#addToCartButton, button[name='add_cart']",
       );
 
       adds.forEach((btn) => {
@@ -578,11 +578,11 @@ function toggleAddToCartWhenReturnPresent(): void {
 
       // Keep hidden inputs aligned (no attribute observer → no loops)
       const showAddFlag = container.querySelector<HTMLInputElement>(
-        "input[name='showAddToCart']"
+        "input[name='showAddToCart']",
       );
       if (showAddFlag) showAddFlag.value = hideAdd ? "0" : "1";
       const actionInput = container.querySelector<HTMLInputElement>(
-        "input[name='cartButtonType']"
+        "input[name='cartButtonType']",
       );
       if (hideAdd && actionInput) actionInput.value = "return";
     };
@@ -719,17 +719,22 @@ export function runSharedScript(options: OptionsParameter) {
 
   ChangeInventoryCountNoticeNEW(
     "Inventory not available for the desired order quantity. Please contact your account manager at 225-751-7297, or by email at salesBR@poweredbyprisma.com",
-    "salesBR@poweredbyprisma.com"
+    "salesBR@poweredbyprisma.com",
   );
 
+  const isShopDonsSite =
+    window.location.hostname.toLowerCase() === "shopdons.vivid-think.com";
+
   ChangeCustomerServiceMessage(
-    "For customer service, please email your Sales Representative listed above."
+    isShopDonsSite
+      ? "For customer service, please email Jamie Little at onlinestore@donsseafood.biz."
+      : "For customer service, please email your Sales Representative listed above.",
   );
 
   changeSupportText(
     "If you are having issues accessing your account, please contact our support team:",
     "Phone: 225-751-7297",
-    '<a href="mailto:dokshopbr@poweredbyprisma.com">Email: dokshopbr@poweredbyprisma.com</a>'
+    '<a href="mailto:dokshopbr@poweredbyprisma.com">Email: dokshopbr@poweredbyprisma.com</a>',
   );
 
   // Login help text tweaks (scoped)
@@ -791,12 +796,12 @@ export function runSharedScript(options: OptionsParameter) {
       (() => {
         const SCOPE = document.getElementById("paywithnewcard") || document;
         const iframe = document.getElementById(
-          "load_payment"
+          "load_payment",
         ) as HTMLIFrameElement | null;
         const form =
           SCOPE.querySelector<HTMLFormElement>('form[target="load_payment"]') ||
           document.querySelector<HTMLFormElement>(
-            'form[target="load_payment"]'
+            'form[target="load_payment"]',
           );
         if (!iframe || !form) return;
         if (iframe.getAttribute("name") !== "load_payment")
@@ -807,7 +812,7 @@ export function runSharedScript(options: OptionsParameter) {
         const getTokenLen = () => {
           for (const k of tokenInputs) {
             const el = form.querySelector<HTMLInputElement>(
-              `input[name="${k}"]`
+              `input[name="${k}"]`,
             );
             if (el?.value?.trim()) return el.value.trim().length;
           }
