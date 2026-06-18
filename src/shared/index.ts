@@ -727,7 +727,7 @@ export function runSharedScript(options: OptionsParameter) {
 
   ChangeCustomerServiceMessage(
     isShopDonsSite
-      ? "For customer service, please email Jamie Little at onlinestore@donsseafood.biz."
+      ? `For customer service, please email Jamie Little at <a href="mailto:onlinestore@donsseafood.biz">onlinestore@donsseafood.biz</a>.`
       : "For customer service, please email your Sales Representative listed above.",
   );
 
