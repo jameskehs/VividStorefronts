@@ -363,6 +363,7 @@ img#productImage {
   flex-wrap: wrap;
   justify-content: center;
   gap: 8px;
+  color: #fff;
 }
 
 .don-footer-inner a {
