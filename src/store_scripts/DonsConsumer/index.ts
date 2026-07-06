@@ -629,8 +629,7 @@ if (!existingFooter) {
 
   footer.innerHTML = `
     <div class="don-footer-inner">
-      <a href="mailto:onlinestore@donsseafood.biz">
-        Questions about your order? Email: onlinestore@donsseafood.biz
+        Questions about your order? Email:<a href="mailto:onlinestore@donsseafood.biz"> onlinestore@donsseafood.biz
       </a>
     </div>
   `;
