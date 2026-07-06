@@ -348,3 +348,32 @@ img#productImage {
 .checkoutProgress .bar {
   border: 1px solid #000;
 }
+
+/* === Global Don's Consumer footer === */
+.kkc-global-footer {
+  width: 100%;
+  padding: 12px 24px;
+  background-color: #bb3d43;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+.kkc-footer-inner {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.kkc-footer-inner a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.kkc-footer-inner a:hover {
+  text-decoration: underline;
+}
+
+.kkc-footer-separator {
+  color: #fff;
+}

@@ -620,4 +620,22 @@ function convertMenuTextToIcons(): void {
     : tryConvert();
 }
 
+// Insert global Don's Consumer footer on every page
+const existingFooter = document.querySelector(".kkc-global-footer");
+
+if (!existingFooter) {
+  const footer = document.createElement("footer");
+  footer.className = "kkc-global-footer";
+
+  footer.innerHTML = `
+    <div class="kkc-footer-inner">
+      <a href="mailto:onlinestore@donsseafood.biz">
+        Questions about your order? Email: onlinestore@donsseafood.biz
+      </a>
+    </div>
+  `;
+
+  document.body.appendChild(footer);
+}
+
 convertMenuTextToIcons();
