@@ -350,7 +350,7 @@ img#productImage {
 }
 
 /* === Global Don's Consumer footer === */
-.kkc-global-footer {
+.don-global-footer {
   width: 100%;
   padding: 12px 24px;
   background-color: #bb3d43;
@@ -358,22 +358,22 @@ img#productImage {
   text-align: center;
 }
 
-.kkc-footer-inner {
+.don-footer-inner {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 8px;
 }
 
-.kkc-footer-inner a {
+.don-footer-inner a {
   color: #fff;
   text-decoration: none;
 }
 
-.kkc-footer-inner a:hover {
+.don-footer-inner a:hover {
   text-decoration: underline;
 }
 
-.kkc-footer-separator {
+.don-footer-separator {
   color: #fff;
 }
