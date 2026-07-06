@@ -353,6 +353,10 @@ img#productImage {
   color: #ff0000 !important;
 }
 
+.TCbullet a[alt="Sale Items"] {
+  color: #ff0000 !important;
+}
+
 .flyoutMenuButton {
   max-width: 120px;
 }
