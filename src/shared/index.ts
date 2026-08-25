@@ -695,10 +695,77 @@ function updateLoginAssistanceMessage(): void {
 }
 
 /* ─────────────────────────────────────────────────────────────
+   Limit Customer PO field to 60 characters
+────────────────────────────────────────────────────────────── */
+function enforceCustomerPOLimit(): void {
+  const MAX_LENGTH = 60;
+  const APPLIED_ATTRIBUTE = "data-po-limit-applied";
+
+  const applyLimit = (input: HTMLInputElement): void => {
+    input.maxLength = MAX_LENGTH;
+    input.setAttribute("maxlength", String(MAX_LENGTH));
+
+    if (input.value.length > MAX_LENGTH) {
+      input.value = input.value.slice(0, MAX_LENGTH);
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+    }
+
+    if (input.hasAttribute(APPLIED_ATTRIBUTE)) return;
+    input.setAttribute(APPLIED_ATTRIBUTE, "true");
+
+    input.addEventListener("input", () => {
+      if (input.value.length <= MAX_LENGTH) return;
+
+      input.value = input.value.slice(0, MAX_LENGTH);
+      input.dispatchEvent(new Event("change", { bubbles: true }));
+    });
+  };
+
+  const applyAll = (root: ParentNode = document): void => {
+    root
+      .querySelectorAll<HTMLInputElement>(
+        'input#customerPO, input[name="customerPO"]',
+      )
+      .forEach(applyLimit);
+  };
+
+  applyAll();
+
+  try {
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        mutation.addedNodes.forEach((node) => {
+          if (!(node instanceof HTMLElement)) return;
+
+          if (node.matches('input#customerPO, input[name="customerPO"]')) {
+            applyLimit(node as HTMLInputElement);
+          }
+
+          applyAll(node);
+        });
+      });
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+    });
+  } catch (error) {
+    console.warn("Customer PO limit observer error:", error);
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
    Shared storefront bootstrap
 ────────────────────────────────────────────────────────────── */
 export function runSharedScript(options: OptionsParameter) {
   console.log("Hello from the shared script!");
+
+  try {
+    enforceCustomerPOLimit();
+  } catch (error) {
+    console.warn("Customer PO limit error:", error);
+  }
 
   // Attach CSRF and suppress the noisy inline const error as early as we can
   try {

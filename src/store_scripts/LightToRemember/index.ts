@@ -1,8 +1,8 @@
 // <script src="https://main--vividstorefronts.netlify.app/main.js"></script>
 // <script>loadStorefrontScript(brandingProfile)</script>
 
-import { StorefrontPage } from '../../enums/StorefrontPage.enum';
-import { GLOBALVARS } from '../../index';
+import { StorefrontPage } from "../../enums/StorefrontPage.enum";
+import { GLOBALVARS } from "../../index";
 
 export function main() {
   console.log(GLOBALVARS.currentPage);
@@ -26,7 +26,7 @@ export function main() {
   if (GLOBALVARS.currentPage === StorefrontPage.CREATEEDITACCOUNT) {
   }
   if (GLOBALVARS.currentPage === StorefrontPage.CUSTOMIZETEMPLATE) {
-    $('#customizeTbl h2').text('Preview your Design');
+    $("#customizeTbl h2").text("Preview your Design");
   }
   if (GLOBALVARS.currentPage === StorefrontPage.MYACCOUNT) {
   }
@@ -42,8 +42,8 @@ export function main() {
       StorefrontPage.CHECKOUTSHIPPING,
     ].includes(GLOBALVARS.currentPage!)
   ) {
-    $('.checkoutProgress').append(
-      "<h1 style='max-width:900px; margin:0 auto; padding: 24px 0'>All T-shirt orders must be received by Tuesday, September 24, 2024. You may choose direct shipping via USPS to your shipping address provided or pick up at Vivid Ink, <a href='https://www.google.com/maps?q=8640+Airline+Hwy,+Baton+Rouge,+LA+70815' target='_blank'>8640 Airline Hwy, Baton Rouge, LA 70815</a>. Shirts will be available for pick up on October 9th.\nVivid Ink is open Monday - Friday 8 AM-5 PM.</h1>"
+    $(".checkoutProgress").append(
+      "<h1 style='max-width:900px; margin:0 auto; padding: 24px 0'>All T-shirt orders must be received by Thursday, September 29, 2026. You may choose direct shipping via USPS to your shipping address provided or pick up at Prisma Baton Rouge, <a href='https://www.google.com/maps?q=8640+Airline+Hwy,+Baton+Rouge,+LA+70815' target='_blank'>8640 Airline Hwy, Baton Rouge, LA 70815</a>. Shirts will be available for pick up on October 13th.\nPrisma is open Monday - Friday 8 AM-5 PM.</h1>",
     );
   }
 }
