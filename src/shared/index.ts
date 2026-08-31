@@ -698,7 +698,7 @@ function updateLoginAssistanceMessage(): void {
    Limit Customer PO field to 60 characters
 ────────────────────────────────────────────────────────────── */
 function enforceCustomerPOLimit(): void {
-  const MAX_LENGTH = 60;
+  const MAX_LENGTH = 50;
   const APPLIED_ATTRIBUTE = "data-po-limit-applied";
 
   const applyLimit = (input: HTMLInputElement): void => {
