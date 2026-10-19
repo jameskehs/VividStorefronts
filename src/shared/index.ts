@@ -913,8 +913,8 @@ export function runSharedScript(options: OptionsParameter) {
 }
 
 function loadDropdownMenu(): void {
-  const closedArrow = `<svg fill="#000000" width="12px" height="12px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="display:block"><path d="M11.178 19.569a.998.998 0 0 0 1.644 0l9-13A.999.999 0 0 0 21 5H3a1.002 1.002 0 0 0-.822 1.569l9 13z"></path></svg>`;
-  const openArrow = `<svg fill="#000000" width="12px" height="12px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="display:block;transform:rotate(180deg)"><path d="M11.178 19.569a.998.998 0 0 0 1.644 0l9-13A.999.999 0 0 0 21 5H3a1.002 1.002 0 0 0-.822 1.569l9 13z"></path></svg>`;
+  const closedArrow = `<svg fill="#000000" width="12px" height="12px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" transform="matrix(-1.8369701987210297e-16,-1,1,-1.8369701987210297e-16,0,0)"><path d="M11.178 19.569a.998.998 0 0 0 1.644 0l9-13A.999.999 0 0 0 21 5H3a1.002 1.002 0 0 0-.822 1.569l9 13z"></path></svg>`;
+  const openArrow = `<svg fill="#000000" width="12px" height="12px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M11.178 19.569a.998.998 0 0 0 1.644 0l9-13A.999.999 0 0 0 21 5H3a1.002 1.002 0 0 0-.822 1.569l9 13z"></path></svg>`;
 
   // Process each catalog's original flat category list separately.
   $(".TreeControl > li > ul").each(function () {
@@ -963,7 +963,8 @@ function loadDropdownMenu(): void {
     }
   });
 
-  $(".TreeControl li").each(function () {
+  // Add toggles only to top-level categories that have nested items.
+  $(".TreeControl > li > ul > li.dropdown").each(function () {
     const $item = $(this);
     const $children = $item.children("ul.dropdown-content");
 
@@ -973,59 +974,22 @@ function loadDropdownMenu(): void {
     const key = $link.attr("href");
     const isOpen = key ? localStorage.getItem(key) === "true" : false;
 
-    // Keep the link and button on one row, with the submenu below them.
-    $item.css({
-      display: "grid",
-      "grid-template-columns": "minmax(0, 1fr) 20px",
-      "align-items": "center",
-    });
-
-    $link.css({
-      "grid-column": "1",
-      "grid-row": "1",
-      "min-width": "0",
-    });
-
-    $children.css({
-      "grid-column": "1 / -1",
-      "grid-row": "2",
-      width: "100%",
-      "box-sizing": "border-box",
-    });
-
     const $button = $(`
       <button
         type="button"
         class="toggle-btn"
         aria-label="Toggle submenu"
         aria-expanded="${isOpen}"
+        style="position:absolute;right:10px;border:1px solid #ddd !important;height:20px;"
       ></button>
     `);
-
-    $button.css({
-      display: "flex",
-      "grid-column": "2",
-      "grid-row": "1",
-      "align-self": "center",
-      "justify-self": "end",
-      "align-items": "center",
-      "justify-content": "center",
-      width: "20px",
-      height: "20px",
-      padding: "0",
-      margin: "0",
-      "box-sizing": "border-box",
-      "line-height": "1",
-      border: "1px solid #ddd",
-      cursor: "pointer",
-    });
 
     $button.html(isOpen ? openArrow : closedArrow);
     $item.prepend($button);
     $children.toggle(isOpen);
   });
 
-  $(".toggle-btn")
+  $(".TreeControl > li > ul > li.dropdown > .toggle-btn")
     .off("click.dropdownMenu")
     .on("click.dropdownMenu", function (event): void {
       event.preventDefault();
