@@ -973,17 +973,41 @@ function loadDropdownMenu(): void {
     const key = $link.attr("href");
     const isOpen = key ? localStorage.getItem(key) === "true" : false;
 
+    // Anchor the toggle to this menu item so nested toggles align locally.
+    $item.css("position", "relative");
+
     const $button = $(`
       <button
         type="button"
         class="toggle-btn"
         aria-label="Toggle submenu"
         aria-expanded="${isOpen}"
-        style="position:absolute;right:10px;border:1px solid #ddd !important;height:20px;"
+        style="
+          position:absolute;
+          top:50%;
+          right:10px;
+          transform:translateY(-50%);
+          width:20px;
+          height:20px;
+          padding:0;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          box-sizing:border-box;
+          line-height:1;
+          border:1px solid #ddd !important;
+        "
       ></button>
     `);
 
     $button.html(isOpen ? openArrow : closedArrow);
+    $button.find("svg").css({
+      display: "block",
+      width: "12px",
+      height: "12px",
+      flex: "0 0 12px",
+    });
+
     $item.prepend($button);
     $children.toggle(isOpen);
   });
@@ -1003,6 +1027,12 @@ function loadDropdownMenu(): void {
       const isOpen = $children.is(":visible");
       $button.attr("aria-expanded", String(isOpen));
       $button.html(isOpen ? openArrow : closedArrow);
+      $button.find("svg").css({
+        display: "block",
+        width: "12px",
+        height: "12px",
+        flex: "0 0 12px",
+      });
 
       const key = $item.children("a").first().attr("href");
       if (key) localStorage.setItem(key, String(isOpen));
