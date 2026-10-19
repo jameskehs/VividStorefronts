@@ -912,53 +912,99 @@ export function runSharedScript(options: OptionsParameter) {
   }
 }
 
-function loadDropdownMenu() {
-  const $menu = $(".TreeControl ul");
-  const $items = $menu.children("li");
+function loadDropdownMenu(): void {
+  const closedArrow = `<svg fill="#000000" width="12px" height="12px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M11.178 19.569a.998.998 0 0 0 1.644 0l9-13A.999.999 0 0 0 21 5H3a1.002 1.002 0 0 0-.822 1.569l9 13z"></path></svg>`;
+  const openArrow = `<svg fill="#000000" width="12px" height="12px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" transform="rotate(180 12 12)"><path d="M11.178 19.569a.998.998 0 0 0 1.644 0l9-13A.999.999 0 0 0 21 5H3a1.002 1.002 0 0 0-.822 1.569l9 13z"></path></svg>`;
 
-  const closedArrow = `<svg fill="#000000" width="12px" height="12px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" transform="matrix(-1.8369701987210297e-16,-1,1,-1.8369701987210297e-16,0,0)"><path d="M11.178 19.569a.998.998 0 0 0 1.644 0l9-13A.999.999 0 0 0 21 5H3a1.002 1.002 0 0 0-.822 1.569l9 13z"></path></svg>`;
-  const openArrow = `<svg fill="#000000" width="12px" height="12px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M11.178 19.569a.998.998 0 0 0 1.644 0l9-13A.999.999 0 0 0 21 5H3a1.002 1.002 0 0 0-.822 1.569l9 13z"></path></svg>`;
+  // Process each catalog's original flat category list separately.
+  $(".TreeControl > li > ul").each(function () {
+    const $list = $(this);
+    const items = $list.children("li").toArray();
 
-  let $currentParent: JQuery<HTMLElement> | null = null;
+    const stack: Array<{
+      indent: number;
+      $item: JQuery<HTMLElement>;
+      $children: JQuery<HTMLElement>;
+    }> = [];
 
-  $items.each(function () {
-    const $item = $(this);
-    const indent = parseInt($item.css("text-indent"));
+    for (const element of items) {
+      const $item = $(element) as JQuery<HTMLElement>;
+      const indent = Math.max(
+        0,
+        parseFloat(element.style.textIndent || $item.css("text-indent")) || 0,
+      );
 
-    if (indent === 0) {
-      $item.addClass("dropdown");
-      $item.append('<ul class="dropdown-content"></ul>');
-      $currentParent = $item;
-    } else if (indent === 10 || indent === 20) {
-      $item.addClass("nested-dropdown");
-      $currentParent!.find("ul").first().append($item);
+      while (stack.length && stack[stack.length - 1].indent >= indent) {
+        stack.pop();
+      }
+
+      const parent = stack[stack.length - 1];
+
+      if (parent) {
+        if (!parent.$children.length) {
+          parent.$children = $('<ul class="dropdown-content"></ul>');
+          parent.$item.append(parent.$children);
+        }
+
+        $item.addClass("nested-dropdown");
+        parent.$children.append($item);
+      } else {
+        $item.addClass("dropdown");
+      }
+
+      // The nested list structure now represents the depth.
+      element.style.textIndent = "";
+
+      stack.push({
+        indent,
+        $item,
+        $children: $item.children("ul.dropdown-content"),
+      });
     }
   });
 
-  $items.each(function () {
+  $(".TreeControl li").each(function () {
     const $item = $(this);
-    if (
-      $item.hasClass("dropdown") &&
-      $item.find(".dropdown-content").children().length > 0
-    ) {
-      const id = $item.find("a").attr("href");
-      $item.prepend(`
-      <button class="toggle-btn" style="position:absolute;right:10px;border:1px solid #ddd !important;height:20px;">${closedArrow}</button>`);
-      const isOpen = localStorage.getItem(id!) === "true";
-      $item.find(".dropdown-content").toggle(isOpen);
-      $item.find(".toggle-btn").html(isOpen ? openArrow : closedArrow);
-    }
+    const $children = $item.children("ul.dropdown-content");
+
+    if (!$children.length || !$children.children("li").length) return;
+
+    const $link = $item.children("a").first();
+    const key = $link.attr("href");
+    const isOpen = key ? localStorage.getItem(key) === "true" : false;
+
+    const $button = $(`
+      <button
+        type="button"
+        class="toggle-btn"
+        aria-label="Toggle submenu"
+        aria-expanded="${isOpen}"
+        style="position:absolute;right:10px;border:1px solid #ddd !important;height:20px;"
+      ></button>
+    `);
+
+    $button.html(isOpen ? openArrow : closedArrow);
+    $item.prepend($button);
+    $children.toggle(isOpen);
   });
 
-  $(".toggle-btn").on("click", function (e): void {
-    e.stopPropagation();
-    const $btn = $(this);
-    const $dropdownContent = $btn.siblings(".dropdown-content");
-    $dropdownContent.toggle();
-    const isOpen = $dropdownContent.is(":visible");
-    $btn.html(isOpen ? openArrow : closedArrow);
+  $(".toggle-btn")
+    .off("click.dropdownMenu")
+    .on("click.dropdownMenu", function (event): void {
+      event.preventDefault();
+      event.stopPropagation();
 
-    const id = $btn.siblings("a").attr("href");
-    localStorage.setItem(id!, JSON.stringify(isOpen));
-  });
+      const $button = $(this);
+      const $item = $button.parent();
+      const $children = $item.children("ul.dropdown-content");
+
+      $children.toggle();
+
+      const isOpen = $children.is(":visible");
+      $button.attr("aria-expanded", String(isOpen));
+      $button.html(isOpen ? openArrow : closedArrow);
+
+      const key = $item.children("a").first().attr("href");
+      if (key) localStorage.setItem(key, String(isOpen));
+    });
 }
